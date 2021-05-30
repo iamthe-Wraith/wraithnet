@@ -1,5 +1,9 @@
 import React from 'react';
 
+import { Container } from './styles';
+
 export const Login: React.FC = () => (
-  <div>login</div>
+  <Container>
+    login
+  </Container>
 );
