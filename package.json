@@ -4,7 +4,7 @@
   "description": "wraithnet",
   "main": "src/electron.ts",
   "scripts": {
-    "start:dev": "webpack --config ./webpack.dev.js --watch",
+    "start:dev": "cross-env-shell NODE_ENV=development webpack --config ./webpack.dev.js --watch",
     "start:electron": "electron ./dist/electron.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -31,7 +31,9 @@
     "babel-loader": "^8.2.2",
     "babel-plugin-styled-components": "^1.12.0",
     "babel-polyfill": "^6.26.0",
+    "cross-env": "^7.0.3",
     "css-loader": "^5.2.6",
+    "electron-reload": "^1.5.0",
     "eslint": "^7.27.0",
     "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-plugin-import": "^2.23.4",
@@ -42,6 +44,7 @@
     "handlebars-loader": "^1.7.1",
     "html-webpack-plugin": "^5.3.1",
     "mini-css-extract-plugin": "^1.6.0",
+    "node-loader": "^2.0.0",
     "sass-loader": "^11.1.1",
     "style-loader": "^2.0.0",
     "webpack": "^5.38.1",

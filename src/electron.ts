@@ -1,8 +1,15 @@
 import path from 'path';
 import { app, globalShortcut, ipcMain } from 'electron';
+import electronReload from 'electron-reload';
 
 import Window from './lib/window';
 import { IWindow } from './types';
+
+if (process.env.NODE_ENV === 'development') {
+  electronReload(path.join(__dirname, '..'), {
+    electron: path.join(__dirname, '..', 'node_modules', '.bin', 'electron')
+  });   
+}
 
 const bgColor = '#000';
 const dev = true;
@@ -39,10 +46,4 @@ app.on('ready', () => {
   setGlobalShortcuts();
 
   createLoginWindow();
-});
-
-ipcMain.on('re-render', () => {
-  windows.dashboard?.render();
-  windows.login?.render();
-  windows.terminal?.render();
 });

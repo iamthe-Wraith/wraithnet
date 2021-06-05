@@ -12,6 +12,10 @@ module.exports = [
       filename: 'electron.js',
     },
     target: 'electron-main',
+    externals: {
+      fsevents: "require('fsevents')",
+      'electron-reload': "require('electron-reload')",
+    },
     module: {
       rules: [{
         test: /\.ts(x?)$/,
@@ -48,7 +52,6 @@ module.exports = [
       login: ['babel-polyfill', './src/apps/login.tsx'],
       // dashboard: ['babel-polyfill', './src/apps/dashboard.tsx'],
       // terminal: ['babel-polyfill', './src/apps/terminal.tsx'],
-      watcher: ['./src/watcher.tsx'],
     },
     output: {
       path: path.join(__dirname, 'dist'),
@@ -137,21 +140,21 @@ module.exports = [
         title: 'Wraithnet - Login',
         filename: 'login.html',
         template: './src/templates/index.hbs',
-        chunks: ['login', 'watcher'],
+        chunks: ['login'],
         inject: true,
       }),
       // new HtmlWebpackPlugin({
       //   title: 'Wraithnet',
       //   filename: 'dashboard.html',
       //   template: './src/templates/index.hbs',
-      //   chunks: ['dashboard', 'watcher'],
+      //   chunks: ['dashboard'],
       //   inject: true,
       // }),
       // new HtmlWebpackPlugin({
       //   title: 'Wraithnet',
       //   filename: 'terminal.html',
       //   template: './src/templates/index.hbs',
-      //   chunks: ['terminal', 'watcher'],
+      //   chunks: ['terminal'],
       //   inject: true,
       // }),
       new WebpackShellPluginNext({
