@@ -5,3 +5,7 @@ export const Container = styled.div`
   width: 100vw;
   padding: 10px;
 `;
+
+export const InputWrapper = styled.div`
+  .input {}
+`;

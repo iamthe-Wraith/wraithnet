@@ -5,7 +5,7 @@ import Window from './lib/window';
 import { IWindow } from './types';
 
 const bgColor = '#000';
-const dev = false;
+const dev = true;
 
 const windows: {[key: string]: IWindow | null} = {
   dashboard: null,
@@ -39,4 +39,10 @@ app.on('ready', () => {
   setGlobalShortcuts();
 
   createLoginWindow();
+});
+
+ipcMain.on('re-render', () => {
+  windows.dashboard?.render();
+  windows.login?.render();
+  windows.terminal?.render();
 });

@@ -35,8 +35,6 @@ export default class Window implements IWindow {
       onClosed = () => {},
     } = props;
 
-    // const { BrowserWindow, screen } = require('electron');
-
     this._onClose = onClose;
     this._onClosed = onClosed;
 
@@ -54,7 +52,7 @@ export default class Window implements IWindow {
         width: this._windowSize.width,
         height: this._windowSize.height,
         webPreferences: {
-          nodeIntegration: true,
+          // nodeIntegration: true,
           worldSafeExecuteJavaScript: true,
         },
       });
