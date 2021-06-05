@@ -9,3 +9,7 @@ export const Container = styled.div`
 export const InputWrapper = styled.div`
   .input {}
 `;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+`;

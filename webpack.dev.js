@@ -50,6 +50,7 @@ module.exports = [
     mode: 'development',
     entry: {
       login: ['babel-polyfill', './src/apps/login.tsx'],
+      loginPreloader: ['babel-polyfill', './src/preloaders/login.ts'],
       // dashboard: ['babel-polyfill', './src/apps/dashboard.tsx'],
       // terminal: ['babel-polyfill', './src/apps/terminal.tsx'],
     },

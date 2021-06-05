@@ -1,11 +1,22 @@
 import React, { FC, ChangeEvent, useState } from 'react';
+import { useApp } from '../../hooks';
+import { Button } from '../Button';
 import { TextInput } from '../TextInput';
 
-import { Container, InputWrapper } from './styles';
+import { ButtonContainer, Container, InputWrapper } from './styles';
 
 export const Login: FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const app = useApp();
+
+  const onCloseClick = () => {
+    app.close();
+  }
+
+  const onLoginClick = () => {
+    
+  }
 
   const onPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
@@ -34,6 +45,15 @@ export const Login: FC = () => {
           value={ password }
         />
       </InputWrapper>
+      <ButtonContainer>
+        <Button
+          disabled={ !password || !username }
+          onClick={ onLoginClick }
+        >
+          login
+        </Button>
+        <Button onClick={ onCloseClick }>close</Button>
+      </ButtonContainer>
     </Container>
   )
 };

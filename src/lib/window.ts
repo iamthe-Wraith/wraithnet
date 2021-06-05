@@ -31,6 +31,7 @@ export default class Window implements IWindow {
       filename = '',
       // data = {},
       resizable = true,
+      webPreferences = {},
       onClose = () => {},
       onClosed = () => {},
     } = props;
@@ -52,8 +53,10 @@ export default class Window implements IWindow {
         width: this._windowSize.width,
         height: this._windowSize.height,
         webPreferences: {
-          // nodeIntegration: true,
-          worldSafeExecuteJavaScript: true,
+          contextIsolation: true,
+          nodeIntegration: false,
+          // worldSafeExecuteJavaScript: true,
+          ...webPreferences,
         },
       });
 

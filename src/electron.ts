@@ -28,6 +28,9 @@ const createLoginWindow = () => {
     height: 250,
     width: 370,
     resizable: dev,
+    webPreferences: {
+      preload: path.resolve(__dirname, 'loginPreloader.js'),
+    },
     onClosed: () => {
       windows.login = null;
     },
@@ -46,4 +49,8 @@ app.on('ready', () => {
   setGlobalShortcuts();
 
   createLoginWindow();
+});
+
+ipcMain.on('close-app', () => {
+  windows.login?.close();
 });

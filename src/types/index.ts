@@ -1,5 +1,5 @@
 import 'electron';
-import { AxiosResponse, Method } from 'axios';
+// import { AxiosResponse, Method } from 'axios';
 
 export enum ENV {
   DEV = 'development',
@@ -38,6 +38,7 @@ export interface IWindowProps {
   filename?:string;
   data?:any;
   resizable?: boolean;
+  webPreferences?: Electron.WebPreferences;
   onClose?: () => void;
   onClosed?: () => void;
 }
