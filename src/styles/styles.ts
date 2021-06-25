@@ -1,5 +1,4 @@
 import styled, { createGlobalStyle, keyframes } from 'styled-components';
-import { dark, darkestGray, error, light } from './colors';
 import './fonts/Orbitron/static/Orbitron-Regular.ttf';
 import './fonts/Orbitron/static/Orbitron-Medium.ttf';
 import './fonts/Orbitron/static/Orbitron-SemiBold.ttf';
