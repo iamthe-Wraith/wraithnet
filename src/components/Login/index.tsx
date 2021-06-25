@@ -1,21 +1,19 @@
 import React, { FC, ChangeEvent, useState } from 'react';
-import { useApp } from '../../hooks';
+import { IpcRenderer } from '../../models/ipcRenderer';
 import { Button } from '../Button';
 import { TextInput } from '../TextInput';
-
 import { ButtonContainer, Container, InputWrapper } from './styles';
 
-export const Login: FC = () => {
+export const Login: FC<any> = ({ theme }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const app = useApp();
 
   const onCloseClick = () => {
-    app.close();
+    IpcRenderer.close();
   }
 
   const onLoginClick = () => {
-    
+    console.log('loging in: ', username, password);
   }
 
   const onPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +25,7 @@ export const Login: FC = () => {
   };
 
   return (
-    <Container>
+    <Container theme={ theme }>
       <h1>Login</h1>
       <InputWrapper>
         <TextInput
@@ -55,5 +53,5 @@ export const Login: FC = () => {
         <Button onClick={ onCloseClick }>close</Button>
       </ButtonContainer>
     </Container>
-  )
+  );
 };

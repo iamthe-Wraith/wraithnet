@@ -1,4 +1,5 @@
-import React, { useState, FocusEvent } from 'react';
+import React, { useState, FocusEvent, FC } from 'react';
+import { withTheme } from 'styled-components';
 
 import { Container } from './styles';
 
@@ -13,7 +14,20 @@ interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
 	type?: string;
 }
 
-export const TextInput: React.FC<IProps> = ({ allowAutoComplete, className, inputClassName, inputId, inputRef, onBlur, onFocus, leftAccessory, rightAccessory, type = 'text', ...restProps }) => {
+export const TextInput: FC<IProps> = ({
+  allowAutoComplete,
+  className,
+  inputClassName,
+  inputId,
+  inputRef,
+  onBlur,
+  onFocus,
+  leftAccessory,
+  rightAccessory,
+  
+  type = 'text',
+  ...restProps
+}) => {
   const [isFocused, setIsFocused] = useState(false);
 	let inRef: HTMLInputElement;
 

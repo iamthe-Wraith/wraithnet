@@ -107,12 +107,12 @@ export const AbsoluteCenter = styled.div`
 `;
 
 export const AppContainer = styled.div`
-  background: radial-gradient(ellipse at top left, ${darkestGray}, ${dark});
+  background: radial-gradient(ellipse at top left, ${({ theme }) => theme.darkestGray}, ${({ theme }) => theme.dark});
   overflow: hidden;
   
   * {
     box-sizing: border-box;
-    color: ${light};
+    color: ${({ theme }) => theme.light};
     font-family: Rajdhani;
     letter-spacing: 1px;
   }
@@ -131,7 +131,7 @@ export const AppContainer = styled.div`
 `;
 
 export const Error = styled.div`
-  color: ${error};
+  color: ${({ theme }) => theme.error };
   font-size: 14px;
   margin: 0;
   text-align: left;
