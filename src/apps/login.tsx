@@ -1,28 +1,20 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import { ThemeContext, ThemeProvider } from 'styled-components';
 
-import { Breeze, PinkBerry } from '../styles/themes';
+import { ThemeStore } from '../contexts/Theme';
 import { AppContainer, GlobalStyles } from '../styles/styles';
+import { Theme } from '../components/Theme';
 import { Login } from '../components/Login';
-import { Themes } from '../contexts/Theme';
 
 const App = () => {
-  const { theme } = useContext(ThemeContext);
-  const getTheme = () => {
-    switch (theme) {
-      case Themes.PinkBerry: return PinkBerry;
-      default: return Breeze;  
-    }
-  }
-
   return (
-      <ThemeProvider theme={ getTheme() }>
-        <GlobalStyles theme={ getTheme() } />
+    <ThemeStore>
+      <Theme>
         <AppContainer>
           <Login />
         </AppContainer>
-      </ThemeProvider>
+      </Theme>
+    </ThemeStore>
   );
 };
 
