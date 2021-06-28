@@ -1,9 +1,13 @@
 import path from 'path';
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 import { app, globalShortcut, ipcMain } from 'electron';
 import electronReload from 'electron-reload';
 
 import Window from './lib/window';
+import { Auth } from './auth';
 import { IWindow } from './types';
+import { IpcMainEvent } from 'electron/main';
 
 if (process.env.NODE_ENV === 'development') {
   electronReload(path.join(__dirname, '..'), {
@@ -16,28 +20,25 @@ const dev = true;
 
 const windows: {[key: string]: IWindow | null} = {
   dashboard: null,
-  login: null,
   terminal: null,
 };
 
-const createLoginWindow = () => {
-  windows.login = new Window({
-    backgroundColor: bgColor,
-    display: 'cursor',
-    filename: path.resolve('.', 'dist', 'login.html'),
-    height: 250,
-    width: 370,
-    resizable: dev,
-    webPreferences: {
-      preload: path.resolve(__dirname, 'loginPreloader.js'),
-    },
-    onClosed: () => {
-      windows.login = null;
-    },
-  });
-
-  return windows.login;
-};
+const createDashboard = () => {
+  windows.dashboard = new Window({
+   backgroundColor: bgColor,
+   display: 'cursor',
+   filename: path.resolve('.', 'dist', 'dashboard.html'),
+   height: 'full',
+   width: 'full',
+   resizable: dev,
+   webPreferences: {
+     preload: path.resolve(__dirname, 'dashboardPreloader.js'),
+   },
+   onClosed: () => {
+     windows.dashboard = null;
+   },
+ });
+}
 
 const setGlobalShortcuts = () => {
   // globalShortcut.register('ctrl+/', () => {
@@ -45,12 +46,30 @@ const setGlobalShortcuts = () => {
   // });
 };
 
+const onAuthenticationSuccess = () => {
+  // console.log('onAuthenticationSuccess');
+  createDashboard();
+}
+
 app.on('ready', () => {
   setGlobalShortcuts();
 
-  createLoginWindow();
+  const login = new Auth({
+    isDev: dev,
+    onSuccess: onAuthenticationSuccess,
+  });
+
+  login.init();
 });
 
 ipcMain.on('close-app', () => {
   windows.login?.close();
+});
+
+ipcMain.on('test', (e: IpcMainEvent, msg: string) => {
+  console.log('ipcMain:test:args ', msg);
+
+  setTimeout(() => {
+    e.sender.send('test', 'this is from the main processes');
+  }, 2000);
 });

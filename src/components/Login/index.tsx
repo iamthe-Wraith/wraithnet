@@ -7,22 +7,20 @@ import { ButtonContainer, Container, InputWrapper } from './styles';
 export const Login: FC<any> = ({ theme }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const onCloseClick = () => {
-    IpcRenderer.close();
-  }
+  const onCloseClick = () => IpcRenderer.close();
 
   const onLoginClick = () => {
-    console.log('loging in: ', username, password);
+    IpcRenderer.authenticate(username, password)
+      .catch((err: Error) => {
+        console.log('insiee <Login /> error: ', err);
+        setError(err.message);
+      });
   }
 
-  const onPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  }
-
-  const onUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setUsername(e.target.value);
-  };
+  const onPasswordChange = (e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
+  const onUsernameChange = (e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value);
 
   return (
     <Container theme={ theme }>
@@ -43,6 +41,11 @@ export const Login: FC<any> = ({ theme }) => {
           value={ password }
         />
       </InputWrapper>
+      {
+        !!error && (
+          <p>{ error }</p>
+        )
+      }
       <ButtonContainer>
         <Button
           disabled={ !password || !username }

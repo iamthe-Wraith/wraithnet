@@ -17,30 +17,36 @@ module.exports = [
       'electron-reload': "require('electron-reload')",
     },
     module: {
-      rules: [{
-        test: /\.ts(x?)$/,
-        include: /src/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: [
-                [
-                  '@babel/preset-env',
-                  {
-                    modules: false,
-                    targets: {
-                      browsers: 'last 2 versions, ie 11',
-                      node: 'current',
+      rules: [
+        {
+          test: /\.ts(x?)$/,
+          include: /src/,
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                presets: [
+                  [
+                    '@babel/preset-env',
+                    {
+                      modules: false,
+                      targets: {
+                        browsers: 'last 2 versions, ie 11',
+                        node: 'current',
+                      },
                     },
-                  },
+                  ],
+                  '@babel/preset-typescript',
                 ],
-                '@babel/preset-typescript',
-              ],
+              },
             },
-          },
-        ],
-      }],
+          ],
+        },
+        {
+          test: /\.node$/,
+          use: ['node-loader'],
+        },
+      ],
     },
     resolve: {
       extensions: ['.ts', '.js', '.json'],
@@ -49,10 +55,11 @@ module.exports = [
   {
     mode: 'development',
     entry: {
-      login: ['babel-polyfill', './src/apps/login.tsx'],
-      loginPreloader: ['babel-polyfill', './src/preloaders/login.ts'],
-      // dashboard: ['babel-polyfill', './src/apps/dashboard.tsx'],
-      // terminal: ['babel-polyfill', './src/apps/terminal.tsx'],
+      login: ['./src/apps/login.tsx'],
+      loginPreloader: ['./src/preloaders/login.ts'],
+      dashboard: ['./src/apps/dashboard.tsx'],
+      dashboardPreloader: ['./src/preloaders/dashboard.ts'],
+      // terminal: ['./src/apps/terminal.tsx'],
     },
     output: {
       path: path.join(__dirname, 'dist'),
@@ -144,13 +151,13 @@ module.exports = [
         chunks: ['login'],
         inject: true,
       }),
-      // new HtmlWebpackPlugin({
-      //   title: 'Wraithnet',
-      //   filename: 'dashboard.html',
-      //   template: './src/templates/index.hbs',
-      //   chunks: ['dashboard'],
-      //   inject: true,
-      // }),
+      new HtmlWebpackPlugin({
+        title: 'Wraithnet',
+        filename: 'dashboard.html',
+        template: './src/templates/index.hbs',
+        chunks: ['dashboard'],
+        inject: true,
+      }),
       // new HtmlWebpackPlugin({
       //   title: 'Wraithnet',
       //   filename: 'terminal.html',
