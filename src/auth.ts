@@ -43,7 +43,7 @@ export class Auth {
           this.createWindow();
         } else {
           this._authToken = result;
-          console.log('verifying authentication: ', this._authToken);
+          this.verifyToken();
         }
       })
       .catch(err => {
@@ -56,10 +56,11 @@ export class Auth {
       data: { username, password },
       method: 'POST',
       path: '/auth'
-    });
+    }, true);
 
     if (result.success) {
-      console.log('success! ', result);
+      this._onSuccess();
+      this._window.close();
     } else {
       throw new Error(result.value.message);
     }
@@ -95,12 +96,24 @@ export class Auth {
       } else {
         try {
           await this.authenticate(username, password);
-          this._onSuccess();
-          this._window.close();
         } catch (err) {
           e.sender.send('authentication-error', err.message);
         }
       }
     });
+  }
+
+  private verifyToken = async () => {
+    const result = await this.webServiceHelper.sendRequest({
+      method: 'POST',
+      path: '/auth/verify-token'
+    });
+
+    if (result.success) {
+      this._onSuccess();
+    } else {
+      this.setListeners();
+      this.createWindow();
+    }
   }
 }

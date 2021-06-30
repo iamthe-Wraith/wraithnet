@@ -5,7 +5,7 @@ import keytar from 'keytar';
 type PrivateFields = '_apiBaseUrl' | '_authToken' | '_client' | '_headers';
 
 interface IRequestConfig {
-  data: any;
+  data?: any;
   method: Method;
   path: string;
 }
@@ -62,12 +62,24 @@ export class WraithnetApiWebServiceHelper {
     }, err => Promise.reject(err));
   }
 
-  sendRequest = async ({ data, method, path }: IRequestConfig) => {
+  sendRequest = async ({ data, method, path }: IRequestConfig, tokenOptional?: boolean) => {
     if (!this._client) {
       return {
         success: false,
         value: 'web service client not found',
       };
+    }
+
+    if (!this._authToken && !tokenOptional) {
+      try {
+        const token = await keytar.getPassword('wraithnet', 'wraithnet');
+        if (token) this._authToken = token;
+      } catch (err) {
+        return {
+          success: false,
+          value: 'no token '
+        }
+      }
     }
 
     try {      
