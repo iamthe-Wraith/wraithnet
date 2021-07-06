@@ -41,13 +41,15 @@ const createDashboard = () => {
 }
 
 const setGlobalShortcuts = () => {
-  // globalShortcut.register('ctrl+/', () => {
-  //   createTerminalWindow();
-  // });
+
 };
 
 const onAuthenticationSuccess = () => {
-  // console.log('onAuthenticationSuccess');
+  globalShortcut.register('ctrl+/', () => {
+    // createTerminalWindow();
+    console.log('ctrl+/ pressed');
+    
+  });
   createDashboard();
 }
 

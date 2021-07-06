@@ -5,6 +5,7 @@ import { ThemeStore } from '../contexts/Theme';
 import { AppContainer, GlobalStyles } from '../styles/styles';
 import { Theme } from '../components/Theme';
 import { IpcRenderer } from '../models/ipcRenderer';
+import { Dashboard } from '../components/Dashboard';
 
 const App = () => {
   useEffect(() => {
@@ -15,7 +16,7 @@ const App = () => {
     <ThemeStore>
       <Theme>
         <AppContainer>
-          { 'Dashboard' }
+          <Dashboard />
         </AppContainer>
       </Theme>
     </ThemeStore>
