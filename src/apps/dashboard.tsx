@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
 import { ThemeStore } from '../contexts/Theme';
-import { AppContainer, GlobalStyles } from '../styles/styles';
+import { AppContainer } from '../styles/styles';
 import { Theme } from '../components/Theme';
 import { IpcRenderer } from '../models/ipcRenderer';
 import { Dashboard } from '../components/Dashboard';

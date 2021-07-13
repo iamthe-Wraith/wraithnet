@@ -40,16 +40,37 @@ const createDashboard = () => {
  });
 }
 
-const setGlobalShortcuts = () => {
+const createTerminalWindow = () => {
+  windows.terminal = new Window({
+    backgroundColor: bgColor,
+    display: 'cursor',
+    filename: path.resolve('.', 'dist', 'terminal.html'),
+    height: 400,
+    width: 800,
+    x: 'center',
+    y: 'bottom',
+    resizable: dev,
+    webPreferences: {
+      preload: path.resolve(__dirname, 'terminalPreloader.js'),
+    },
+    onClosed: () => {
+      windows.terminal = null;
+    },
+  });
+}
 
+const setGlobalShortcuts = () => {
+  globalShortcut.register('ctrl+/', () => {
+    if (!windows.terminal) {
+      createTerminalWindow();  
+    } else {
+      windows.terminal.close();
+    }
+  });
 };
 
 const onAuthenticationSuccess = () => {
-  globalShortcut.register('ctrl+/', () => {
-    // createTerminalWindow();
-    console.log('ctrl+/ pressed');
-    
-  });
+  setGlobalShortcuts();
   createDashboard();
 }
 

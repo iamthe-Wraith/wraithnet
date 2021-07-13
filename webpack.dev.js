@@ -59,7 +59,8 @@ module.exports = [
       loginPreloader: ['./src/preloaders/login.ts'],
       dashboard: ['./src/apps/dashboard.tsx'],
       dashboardPreloader: ['./src/preloaders/dashboard.ts'],
-      // terminal: ['./src/apps/terminal.tsx'],
+      terminal: ['./src/apps/terminal.tsx'],
+      terminalPreloader: ['./src/preloaders/terminal.ts'],
     },
     output: {
       path: path.join(__dirname, 'dist'),
@@ -158,13 +159,13 @@ module.exports = [
         chunks: ['dashboard'],
         inject: true,
       }),
-      // new HtmlWebpackPlugin({
-      //   title: 'Wraithnet',
-      //   filename: 'terminal.html',
-      //   template: './src/templates/index.hbs',
-      //   chunks: ['terminal'],
-      //   inject: true,
-      // }),
+      new HtmlWebpackPlugin({
+        title: 'Wraithnet',
+        filename: 'terminal.html',
+        template: './src/templates/index.hbs',
+        chunks: ['terminal'],
+        inject: true,
+      }),
       new WebpackShellPluginNext({
         onBuildEnd: {
           scripts: ['npm run start:electron'],

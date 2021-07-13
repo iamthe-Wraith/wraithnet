@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import { ThemeStore } from '../contexts/Theme';
 import { AppContainer } from '../styles/styles';
 import { Theme } from '../components/Theme';
-import { Login } from '../components/Login';
 import { IpcRenderer } from '../models/ipcRenderer';
 
 const App = () => {
@@ -16,7 +15,7 @@ const App = () => {
     <ThemeStore>
       <Theme>
         <AppContainer>
-          <Login />
+            Terminal
         </AppContainer>
       </Theme>
     </ThemeStore>
