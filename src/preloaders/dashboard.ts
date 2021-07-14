@@ -1,10 +1,9 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { basePreloader } from './base';
 
 contextBridge.exposeInMainWorld('App', {
+  ...basePreloader,
   init: () => {
-    console.log('dashboard preloader');
-  },
-  test: (data: string) => {
-    ipcRenderer.send('dashboard test', data);
+    console.log('dasboard init');
   }
 });

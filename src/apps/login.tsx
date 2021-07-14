@@ -5,7 +5,7 @@ import { ThemeStore } from '../contexts/Theme';
 import { AppContainer } from '../styles/styles';
 import { Theme } from '../components/Theme';
 import { Login } from '../components/Login';
-import { IpcRenderer } from '../models/ipcRenderer';
+import { LoginIpcRenderer as IpcRenderer } from '../models/ipcRenderers/login';
 
 const App = () => {
   useEffect(() => {

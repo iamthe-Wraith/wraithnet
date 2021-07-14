@@ -1,5 +1,5 @@
 import React, { FC, ChangeEvent, useState } from 'react';
-import { IpcRenderer } from '../../models/ipcRenderer';
+import { LoginIpcRenderer as IpcRenderer } from '../../models/ipcRenderers/login';
 import { Button } from '../Button';
 import { TextInput } from '../TextInput';
 import { ButtonContainer, Container, InputWrapper } from './styles';

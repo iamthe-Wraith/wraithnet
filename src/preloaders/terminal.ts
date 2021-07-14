@@ -1,10 +1,12 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { basePreloader } from './base';
 
 contextBridge.exposeInMainWorld('App', {
-  init: () => {
-    console.log('terminal preloader');
+  ...basePreloader,
+  exec: (cmd: string) => {
+    console.log('terminal command: ', cmd);
   },
-  test: (data: string) => {
-    ipcRenderer.send('terminal test', data);
+  init: () => {
+      console.log('terminal init');
   }
 });

@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { ThemeStore } from '../contexts/Theme';
 import { AppContainer } from '../styles/styles';
 import { Theme } from '../components/Theme';
-import { IpcRenderer } from '../models/ipcRenderer';
+import { DashboardIpcRenderer as IpcRenderer } from '../models/ipcRenderers/dashboard';
 import { Dashboard } from '../components/Dashboard';
 
 const App = () => {
