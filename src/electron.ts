@@ -1,13 +1,15 @@
 import path from 'path';
 import "core-js/stable";
 import "regenerator-runtime/runtime";
+import keytar from 'keytar';
 import { app, globalShortcut, ipcMain } from 'electron';
 import electronReload from 'electron-reload';
 
-import Window from './lib/window';
-import { Auth } from './auth';
 import { IWindow } from './types';
 import { IpcMainEvent } from 'electron/main';
+import { createTerminalWindow } from './terminal';
+import { createDashboardWindow } from './dashboard';
+import { createLoginWindow } from './login';
 
 if (process.env.NODE_ENV === 'development') {
   electronReload(path.join(__dirname, '..'), {
@@ -23,46 +25,19 @@ const windows: {[key: string]: IWindow | null} = {
   terminal: null,
 };
 
-const createDashboard = () => {
-  windows.dashboard = new Window({
-   backgroundColor: bgColor,
-   display: 'cursor',
-   filename: path.resolve('.', 'dist', 'dashboard.html'),
-   height: 'full',
-   width: 'full',
-   resizable: dev,
-   webPreferences: {
-     preload: path.resolve(__dirname, 'dashboardPreloader.js'),
-   },
-   onClosed: () => {
-     windows.dashboard = null;
-   },
- });
-}
+const closeApp = (forceCloseLoginWindow?: boolean) => {
+  if (forceCloseLoginWindow) windows.login?.close();
+  windows.login = null;
 
-const createTerminalWindow = () => {
-  windows.terminal = new Window({
-    backgroundColor: bgColor,
-    display: 'cursor',
-    filename: path.resolve('.', 'dist', 'terminal.html'),
-    height: 400,
-    width: 800,
-    x: 'center',
-    y: 'bottom',
-    resizable: dev,
-    webPreferences: {
-      preload: path.resolve(__dirname, 'terminalPreloader.js'),
-    },
-    onClosed: () => {
-      windows.terminal = null;
-    },
+  Object.keys(windows).forEach(window => {
+    windows[window]?.close();
   });
 }
 
 const setGlobalShortcuts = () => {
   globalShortcut.register('ctrl+/', () => {
     if (!windows.terminal) {
-      createTerminalWindow();  
+      windows.terminal = createTerminalWindow(() => { windows.terminal = null; }, dev);
     } else {
       windows.terminal.close();
     }
@@ -71,22 +46,28 @@ const setGlobalShortcuts = () => {
 
 const onAuthenticationSuccess = () => {
   setGlobalShortcuts();
-  createDashboard();
+  windows.dashboard = createDashboardWindow(() => { windows.dashboard = null; }, dev);
 }
 
 app.on('ready', () => {
-  setGlobalShortcuts();
-
-  const login = new Auth({
-    isDev: dev,
-    onSuccess: onAuthenticationSuccess,
-  });
-
-  login.init();
+  createLoginWindow(closeApp, onAuthenticationSuccess, dev);
 });
 
 ipcMain.on('close-app', () => {
-  windows.login?.close();
+  closeApp(true);
+});
+
+ipcMain.on('logout', async () => {
+  try {
+    await keytar.deletePassword('wraithnet', 'wraithnet');
+    createLoginWindow(closeApp, onAuthenticationSuccess, dev);
+
+    Object.keys(windows).forEach(window => {
+      windows[window]?.close();
+    });
+  } catch (err) {
+    console.log('an error occurred while loging out: ', err.message);
+  }
 });
 
 ipcMain.on('test', (e: IpcMainEvent, msg: string) => {

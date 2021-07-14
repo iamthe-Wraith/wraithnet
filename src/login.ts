@@ -11,18 +11,21 @@ const bgColor = '#000';
 interface IProps {
   isDev: boolean;
   onSuccess: () => void;
+  onClose: () => void;
 }
 
-export class Auth {
+class Auth {
   private _isDev: boolean;
   private _window: Window;
   private _onSuccess: () => void;
+  private _onClose: () => void;
   private _webServiceHelper: WraithnetApiWebServiceHelper;
   private _authToken: string;
 
   constructor(props: IProps) {
     this._isDev = props.isDev;
     this._onSuccess = props.onSuccess;
+    this._onClose = props.onClose;
   }
 
   get webServiceHelper() {
@@ -79,6 +82,7 @@ export class Auth {
       },
       onClosed: () => {
         this._window = null;
+        this._onClose();
       },
     });
   }
@@ -116,4 +120,9 @@ export class Auth {
       this.createWindow();
     }
   }
+}
+
+export const createLoginWindow = async (onClose: () => void, onSuccess: () => void, isDev: boolean) => {
+  const login = new Auth({ isDev, onSuccess, onClose });
+  login.init();
 }
