@@ -6,7 +6,7 @@ const WebpackShellPluginNext = require('webpack-shell-plugin-next');
 module.exports = [
   {
     mode: 'development',
-    entry: './src/electron.ts',
+    entry: './src/main/electron.ts',
     output: {
       path: path.join(__dirname, 'dist'),
       filename: 'electron.js',
@@ -78,7 +78,8 @@ module.exports = [
               loader: 'babel-loader',
               options: {
                 plugins: [
-                  'babel-plugin-styled-components',
+                    '@babel/plugin-transform-runtime',
+                    'babel-plugin-styled-components',
                 ],
                 presets: [
                   [

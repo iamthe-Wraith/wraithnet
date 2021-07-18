@@ -1,5 +1,4 @@
 import React, { useState, FocusEvent, FC } from 'react';
-import { withTheme } from 'styled-components';
 
 import { Container } from './styles';
 
@@ -24,7 +23,6 @@ export const TextInput: FC<IProps> = ({
   onFocus,
   leftAccessory,
   rightAccessory,
-  
   type = 'text',
   ...restProps
 }) => {

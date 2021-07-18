@@ -5,11 +5,12 @@ import keytar from 'keytar';
 import { app, globalShortcut, ipcMain } from 'electron';
 import electronReload from 'electron-reload';
 
-import { IWindow } from './types';
+import { IWindow } from '../types';
 import { IpcMainEvent } from 'electron/main';
 import { createTerminalWindow } from './terminal';
 import { createDashboardWindow } from './dashboard';
 import { createLoginWindow } from './login';
+import { User } from '../models/user';
 
 if (process.env.NODE_ENV === 'development') {
   electronReload(path.join(__dirname, '..'), {
@@ -17,7 +18,6 @@ if (process.env.NODE_ENV === 'development') {
   });   
 }
 
-const bgColor = '#000';
 const dev = true;
 
 const windows: {[key: string]: IWindow | null} = {
@@ -49,6 +49,31 @@ const onAuthenticationSuccess = () => {
   windows.dashboard = createDashboardWindow(() => { windows.dashboard = null; }, dev);
 }
 
+const deleteToken = (e: IpcMainEvent) => {
+    keytar.deletePassword('wraithnet', 'wraithnet');
+    e.sender.send('delete-token');
+}
+
+const getToken = (e: IpcMainEvent) => {
+    keytar.getPassword('wraithnet', 'wraithnet')
+        .then(result => {
+            if (result) {
+                e.sender.send('get-token', result);
+            } else {
+                createLoginWindow(closeApp, onAuthenticationSuccess, dev);
+                Object.values((window: IWindow) => window?.close());
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+const setToken = (e: IpcMainEvent, token: string) => {
+    keytar.setPassword('wraithnet', 'wraithnet', token);
+    e.sender.send('set-token');
+}
+
 app.on('ready', () => {
   createLoginWindow(closeApp, onAuthenticationSuccess, dev);
 });
@@ -69,6 +94,14 @@ ipcMain.on('logout', async () => {
     console.log('an error occurred while loging out: ', err.message);
   }
 });
+
+ipcMain.on('user-profile-updated', () => {
+    Object.values((window: IWindow) => window?.send('user-profile-update', true));
+});
+
+ipcMain.on('delete-token', deleteToken);
+ipcMain.on('get-token', getToken);
+ipcMain.on('set-token', setToken);
 
 ipcMain.on('test', (e: IpcMainEvent, msg: string) => {
   console.log('ipcMain:test:args ', msg);

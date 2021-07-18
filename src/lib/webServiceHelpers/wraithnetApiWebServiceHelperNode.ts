@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, Method } from 'axios';
 import { action, observable, makeObservable } from 'mobx';
+import keytar from 'keytar';
 
 type PrivateFields = '_apiBaseUrl' | '_authToken' | '_client' | '_headers';
 
@@ -9,14 +10,14 @@ interface IRequestConfig {
   path: string;
 }
 
-export class WraithnetApiWebServiceHelper {
+export class WraithnetApiWebServiceHelperNode {
   private _apiBaseUrl: string = null;
   private _authToken: string = '';
   private _client: AxiosInstance = null;
   private _headers: any = {};
 
   constructor() {
-    makeObservable<WraithnetApiWebServiceHelper, PrivateFields>(this, {
+    makeObservable<WraithnetApiWebServiceHelperNode, PrivateFields>(this, {
       _apiBaseUrl: observable,
       _authToken: observable,
       _client: observable.ref,
@@ -51,10 +52,10 @@ export class WraithnetApiWebServiceHelper {
     this._client.interceptors.response.use(response => {
       if (response?.headers?.authorization) {
         this._authToken = response.headers.authorization;
-        (window as any).App.setToken(this._authToken); 
+        keytar.setPassword('wraithnet', 'wraithnet', this._authToken);
       } else {
         this._authToken = null;
-        (window as any).App.deleteToken();
+        keytar.deletePassword('wraithnet', 'wraithnet');
       }
 
       return response;
@@ -71,12 +72,12 @@ export class WraithnetApiWebServiceHelper {
 
     if (!this._authToken && !tokenOptional) {
       try {
-        const token = await (window as any).App.getToken();
+        const token = await keytar.getPassword('wraithnet', 'wraithnet');
         if (token) this._authToken = token;
       } catch (err) {
         return {
           success: false,
-          value: 'no token found'
+          value: 'no token '
         }
       }
     }
@@ -97,6 +98,6 @@ export class WraithnetApiWebServiceHelper {
   }
 
   private setAuthToken = async () => {
-    this._authToken = await (window as any).App.getToken();;
+    this._authToken = await keytar.getPassword('wraithnet', 'wraithnet');
   }
 }

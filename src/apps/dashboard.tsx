@@ -6,20 +6,26 @@ import { AppContainer } from '../styles/styles';
 import { Theme } from '../components/Theme';
 import { DashboardIpcRenderer as IpcRenderer } from '../models/ipcRenderers/dashboard';
 import { Dashboard } from '../components/Dashboard';
+import { UserStore } from '../contexts/User';
 
 const App = () => {
   useEffect(() => {
-    IpcRenderer.init();
+    IpcRenderer.init()
+        .then((results: any) => {
+            console.log('init results: ', results);
+        });
   }, []);
 
   return (
-    <ThemeStore>
-      <Theme>
-        <AppContainer>
-          <Dashboard />
-        </AppContainer>
-      </Theme>
-    </ThemeStore>
+    <UserStore>
+        <ThemeStore>
+            <Theme>
+                <AppContainer>
+                    <Dashboard />
+                </AppContainer>
+            </Theme>
+        </ThemeStore>
+    </UserStore>
   );
 };
 

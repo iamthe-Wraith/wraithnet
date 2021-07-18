@@ -11,7 +11,9 @@ export const Container = styled.div`
 `;
 
 export const InputWrapper = styled.div`
-  .input {}
+  .input {
+      margin: 30px 0;
+  }
 `;
 
 export const ButtonContainer = styled.div`

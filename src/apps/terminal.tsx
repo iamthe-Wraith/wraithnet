@@ -6,6 +6,7 @@ import { AppContainer } from '../styles/styles';
 import { Theme } from '../components/Theme';
 import { TerminalIpcRenderer as IpcRenderer } from '../models/ipcRenderers/terminal';
 import { Terminal } from '../components/Terminal';
+import { UserStore } from '../contexts/User';
 
 const App = () => {
   useEffect(() => {
@@ -13,13 +14,15 @@ const App = () => {
   }, []);
 
   return (
-    <ThemeStore>
-      <Theme>
-        <AppContainer>
-            <Terminal />
-        </AppContainer>
-      </Theme>
-    </ThemeStore>
+      <UserStore>
+        <ThemeStore>
+            <Theme>
+                <AppContainer>
+                    <Terminal />
+                </AppContainer>
+            </Theme>
+        </ThemeStore>
+      </UserStore>
   );
 };
 

@@ -1,7 +1,7 @@
 import path from 'path';
 import { ipcMain, IpcMainEvent } from "electron";
 
-import Window from './lib/window';
+import Window from '../lib/window';
 
 const bgColor = '#000';
 

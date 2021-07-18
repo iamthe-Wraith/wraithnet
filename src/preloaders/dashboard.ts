@@ -1,9 +1,7 @@
-import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
-import { basePreloader } from './base';
+import { contextBridge } from 'electron';
+import { basePreloader, ipcRendererAction } from './base';
 
 contextBridge.exposeInMainWorld('App', {
   ...basePreloader,
-  init: () => {
-    console.log('dasboard init');
-  }
+  init: () => ipcRendererAction('dashboard-init')
 });
