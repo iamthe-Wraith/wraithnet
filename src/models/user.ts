@@ -11,8 +11,8 @@ export interface UserStatuses {
     verified: boolean;
 }
 
-export interface IUser {
-    _id: string;
+export interface IUserModel {
+    id: string;
     createdAt: string;
     email: string;
     role: UserRole;
@@ -22,13 +22,13 @@ export interface IUser {
 
 type PrivateFields = '_loaded' | '_user' | '_webServiceHelper' | 'load';
 
-export class User {
+export class UserModel {
     private _loaded = false;
-    private _user: IUser = null;
+    private _user: IUserModel = null;
     private _webServiceHelper: WraithnetApiWebServiceHelper = null;
 
     constructor() {
-        makeObservable<User, PrivateFields>(this, {
+        makeObservable<UserModel, PrivateFields>(this, {
             _loaded: observable,
             _user: observable,
             _webServiceHelper: observable,
@@ -43,7 +43,7 @@ export class User {
     }
 
     get id() {
-        return this._user?._id;
+        return this._user?.id;
     }
 
     get createdAt() {

@@ -1,23 +1,36 @@
 import { observer } from 'mobx-react';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { TerminalContext } from '../../contexts/Terminal';
 import { UserContext } from '../../contexts/User';
+import { CommandType } from '../../models/command';
+import { TerminalIpcRenderer as IpcRenderer } from '../../models/ipcRenderers/terminal';
 import { CommandInput } from '../CommandInput';
 
 import { OuterContainer, Container, FeedItem } from './styles';
 
 export const TerminalBase: React.FC<any> = ({ theme }) => {
     const user = useContext(UserContext);
-    const [feed, setFeed] = useState<string[]>([]);
+    const terminalModel = useContext(TerminalContext);
+    const [inputDisabled, setInputDisabled] = useState(false);
+
+    useEffect(() => {
+        IpcRenderer.init(terminalModel.execResponse);
+    }, []);
 
     const onCommandSubmit = (command: string) => {
-        setFeed([...feed, command]);
+        setInputDisabled(true);
+        terminalModel.exec(command)
+            .finally(() => setInputDisabled(false));
     }
 
     const renderFeed = () => {
-        return feed.map((f, i) => {
+        return terminalModel.feed.map((f, i) => {
+            const text = f.type === CommandType.COMMAND
+                ? `${user.username} $ ${f.command}`
+                : f.command
             return (
-                <FeedItem key={ `command-${i}` }>
-                    {`${user.username} $ ${f}`}
+                <FeedItem key={ `command-${i}` } className={ f.type === CommandType.COMMAND ? 'command' : 'result' }>
+                    { text }
                 </FeedItem>
             );
         })
@@ -27,7 +40,7 @@ export const TerminalBase: React.FC<any> = ({ theme }) => {
         <OuterContainer theme={ theme }>
             <Container htmlFor='command-input'>
                 { renderFeed() }
-                <CommandInput id='command-input' onSubmit={ onCommandSubmit } />
+                { !inputDisabled && <CommandInput id='command-input' onSubmit={ onCommandSubmit } /> }
             </Container>
         </OuterContainer>
     )

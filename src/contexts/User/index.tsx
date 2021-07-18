@@ -1,11 +1,11 @@
 import React, { createContext } from "react";
-import { IUser, User } from "../../models/user";
+import { IUserModel, UserModel } from "../../models/user";
 
-export const UserContext = createContext<IUser>(null);
+export const UserContext = createContext<IUserModel>(null);
 
 export const UserStore: React.FC = ({ children }) => {
   return (
-    <UserContext.Provider value={new User()}>
+    <UserContext.Provider value={new UserModel()}>
       {children}
     </UserContext.Provider>
   )

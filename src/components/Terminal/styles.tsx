@@ -20,4 +20,16 @@ export const FeedItem = styled.div`
     align-items: center;
     display: flex;
     height: 20px;
+
+    &.command {
+        color: #fff;
+    }
+
+    $.error {
+        color: ${({theme}) => theme.error};
+    }
+
+    &.result {
+        color: ${({theme}) => theme.primary};
+    }
 `;

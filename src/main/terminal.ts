@@ -6,7 +6,9 @@ import Window from '../lib/window';
 const bgColor = '#000';
 
 const onTerminalCommand = (e: IpcMainEvent, msg: string) => {
-    console.log('termainal-command', e, msg);
+    console.log('terminal-command', msg);
+
+    e.sender.send('terminal-command', { result: 'this is the command result' });
 };
 
 export const createTerminalWindow = (onClose: () => void, isDev: boolean) => {
