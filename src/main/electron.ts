@@ -10,7 +10,6 @@ import { IpcMainEvent } from 'electron/main';
 import { createTerminalWindow } from './terminal';
 import { createDashboardWindow } from './dashboard';
 import { createLoginWindow } from './login';
-import { User } from '../models/user';
 
 if (process.env.NODE_ENV === 'development') {
   electronReload(path.join(__dirname, '..'), {
