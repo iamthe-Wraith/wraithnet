@@ -25,7 +25,7 @@ export const FeedItem = styled.div`
         color: #fff;
     }
 
-    $.error {
+    &.error {
         color: ${({theme}) => theme.error};
     }
 

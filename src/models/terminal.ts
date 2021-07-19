@@ -5,7 +5,8 @@ import { CommandModel, CommandType } from "./command";
 import { TerminalIpcRenderer as IpcRenderer } from './ipcRenderers/terminal';
 
 type PrivateFields = '_feed';
-interface CommandResponse {
+
+export interface CommandResponse {
     result?: string;
     error?: string;
 };

@@ -1,17 +1,27 @@
 import path from 'path';
 import { ipcMain, IpcMainEvent } from "electron";
 
-import Window from '../lib/window';
+import Window from '../../lib/window';
+import { CommandResponse } from '../../models/terminal';
+import { TerminalModel } from './model';
+
+let terminalModel: TerminalModel;
 
 const bgColor = '#000';
 
-const onTerminalCommand = (e: IpcMainEvent, msg: string) => {
-    console.log('terminal-command', msg);
+const parseCommand = (command: string) => {
 
-    e.sender.send('terminal-command', { result: 'this is the command result' });
+}
+
+const onTerminalCommand = (e: IpcMainEvent, cmd: string) => {
+    terminalModel.exec(cmd)
+        .then(result => e.sender.send('terminal-command', result))
+        .catch(err => e.sender.send('terminal-command', { error: err.message }));
 };
 
 export const createTerminalWindow = (onClose: () => void, isDev: boolean) => {
+    terminalModel = new TerminalModel();
+
     const window = new Window({
         backgroundColor: bgColor,
         display: 'cursor',
@@ -25,6 +35,7 @@ export const createTerminalWindow = (onClose: () => void, isDev: boolean) => {
             preload: path.resolve(__dirname, 'terminalPreloader.js'),
         },
         onClosed: () => {
+            terminalModel = null;
             ipcMain.off('terminal-command', onTerminalCommand);
             onClose();
         },

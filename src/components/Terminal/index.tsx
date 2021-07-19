@@ -28,8 +28,9 @@ export const TerminalBase: React.FC<any> = ({ theme }) => {
             const text = f.type === CommandType.COMMAND
                 ? `${user.username} $ ${f.command}`
                 : f.command
+
             return (
-                <FeedItem key={ `command-${i}` } className={ f.type === CommandType.COMMAND ? 'command' : 'result' }>
+                <FeedItem key={ `command-${i}` } className={ f.type.toLowerCase() }>
                     { text }
                 </FeedItem>
             );
