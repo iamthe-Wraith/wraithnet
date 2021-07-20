@@ -42,6 +42,12 @@ interface ICommandValues<TArguments, TFlags, TParameters> {
 
 export class TerminalModel extends Base {
     private _command: IParsedCommand = null;
+    private _broadcast: (channel: string, msg?: string) => void;
+
+    constructor (broadcast: (channel: string, msg?: string) => void) {
+        super();
+        this._broadcast = broadcast;
+    }
 
     private initParseCommand = (command: string) => {
         const quotationsRegex = /\"(.*?)\"/gm;
@@ -194,6 +200,7 @@ export class TerminalModel extends Base {
             });
 
             if (result.success) {
+                this._broadcast('userlog-update');
                 return { result: 'entry logged successfuly' };
             } else {
                 return { error: result.value };

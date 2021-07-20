@@ -33,10 +33,16 @@ const closeApp = (forceCloseLoginWindow?: boolean) => {
   });
 }
 
+const broadcast = (channel: string, msg?: string) => {
+  Object.values(windows).forEach((window: IWindow) => {
+    window?.send(channel, msg);
+  });
+}
+
 const setGlobalShortcuts = () => {
   globalShortcut.register('ctrl+/', () => {
     if (!windows.terminal) {
-      windows.terminal = createTerminalWindow(() => { windows.terminal = null; }, dev);
+      windows.terminal = createTerminalWindow(() => { windows.terminal = null; }, dev, broadcast);
     } else {
       windows.terminal.close();
     }

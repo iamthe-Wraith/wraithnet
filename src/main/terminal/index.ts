@@ -14,8 +14,8 @@ const onTerminalCommand = (e: IpcMainEvent, cmd: string) => {
         .catch(err => e.sender.send('terminal-command', { error: err.message }));
 };
 
-export const createTerminalWindow = (onClose: () => void, isDev: boolean) => {
-    terminalModel = new TerminalModel();
+export const createTerminalWindow = (onClose: () => void, isDev: boolean, broadcast: (channel: string, msg?: string) => void) => {
+    terminalModel = new TerminalModel(broadcast);
 
     const window = new Window({
         backgroundColor: bgColor,
