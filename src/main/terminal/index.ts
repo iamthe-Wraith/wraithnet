@@ -2,34 +2,16 @@ import path from 'path';
 import { ipcMain, IpcMainEvent } from "electron";
 
 import Window from '../../lib/window';
-import { CommandResponse } from '../../models/terminal';
 import { TerminalModel } from './model';
 
 let terminalModel: TerminalModel;
 
 const bgColor = '#000';
 
-const parseCommand = (command: string) => {
-
-}
-
 const onTerminalCommand = (e: IpcMainEvent, cmd: string) => {
-    const parsed = parseCommand(cmd);
-
-    console.log('>>>>> command entered: ', parsed);
-
-    let result: CommandResponse;
-    switch (parsed.pieces[0]) {
-        case 'log':
-            submitUserLogEntry(parsed);
-            result = { result: 'entry logged successfully' };
-            break;
-        default:
-            result = { error: `invalid command: ${parsed.pieces[0]}` };
-            break;
-    }
-
-    e.sender.send('terminal-command', result);
+    terminalModel.exec(cmd)
+        .then(result => e.sender.send('terminal-command', result))
+        .catch(err => e.sender.send('terminal-command', { error: err.message }));
 };
 
 export const createTerminalWindow = (onClose: () => void, isDev: boolean) => {
