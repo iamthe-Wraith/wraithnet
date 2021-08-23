@@ -5,8 +5,23 @@ import Window from '../../lib/window';
 import { TerminalModel } from './model';
 
 let terminalModel: TerminalModel;
+let window: Window;
 
 const bgColor = '#000';
+
+const terminalInit = () => {
+    if (window) window.send('terminal-init', true);
+};
+
+const closeListeners = () => {
+    ipcMain.off('terminal-init', terminalInit);
+    ipcMain.off('terminal-command', onTerminalCommand);
+}
+
+const setListeners = () => {
+    ipcMain.on('terminal-init', terminalInit);
+    ipcMain.on('terminal-command', onTerminalCommand);
+};
 
 const onTerminalCommand = (e: IpcMainEvent, cmd: string) => {
     terminalModel.exec(cmd)
@@ -17,7 +32,7 @@ const onTerminalCommand = (e: IpcMainEvent, cmd: string) => {
 export const createTerminalWindow = (onClose: () => void, isDev: boolean, broadcast: (channel: string, msg?: string) => void) => {
     terminalModel = new TerminalModel(broadcast);
 
-    const window = new Window({
+    window = new Window({
         backgroundColor: bgColor,
         display: 'cursor',
         filename: path.resolve('.', 'dist', 'terminal.html'),
@@ -31,12 +46,13 @@ export const createTerminalWindow = (onClose: () => void, isDev: boolean, broadc
         },
         onClosed: () => {
             terminalModel = null;
-            ipcMain.off('terminal-command', onTerminalCommand);
+            window = null;
+            closeListeners();
             onClose();
         },
     });
-    
-    ipcMain.on('terminal-command', onTerminalCommand);
+
+    setListeners();
 
     return window;
 }

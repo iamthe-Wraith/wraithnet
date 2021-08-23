@@ -9,9 +9,4 @@ contextBridge.exposeInMainWorld('App', {
             reject(new Error(msg));
         });
     }),
-    initLogin: () => {
-        // send message initialize any functionality
-        // needed in the main process for this window
-        return ipcRendererAction('login-init');
-    },
 });

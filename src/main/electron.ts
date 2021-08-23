@@ -18,14 +18,14 @@ if (process.env.NODE_ENV === 'development') {
     });   
 }
 
-const dev = true;
+const dev = process.env.NODE_ENV === 'development';
 
 const windows: {[key: string]: IWindow | null} = {
     dashboard: null,
     terminal: null,
 };
 
-const closeApp = (forceCloseLoginWindow?: boolean) => {
+const closeApp = () => {
     Object.keys(windows).forEach(window => {
         windows[window]?.close();
     });
@@ -84,10 +84,6 @@ app.on('ready', () => {
     createLoginWindow(onAuthenticationSuccess, dev);
 });
 
-ipcMain.on('close-app', () => {
-    closeApp(true);
-});
-
 ipcMain.on('logout', async () => {
     try {
         const service = getKeyTarService();
@@ -106,6 +102,7 @@ ipcMain.on('user-profile-updated', () => {
     Object.values((window: IWindow) => window?.send('user-profile-update', true));
 });
 
+ipcMain.on('close-app', closeApp);
 ipcMain.on('delete-token', deleteToken);
 ipcMain.on('get-token', getToken);
 ipcMain.on('set-token', setToken);
