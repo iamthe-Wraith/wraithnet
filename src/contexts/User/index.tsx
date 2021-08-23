@@ -1,7 +1,7 @@
 import React, { createContext } from "react";
-import { IUserModel, UserModel } from "../../models/user";
+import { UserModel } from "../../models/user";
 
-export const UserContext = createContext<IUserModel>(null);
+export const UserContext = createContext<UserModel>(null);
 
 export const UserStore: React.FC = ({ children }) => {
   return (

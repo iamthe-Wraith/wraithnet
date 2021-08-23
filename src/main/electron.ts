@@ -33,7 +33,7 @@ const closeApp = (forceCloseLoginWindow?: boolean) => {
 
 const broadcast = (channel: string, msg?: string) => {
     Object.values(windows).forEach((window: IWindow) => {
-        window?.send(channel, msg);
+        window?.send('broadcast-event', { event: channel, data: msg });
     });
 }
 

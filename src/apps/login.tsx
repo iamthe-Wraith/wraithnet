@@ -9,7 +9,9 @@ import { LoginIpcRenderer as IpcRenderer } from '../models/ipcRenderers/login';
 
 const App = () => {
   useEffect(() => {
-    IpcRenderer.init();
+    IpcRenderer
+        .init()
+        .initLogin();
   }, []);
 
   return (
