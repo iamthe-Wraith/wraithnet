@@ -1,17 +1,9 @@
-import { WraithnetApiWebServiceHelper } from "../lib/webServiceHelpers/wraithnetApiWebServiceHelper";
-
-export interface IBaseProps {}
-
-export class Base {
-    protected _webServiceHelper: WraithnetApiWebServiceHelper;
-
-    get webServiceHelper() {
-        if (!this._webServiceHelper) {
-          // only want to instantiate object when used...
-          this._webServiceHelper = new WraithnetApiWebServiceHelper();
-          this._webServiceHelper.initClient();
+export class BaseModel {
+    protected composeUrl = (path: string) => {
+        if (path.includes('/auth')) {
+            return path;
         }
-    
-        return this._webServiceHelper;
+        
+        return `/api/v1/${path}`;
     }
 }

@@ -10,11 +10,11 @@ import { UserStore } from '../contexts/User';
 
 const App = () => {
   useEffect(() => {
-    IpcRenderer.init({
-        onUserLogUpdate: () => console.log('userlog updated....retrieving updated stuff and things')
-    })
+    IpcRenderer
+        .init()
+        .then(IpcRenderer.initDashboard)
         .then((results: any) => {
-            console.log('init results: ', results);
+            console.log('initDashboard results: ', results);
         });
   }, []);
 

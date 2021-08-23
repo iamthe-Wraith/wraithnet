@@ -1,16 +1,15 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
-import { LoginIpcRenderer } from '../models/ipcRenderers/login';
-import { basePreloader } from './base';
+import { basePreloader, ipcRendererAction } from './base';
 
 contextBridge.exposeInMainWorld('App', {
-  ...basePreloader,
-  exec: (cmd: string) => {
-    ipcRenderer.send('terminal-command', cmd);
-  },
-  init: (onExec: (e: IpcRendererEvent, res: any) => void) => {
-      ipcRenderer.on('terminal-command', (e: IpcRendererEvent, res: any) => {
-            console.log('terminal command response received');
-            onExec(e, res);
-      });
-  }
+    ...basePreloader,
+    exec: (cmd: string) => ipcRenderer.send('terminal-command', cmd),
+    initTerminal: (onExec: (e: IpcRendererEvent, res: any) => void) => {
+        // listen for responses from terminal commands being executed
+        ipcRenderer.on('terminal-command', onExec);
+
+        // send message initialize any functionality
+        // needed in the main process for this window
+        return ipcRendererAction('terminal-init');
+    }
 });

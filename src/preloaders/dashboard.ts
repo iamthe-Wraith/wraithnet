@@ -1,15 +1,11 @@
-import { contextBridge, ipcRenderer } from 'electron';
-import { IDashboardListeners } from '../models/ipcRenderers/dashboard';
+import { contextBridge } from 'electron';
 import { basePreloader, ipcRendererAction } from './base';
 
-const setListeners = (listeners: IDashboardListeners) => {
-  ipcRenderer.on('userlog-update', listeners.onUserLogUpdate);
-};
-
 contextBridge.exposeInMainWorld('App', {
-  ...basePreloader,
-  init: (listeners: IDashboardListeners) => {
-    setListeners(listeners);
-    return ipcRendererAction('dashboard-init');
-  }
+    ...basePreloader,
+    initDashboard: () => {
+        // send message initialize any functionality
+        // needed in the main process for this window
+        return ipcRendererAction('dashboard-init');
+    }
 });

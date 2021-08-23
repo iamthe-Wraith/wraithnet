@@ -14,7 +14,9 @@ export const TerminalBase: React.FC<any> = ({ theme }) => {
     const [inputDisabled, setInputDisabled] = useState(false);
 
     useEffect(() => {
-        IpcRenderer.init(terminalModel.execResponse);
+        IpcRenderer
+            .init()
+            .then(() => IpcRenderer.initTerminal(terminalModel.execResponse));
     }, []);
 
     const onCommandSubmit = (command: string) => {
@@ -26,8 +28,8 @@ export const TerminalBase: React.FC<any> = ({ theme }) => {
     const renderFeed = () => {
         return terminalModel.feed.map((f, i) => {
             const text = f.type === CommandType.COMMAND
-                ? `${user.username} $ ${f.command}`
-                : f.command
+                    ? `${user.username ?? '/'} $ ${f.command}`
+                    : f.command
 
             return (
                 <FeedItem key={ `command-${i}` } className={ f.type.toLowerCase() }>
@@ -35,6 +37,12 @@ export const TerminalBase: React.FC<any> = ({ theme }) => {
                 </FeedItem>
             );
         })
+    }
+
+    if (!user.username) {
+        return (
+            <span>Loading...</span>
+        );
     }
 
     return (

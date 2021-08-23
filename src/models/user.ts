@@ -74,7 +74,6 @@ export class UserModel {
         if (!this._webServiceHelper) {
           // only want to instantiate object when used...
           this._webServiceHelper = new WraithnetApiWebServiceHelper();
-          this._webServiceHelper.initClient();
         }
     
         return this._webServiceHelper;
@@ -83,8 +82,6 @@ export class UserModel {
     public toJs = () => this._user;
 
     private load = async () => {
-        console.log('loading...');
-        
         const result = await this.webServiceHelper.sendRequest({
             path: '/api/v1/profile',
             method: 'GET',

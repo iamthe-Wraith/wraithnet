@@ -6,7 +6,6 @@ export const Container = styled.label`
     width: 100vw;
     padding: 10px;
     font-size: 14px;
-    background: radial-gradient(ellipse at top left, ${({ theme }) => theme.darkestGray}, ${({ theme }) => theme.dark});
 `;
 
 export const FeedItem = styled.div`

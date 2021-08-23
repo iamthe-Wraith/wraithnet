@@ -19,6 +19,12 @@ export const basePreloader = {
     },
     deleteToken: () => ipcRendererAction('delete-token'),
     getToken: () => ipcRendererAction<string>('get-token'),
+    init: async () => {
+        // listen for any broadcasted events from other windows
+        ipcRenderer.on('broadcast-event', (_, { event, data }) => {
+            window.dispatchEvent(new window.CustomEvent(event, data));
+        });
+    },
     setToken: (token: string) => ipcRendererAction('set-token', token),
     test: (data: string) => {
         ipcRenderer.send('test', data);
