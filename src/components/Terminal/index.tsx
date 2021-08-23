@@ -6,7 +6,7 @@ import { CommandType } from '../../models/command';
 import { TerminalIpcRenderer as IpcRenderer } from '../../models/ipcRenderers/terminal';
 import { CommandInput } from '../CommandInput';
 
-import { OuterContainer, Container, FeedItem } from './styles';
+import { Container, FeedItem } from './styles';
 
 export const TerminalBase: React.FC<any> = ({ theme }) => {
     const user = useContext(UserContext);
@@ -38,12 +38,10 @@ export const TerminalBase: React.FC<any> = ({ theme }) => {
     }
 
     return (
-        <OuterContainer theme={ theme }>
-            <Container htmlFor='command-input'>
-                { renderFeed() }
-                { !inputDisabled && <CommandInput id='command-input' onSubmit={ onCommandSubmit } /> }
-            </Container>
-        </OuterContainer>
+        <Container htmlFor='command-input'>
+            { renderFeed() }
+            { !inputDisabled && <CommandInput id='command-input' onSubmit={ onCommandSubmit } /> }
+        </Container>
     )
 };
 
