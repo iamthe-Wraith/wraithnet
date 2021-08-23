@@ -8,7 +8,6 @@ contextBridge.exposeInMainWorld('App', {
     ipcRenderer.send('terminal-command', cmd);
   },
   init: (onExec: (e: IpcRendererEvent, res: any) => void) => {
-      console.log('setting ipcRenderer listener');
       ipcRenderer.on('terminal-command', (e: IpcRendererEvent, res: any) => {
             console.log('terminal command response received');
             onExec(e, res);

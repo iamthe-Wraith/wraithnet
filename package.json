@@ -4,7 +4,8 @@
   "description": "wraithnet",
   "main": "src/electron.ts",
   "scripts": {
-    "start:dev": "cross-env-shell NODE_ENV=development webpack --config ./webpack.dev.js --watch",
+    "start": "webpack --config ./webpack.prod.js",
+    "start:dev": "webpack --config ./webpack.dev.js --watch",
     "start:electron": "electron ./dist/electron.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

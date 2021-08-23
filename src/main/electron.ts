@@ -10,6 +10,7 @@ import { IpcMainEvent } from 'electron/main';
 import { createTerminalWindow } from './terminal';
 import { createDashboardWindow } from './dashboard';
 import { createLoginWindow } from './login';
+import { getKeyTarService } from '../lib/utils';
 
 if (process.env.NODE_ENV === 'development') {
   electronReload(path.join(__dirname, '..'), {
@@ -25,41 +26,40 @@ const windows: {[key: string]: IWindow | null} = {
 };
 
 const closeApp = (forceCloseLoginWindow?: boolean) => {
-  if (forceCloseLoginWindow) windows.login?.close();
-  windows.login = null;
-
   Object.keys(windows).forEach(window => {
     windows[window]?.close();
   });
 }
 
 const setGlobalShortcuts = () => {
-  globalShortcut.register('ctrl+/', () => {
-    if (!windows.terminal) {
-      windows.terminal = createTerminalWindow(() => { windows.terminal = null; }, dev);
-    } else {
-      windows.terminal.close();
-    }
-  });
+    globalShortcut.register('ctrl+/', () => {
+        if (!windows.terminal) {
+            windows.terminal = createTerminalWindow(() => { windows.terminal = null; }, dev);
+        } else {
+            windows.terminal.close();
+        }
+    });
 };
 
 const onAuthenticationSuccess = () => {
-  setGlobalShortcuts();
-  windows.dashboard = createDashboardWindow(() => { windows.dashboard = null; }, dev);
+    setGlobalShortcuts();
+    windows.dashboard = createDashboardWindow(() => { windows.dashboard = null; }, dev);
 }
 
 const deleteToken = (e: IpcMainEvent) => {
-    keytar.deletePassword('wraithnet', 'wraithnet');
+    const service = getKeyTarService();
+    keytar.deletePassword(service, service);
     e.sender.send('delete-token');
 }
 
 const getToken = (e: IpcMainEvent) => {
-    keytar.getPassword('wraithnet', 'wraithnet')
+    const service = getKeyTarService();
+    keytar.getPassword(service, service)
         .then(result => {
             if (result) {
                 e.sender.send('get-token', result);
             } else {
-                createLoginWindow(closeApp, onAuthenticationSuccess, dev);
+                createLoginWindow(onAuthenticationSuccess, dev);
                 Object.values((window: IWindow) => window?.close());
             }
         })
@@ -68,13 +68,18 @@ const getToken = (e: IpcMainEvent) => {
         });
 }
 
+const onLoginClose = () => {
+
+}
+
 const setToken = (e: IpcMainEvent, token: string) => {
-    keytar.setPassword('wraithnet', 'wraithnet', token);
+    const service = getKeyTarService();
+    keytar.setPassword(service, service, token);
     e.sender.send('set-token');
 }
 
 app.on('ready', () => {
-  createLoginWindow(closeApp, onAuthenticationSuccess, dev);
+  createLoginWindow(onAuthenticationSuccess, dev);
 });
 
 ipcMain.on('close-app', () => {
@@ -83,8 +88,9 @@ ipcMain.on('close-app', () => {
 
 ipcMain.on('logout', async () => {
   try {
-    await keytar.deletePassword('wraithnet', 'wraithnet');
-    createLoginWindow(closeApp, onAuthenticationSuccess, dev);
+    const service = getKeyTarService();
+    await keytar.deletePassword(service, service);
+    createLoginWindow(onAuthenticationSuccess, dev);
 
     Object.keys(windows).forEach(window => {
       windows[window]?.close();

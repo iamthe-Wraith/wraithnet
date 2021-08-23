@@ -14,7 +14,7 @@ export const Login: FC<any> = ({ theme }) => {
   const onLoginClick = () => {
     IpcRenderer.authenticate(username, password)
       .catch((err: Error) => {
-        console.log('insiee <Login /> error: ', err);
+        console.log('inside <Login /> error: ', err);
         setError(err.message);
       });
   }

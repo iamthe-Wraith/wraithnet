@@ -5,31 +5,30 @@ import { ipcMain } from 'electron';
 import Window from '../lib/window';
 import { IpcMainEvent } from 'electron/main';
 import { Base, IBaseProps } from './base';
+import { getKeyTarService } from '../lib/utils';
 
 const bgColor = '#000';
 
 interface IProps extends IBaseProps {
   isDev: boolean;
   onSuccess: () => void;
-  onClose: () => void;
 }
 
 class Auth extends Base {
     private _isDev: boolean;
     private _window: Window;
     private _onSuccess: () => void;
-    private _onClose: () => void;
     private _authToken: string;
 
     constructor(props: IProps) {
         super();
         this._isDev = props.isDev;
         this._onSuccess = props.onSuccess;
-        this._onClose = props.onClose;
     }
 
     public init = async () => new Promise((resolve, reject) => {
-        keytar.getPassword('wraithnet', 'wraithnet')
+        const service = getKeyTarService();
+        keytar.getPassword(service, service)
             .then(result => {
                 if (!result) {
                     this.setListeners();
@@ -53,9 +52,11 @@ class Auth extends Base {
 
         if (result.success) {
             this._onSuccess();
-            this._window.close();
+            setTimeout(() => {
+                this._window.close();
+            }, 2000);
         } else {
-            throw new Error(result.value.message);
+            throw new Error(result.value?.message ?? 'Authentication Error');
         }
     }
 
@@ -72,7 +73,6 @@ class Auth extends Base {
             },
             onClosed: () => {
                 this._window = null;
-                this._onClose();
             },
         });
     }
@@ -112,7 +112,7 @@ class Auth extends Base {
     }
 }
 
-export const createLoginWindow = async (onClose: () => void, onSuccess: () => void, isDev: boolean) => {
-    const login = new Auth({ isDev, onSuccess, onClose });
+export const createLoginWindow = async (onSuccess: () => void, isDev: boolean) => {
+    const login = new Auth({ isDev, onSuccess });
     login.init();
 }

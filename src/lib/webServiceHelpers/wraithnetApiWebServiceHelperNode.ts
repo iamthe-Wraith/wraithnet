@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, Method } from 'axios';
 import { action, observable, makeObservable } from 'mobx';
 import keytar from 'keytar';
+import { getKeyTarService } from '../utils';
 
 type PrivateFields = '_apiBaseUrl' | '_authToken' | '_client' | '_headers';
 
@@ -26,7 +27,7 @@ export class WraithnetApiWebServiceHelperNode {
       sendRequest: action,
     });
 
-    this._apiBaseUrl = 'http://localhost:8080';
+    this._apiBaseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : 'https://wraithnet-api.onrender.com';
     this._headers = {
       ...this._headers,
       'Service-Name': 'wraithnet',
@@ -50,15 +51,16 @@ export class WraithnetApiWebServiceHelperNode {
     }, err => Promise.reject(err));
 
     this._client.interceptors.response.use(response => {
-      if (response?.headers?.authorization) {
-        this._authToken = response.headers.authorization;
-        keytar.setPassword('wraithnet', 'wraithnet', this._authToken);
-      } else {
-        this._authToken = null;
-        keytar.deletePassword('wraithnet', 'wraithnet');
-      }
+        const service = getKeyTarService();
+        if (response?.headers?.authorization) {
+            this._authToken = response.headers.authorization;
+            keytar.setPassword(service, service, this._authToken);
+        } else {
+            this._authToken = null;
+            keytar.deletePassword(service, service);
+        }
 
-      return response;
+        return response;
     }, err => Promise.reject(err));
   }
 
@@ -72,7 +74,8 @@ export class WraithnetApiWebServiceHelperNode {
 
     if (!this._authToken && !tokenOptional) {
       try {
-        const token = await keytar.getPassword('wraithnet', 'wraithnet');
+        const service = getKeyTarService();
+        const token = await keytar.getPassword(service, service);
         if (token) this._authToken = token;
       } catch (err) {
         return {
@@ -98,6 +101,7 @@ export class WraithnetApiWebServiceHelperNode {
   }
 
   private setAuthToken = async () => {
-    this._authToken = await keytar.getPassword('wraithnet', 'wraithnet');
+    const service = getKeyTarService();
+    this._authToken = await keytar.getPassword(service, service);
   }
 }

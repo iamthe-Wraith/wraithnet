@@ -25,7 +25,7 @@ export class WraithnetApiWebServiceHelper {
       sendRequest: action,
     });
 
-    this._apiBaseUrl = 'http://localhost:8080';
+    this._apiBaseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : 'https://wraithnet-api.onrender.com';
     this._headers = {
       ...this._headers,
       'Service-Name': 'wraithnet',
