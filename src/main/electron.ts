@@ -13,28 +13,34 @@ import { createLoginWindow } from './login';
 import { getKeyTarService } from '../lib/utils';
 
 if (process.env.NODE_ENV === 'development') {
-  electronReload(path.join(__dirname, '..'), {
-    electron: path.join(__dirname, '..', 'node_modules', '.bin', 'electron')
-  });   
+    electronReload(path.join(__dirname, '..'), {
+        electron: path.join(__dirname, '..', 'node_modules', '.bin', 'electron')
+    });   
 }
 
 const dev = true;
 
 const windows: {[key: string]: IWindow | null} = {
-  dashboard: null,
-  terminal: null,
+    dashboard: null,
+    terminal: null,
 };
 
 const closeApp = (forceCloseLoginWindow?: boolean) => {
-  Object.keys(windows).forEach(window => {
-    windows[window]?.close();
-  });
+    Object.keys(windows).forEach(window => {
+        windows[window]?.close();
+    });
+}
+
+const broadcast = (channel: string, msg?: string) => {
+    Object.values(windows).forEach((window: IWindow) => {
+        window?.send(channel, msg);
+    });
 }
 
 const setGlobalShortcuts = () => {
     globalShortcut.register('ctrl+/', () => {
         if (!windows.terminal) {
-            windows.terminal = createTerminalWindow(() => { windows.terminal = null; }, dev);
+            windows.terminal = createTerminalWindow(() => { windows.terminal = null; }, dev, broadcast);
         } else {
             windows.terminal.close();
         }
@@ -68,10 +74,6 @@ const getToken = (e: IpcMainEvent) => {
         });
 }
 
-const onLoginClose = () => {
-
-}
-
 const setToken = (e: IpcMainEvent, token: string) => {
     const service = getKeyTarService();
     keytar.setPassword(service, service, token);
@@ -79,25 +81,25 @@ const setToken = (e: IpcMainEvent, token: string) => {
 }
 
 app.on('ready', () => {
-  createLoginWindow(onAuthenticationSuccess, dev);
+    createLoginWindow(onAuthenticationSuccess, dev);
 });
 
 ipcMain.on('close-app', () => {
-  closeApp(true);
+    closeApp(true);
 });
 
 ipcMain.on('logout', async () => {
-  try {
-    const service = getKeyTarService();
-    await keytar.deletePassword(service, service);
-    createLoginWindow(onAuthenticationSuccess, dev);
+    try {
+        const service = getKeyTarService();
+        await keytar.deletePassword(service, service);
+        createLoginWindow(onAuthenticationSuccess, dev);
 
-    Object.keys(windows).forEach(window => {
-      windows[window]?.close();
-    });
-  } catch (err) {
-    console.log('an error occurred while loging out: ', err.message);
-  }
+        Object.keys(windows).forEach(window => {
+        windows[window]?.close();
+        });
+    } catch (err) {
+        console.log('an error occurred while loging out: ', err.message);
+    }
 });
 
 ipcMain.on('user-profile-updated', () => {
@@ -109,9 +111,9 @@ ipcMain.on('get-token', getToken);
 ipcMain.on('set-token', setToken);
 
 ipcMain.on('test', (e: IpcMainEvent, msg: string) => {
-  console.log('ipcMain:test:args ', msg);
+    console.log('ipcMain:test:args ', msg);
 
-  setTimeout(() => {
-    e.sender.send('test', 'this is from the main processes');
-  }, 2000);
+    setTimeout(() => {
+        e.sender.send('test', 'this is from the main processes');
+    }, 2000);
 });

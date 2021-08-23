@@ -2,16 +2,11 @@ import path from 'path';
 import { ipcMain, IpcMainEvent } from "electron";
 
 import Window from '../../lib/window';
-import { CommandResponse } from '../../models/terminal';
 import { TerminalModel } from './model';
 
 let terminalModel: TerminalModel;
 
 const bgColor = '#000';
-
-const parseCommand = (command: string) => {
-
-}
 
 const onTerminalCommand = (e: IpcMainEvent, cmd: string) => {
     terminalModel.exec(cmd)
@@ -19,8 +14,8 @@ const onTerminalCommand = (e: IpcMainEvent, cmd: string) => {
         .catch(err => e.sender.send('terminal-command', { error: err.message }));
 };
 
-export const createTerminalWindow = (onClose: () => void, isDev: boolean) => {
-    terminalModel = new TerminalModel();
+export const createTerminalWindow = (onClose: () => void, isDev: boolean, broadcast: (channel: string, msg?: string) => void) => {
+    terminalModel = new TerminalModel(broadcast);
 
     const window = new Window({
         backgroundColor: bgColor,
