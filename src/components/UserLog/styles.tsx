@@ -5,6 +5,7 @@ export const DateContainer = styled.div`
     align-items: center;
     display: flex;
     justify-content: space-between;
+    padding: 0 1px;
     width: 200px;
 
     .date-arrow-button {
