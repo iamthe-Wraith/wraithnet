@@ -30,7 +30,6 @@ const UserLogBase: React.FC<IProps> = ({ className = '' }) => {
     const [selectedDate, setSelectedDate] = useState(dayjs().local());
 
     useEffect(() => {
-        console.log('selectedDate change detected');
         userLogsModel.setCriteria({ created: selectedDate.format() });
     }, [selectedDate]);
 

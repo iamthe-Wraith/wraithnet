@@ -160,8 +160,20 @@ export class TerminalModel extends Base {
         switch (this._command.pieces[0]) {
             case 'log':
                 return this.submitUserLogEntry();
+            case 'open':
+                return this.execOpenCommand();
             default:
                 return { error: `command not found: ${this._command.pieces[0]}` };
+        }
+    }
+
+    private execOpenCommand = async () => {
+        switch (this._command.pieces[1]) {
+            case 'userlog':
+                this._broadcast('open-command', this._command.pieces[1]);
+                return { result: `${this._command.pieces[1]} opened successfully` }
+            default:
+                return { error: `unknown open command argument: ${this._command.pieces[1]}` };
         }
     }
 
@@ -183,7 +195,7 @@ export class TerminalModel extends Base {
         try {
             const parsed = this.parseCommand<IUserLogArguments, null, IUserLogParameters>(structure);
 
-            if (parsed.error) return parsed;
+            if (parsed.error) return { error: parsed.error };
 
             const { arguments: args, error, parameters } = parsed;
             if (error) {
@@ -203,7 +215,7 @@ export class TerminalModel extends Base {
                 this._broadcast('userlog-update');
                 return { result: 'entry logged successfuly' };
             } else {
-                return { error: result.value };
+                return { error: result.value as string };
             }
         } catch (err) {
             return { error: err.message };
