@@ -12,7 +12,7 @@ export const Btn = styled.button`
     transition: all .15s ease-in-out;
 
     &:hover {
-        cursor: pointer;
+        cursor: default;
     }
 
     &.primary {

@@ -7,6 +7,8 @@ import { Theme } from '../components/Theme';
 import { DashboardIpcRenderer as IpcRenderer } from '../models/ipcRenderers/dashboard';
 import { Dashboard } from '../components/Dashboard';
 import { UserStore } from '../contexts/User';
+import { MainRouter } from '../components/MainRouter';
+import { HashRouter } from 'react-router-dom';
 
 const App = () => {
   useEffect(() => {
@@ -22,9 +24,11 @@ const App = () => {
     <UserStore>
         <ThemeStore>
             <Theme>
-                <AppContainer>
-                    <Dashboard />
-                </AppContainer>
+                <HashRouter>
+                    <AppContainer>
+                        <Dashboard />
+                    </AppContainer>
+                </HashRouter>
             </Theme>
         </ThemeStore>
     </UserStore>
@@ -32,3 +36,4 @@ const App = () => {
 };
 
 ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<MainRouter />, document.getElementById('main'));

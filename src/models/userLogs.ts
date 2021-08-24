@@ -1,22 +1,33 @@
 import { action, computed, makeObservable, observable, runInAction } from "mobx";
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import { WraithnetApiWebServiceHelper } from "../lib/webServiceHelpers/wraithnetApiWebServiceHelper";
 import { BaseModel } from "./base";
 
-dayjs.extend(utc)
-
-export interface IUserLog {
-    id: string;
-}
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export interface IEntryQueryOptions {
     page?: number;
     text?: string;
     tags?: string[];
-    created?: dayjs.Dayjs;
-    createdBefore?: dayjs.Dayjs;
-    createdAfter?: dayjs.Dayjs;
+    created?: string;
+    createdBefore?: string;
+    createdAfter?: string;
+}
+
+export interface IUserLogEntry {
+    _id: string;
+    content: string;
+    createdAt: string;
+    owner: string;
+    tags: string[];
+}
+
+export interface IUserLogResponse {
+    count: number;
+    entries: IUserLogEntry[];
 }
 
 type PrivateFields = '_count' |
@@ -25,8 +36,44 @@ type PrivateFields = '_count' |
     '_page' |
     '_webServiceHelper';
 
+type EntryPrivateFields = '_entry';
+
+export class UserLogEntryModel {
+    private _entry: IUserLogEntry = null;
+    constructor(entry: IUserLogEntry) {
+        makeObservable<UserLogEntryModel, EntryPrivateFields>(this, {
+            _entry: observable,
+            id: computed,
+            content: computed,
+            createdAt: computed,
+        });
+
+        this._entry = entry;
+    }
+
+    get id() {
+        return this._entry._id;
+    }
+
+    get content() {
+        return this._entry.content;
+    }
+
+    get createdAt() {
+        return dayjs(this._entry.createdAt).local().format();
+    }
+
+    get owner() {
+        return this._entry.owner;
+    }
+
+    get tags() {
+        return this._entry.tags || [];
+    }
+}
+
 export class UserLogsModel extends BaseModel {
-    private _entries: IUserLog[] = [];
+    private _entries: UserLogEntryModel[] = [];
     private _count: number = 0;
     private _criteria: IEntryQueryOptions = {};
     private _page: number = 0;
@@ -67,8 +114,6 @@ export class UserLogsModel extends BaseModel {
     }
 
     public setCriteria = (opts: IEntryQueryOptions) => {
-        if (opts.created) opts.created = dayjs(opts.created);
-
         this._page = 0;
         this._entries = [];
         this._count = 0;
@@ -83,14 +128,14 @@ export class UserLogsModel extends BaseModel {
             this._entries = [];
         }
 
-        const result = await this.webServiceHelper.sendRequest({
+        const result = await this.webServiceHelper.sendRequest<IUserLogResponse>({
             path: `${this.composeUrl('/user-log')}${this.constructQuery()}`,
             method: 'GET',
         });
 
         if (result.success) {
             runInAction(() => {
-                this._entries = [...this._entries, ...result.value.entries];
+                this._entries = [...this._entries, ...result.value.entries.map(e => new UserLogEntryModel(e))];
                 this._count = result.value.count;
             }); 
         } else {
