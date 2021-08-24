@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { UserLogsModel } from '../../models/userLogs';
 import { UserLogEntry } from '../UserLogEntry';
 
-import { UserLogContainer } from './styles';
+import { UserLogContainer, UserLogEntries, UserLogHeader } from './styles';
 
 interface IProps {
     className?: string;
@@ -25,13 +25,13 @@ const UserLogBase: React.FC<IProps> = ({ className = '' }) => {
 
     return (
         <UserLogContainer>
-            <div className='header'>
+            <UserLogHeader>
                 <span>{ selectedDate.format('MMM DD, YYYY') }</span>
                 <Link to='/'>close</Link>
-            </div>
-            <div>
+            </UserLogHeader>
+            <UserLogEntries>
                 { renderEntries() }
-            </div>
+            </UserLogEntries>
         </UserLogContainer>
     )
 };

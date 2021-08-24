@@ -1,21 +1,20 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-    display: flex;
     height: 100vh;
     width: 100vw;
     padding: 10px;
-    flex-direction: column;
 
     .header {
-        max-height: 40px;
+        height: 40px;
     }
 
     .main {
-        flex-grow: 1;
+        height: calc(100% - 80px);
+        overflow: hidden;
     }
 
     .footer {
-        max-height: 40px;
+        height: 40px;
     }
 `;

@@ -1,8 +1,9 @@
 import dayjs from 'dayjs';
 import React from 'react';
 import { UserLogEntryModel } from '../../models/userLogs';
+import { Tag } from '../Tag';
 
-import { EntryContainer, EntryContent, EntryHeader } from './styles';
+import { EntryContainer, EntryContent, EntryHeader, EntryTags } from './styles';
 
 interface IProps {
     className?: string;
@@ -10,6 +11,18 @@ interface IProps {
 }
 
 export const UserLogEntry: React.FC<IProps> = ({ className = '', entry }) => {
+    const renderTags = () => {
+        return entry.tags.map((tag, i) => {
+            return (
+                <Tag
+                    key={ `${tag}-${i}` }
+                    className='userlog-entry-tag'
+                    text={ tag }
+                />
+            )
+        });
+    }
+
     return (
         <EntryContainer className={ className }>
             <EntryHeader>
@@ -19,6 +32,13 @@ export const UserLogEntry: React.FC<IProps> = ({ className = '', entry }) => {
             <EntryContent>
                 { entry.content }
             </EntryContent>
+            {
+                entry.tags.length > 0 && (
+                    <EntryTags>
+                        { renderTags() }
+                    </EntryTags>
+                )
+            }
         </EntryContainer>
     )
 };
