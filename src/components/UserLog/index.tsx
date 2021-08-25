@@ -54,17 +54,19 @@ const UserLogBase: React.FC<IProps> = ({ className = '' }) => {
             <UserLogHeader>
                 <DateContainer>
                     <Button
+                        className='date-arrow-button'
                         onClick={ onDateChangeClick(DateChangeDirection.Prev) }
                         type={ ButtonType.Blank }
                     >
-                        <PrevArrowIcon className='date-arrow-button' />
+                        <PrevArrowIcon />
                     </Button>
                     <span>{ selectedDate.format('MMM DD, YYYY') }</span>
                     <Button
+                        className='date-arrow-button'
                         onClick={ onDateChangeClick(DateChangeDirection.Next) }
                         type={ ButtonType.Blank }
                     >
-                        <NextArrowIcon className='date-arrow-button' />
+                        <NextArrowIcon />
                     </Button>
                 </DateContainer>
                 <span>entries: { userLogsModel.count }</span>

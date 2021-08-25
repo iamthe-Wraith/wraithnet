@@ -24,10 +24,6 @@ export const Btn = styled.button`
             &:focus {
                 background: ${theme.primaryDark};
             }
-
-            &:focus {
-                outline: 1px dashed ${theme.primaryDark};
-            }
         `)}
     }
 
@@ -41,10 +37,6 @@ export const Btn = styled.button`
                 background: ${theme.primaryDark}40;
                 border: 1px solid ${theme.primaryDark};
             }
-
-            &:focus {
-                outline: 1px dashed ${theme.primaryDark};
-            }
         `)}
     }
 
@@ -56,10 +48,6 @@ export const Btn = styled.button`
             &:hover,
             &:focus {
                 background: ${theme.highlight2};
-            }
-
-            &:focus {
-                outline: 1px dashed ${theme.highlight2};
             }
         `)}
     }
@@ -74,14 +62,10 @@ export const Btn = styled.button`
                 background: ${theme.highlight2}40;
                 border: 1px solid ${theme.highlight2};
             }
-
-            &:focus {
-                outline: 1px dashed ${theme.highlight2};
-            }
         `)}
     }
 
-    &.blank:focus {
-        outline: 1px dashed ${({ theme }: { theme: ITheme }) => theme.primary};
+    &.blank {
+        color: ${({theme}: { theme: ITheme }) => theme.light};
     }
 `;

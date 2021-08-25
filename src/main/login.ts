@@ -44,7 +44,7 @@ class Auth extends Base {
     })
 
     private authenticate = async (username: string, password: string) => {
-        const result = await this.webServiceHelper.sendRequest({
+        const result = await this.webServiceHelper.sendRequest<void>({
             data: { username, password },
             method: 'POST',
             path: '/auth'
@@ -56,7 +56,7 @@ class Auth extends Base {
                 this._window.close();
             }, 2000);
         } else {
-            throw new Error(result.value?.message ?? 'Authentication Error');
+            throw new Error(result.error ?? 'Authentication Error');
         }
     }
 

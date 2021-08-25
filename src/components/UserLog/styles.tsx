@@ -9,8 +9,16 @@ export const DateContainer = styled.div`
     width: 200px;
 
     .date-arrow-button {
-        height: 24px;
-        width: 24px;
+        &:hover {
+            svg {
+                fill: ${({theme}: { theme: ITheme }) => theme.primary }
+            }
+        }
+
+        svg {
+            height: 24px;
+            width: 24px;
+        }
     }
 `;
 
