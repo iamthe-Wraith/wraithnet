@@ -13,7 +13,8 @@ import {
     NoEntries,
     UserLogContainer,
     UserLogEntries,
-    UserLogHeader
+    UserLogHeader,
+    UserLogMain,
 } from './styles';
 
 interface IProps {
@@ -72,9 +73,11 @@ const UserLogBase: React.FC<IProps> = ({ className = '' }) => {
                 <span>entries: { userLogsModel.count }</span>
                 <Link to='/'>close</Link>
             </UserLogHeader>
-            <UserLogEntries>
-                { renderEntries() }
-            </UserLogEntries>
+            <UserLogMain>
+                <UserLogEntries>
+                    { renderEntries() }
+                </UserLogEntries>
+            </UserLogMain>
         </UserLogContainer>
     )
 };

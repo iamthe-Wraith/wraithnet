@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import React, { useEffect, useRef } from 'react';
 import { UserLogsModel } from '../../models/userLogs';
 
-import { UserLogsCountContainer } from './styles';
+import { Count, Label, UserLogsCountContainer } from './styles';
 
 interface IProps {
     className?: string;
@@ -24,7 +24,10 @@ export const UserLogsCountBase: React.FC<IProps> = ({ className = '' }) => {
 
     return (
         <UserLogsCountContainer className={ className }>
-            user log entries: { userLogsModel.count }
+            <Label>user log entries:</Label>
+            <Count>
+                { userLogsModel.count }
+            </Count>
         </UserLogsCountContainer>
     )
 }

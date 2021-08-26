@@ -12,6 +12,7 @@ export const EntryContainer = styled.div`
 `;
 
 export const EntryContent = styled.div`
+    font-size: 14px;
     padding-top: 5px;
 `;
 

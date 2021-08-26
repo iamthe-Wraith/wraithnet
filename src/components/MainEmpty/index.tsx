@@ -1,9 +1,10 @@
 import React from 'react';
+import { MainEmptyContainer } from './styles';
 
 export const MainEmpty: React.FC = () => {
     return (
-        <div>
+        <MainEmptyContainer>
             empty
-        </div>
+        </MainEmptyContainer>
     );
 };

@@ -5,7 +5,7 @@ interface IProps {
     fill?: string;
 }
 
-export const PrevArrowIcon: React.FC<IProps> = ({ className = '', fill = 'currentColor' }) => {
+export const PrevArrowIcon: React.FC<IProps> = ({ className = '', fill = '' }) => {
     return (
         <svg
             fill={ fill }

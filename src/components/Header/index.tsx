@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../../contexts/User';
 import { LogIcon } from '../icons/LogIcon';
-import { Container } from './styles';
+import { Center, Container, Side, UserId, Username } from './styles';
 
 interface IProps {
     className?: string;
@@ -14,10 +14,23 @@ export const HeaderBase: React.FC<IProps> = ({ className = '' }) => {
 
     return (
         <Container className={ className }>
-            <div>{ user?.username }</div>
-            <Link to='/user-log'>
-                <LogIcon />
-            </Link>
+            <Side className='left'>
+                <div />
+                <div>
+                    <UserId>{ user?.id }</UserId>
+                </div>
+            </Side>
+            <Center>
+                <Username>{ user?.username }</Username>
+            </Center>
+            <Side className='right'>
+                <div />
+                <div>
+                    <Link to='/user-log' className='icon-link'>
+                        <LogIcon />
+                    </Link>
+                </div>
+            </Side>
         </Container>
     )
 };

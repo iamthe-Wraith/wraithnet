@@ -23,6 +23,10 @@ export interface ITheme {
     primaryLight: string;
 }
 
+export interface IThemeProps {
+    theme: ITheme;
+}
+
 const Base = {
     dark: '#000000',
     darkerGray: '#282828',
@@ -40,9 +44,9 @@ export const Breeze: ITheme = {
     ...Base,
     highlight1: '#CF7100',
     highlight2: '#A95B00',
-    primary: '#72B0A6',
-    primaryDark: '#3B8295',
-    primaryLight: '#84CABF',
+    primary: '#00b4fa',
+    primaryDark: '#005577',
+    primaryLight: '#49c9fc',
 };
 
 export const PinkBerry: ITheme = {

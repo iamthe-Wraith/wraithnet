@@ -1,15 +1,13 @@
 import { observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
-import { Redirect, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { Footer } from '../Footer';
 import { Header } from '../Header';
 import { Main } from '../Main';
 import { UserLogsCount } from '../UserLogsCount';
+import { Container, LeftCol, MainCol, MainContainer } from './styles';
 
-import { Container } from './styles';
-
-interface IProps {}
-
-export const DashboardBase: React.FC<IProps> = () => {
+export const DashboardBase: React.FC = () => {
     const history = useHistory();
 
     const onOpen = (e: CustomEventInit<string>) => {
@@ -29,9 +27,16 @@ export const DashboardBase: React.FC<IProps> = () => {
 
     return (
         <Container>
-            <Header className='header' />
-            <Main className='main' />
-            <UserLogsCount className='footer' />
+            <Header />
+            <MainContainer>
+                <LeftCol>
+                    <UserLogsCount />
+                </LeftCol>
+                <MainCol>
+                    <Main />
+                </MainCol>
+            </MainContainer>
+            <Footer />
         </Container>
     )
 };

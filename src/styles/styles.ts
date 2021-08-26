@@ -114,6 +114,8 @@ export const AppContainer = styled.div`
     color: ${({ theme }) => theme.light};
     font-family: Rajdhani;
     letter-spacing: 1px;
+    margin: 0;
+    padding: 0;
   }
 
   h1,
@@ -127,6 +129,11 @@ export const AppContainer = styled.div`
     font-family: "Orbitron";
     letter-spacing: .05em;
   }
+`;
+
+export const PrimaryFont = styled.div`
+    font-family: "Orbitron";
+    letter-spacing: .05em;
 `;
 
 export const Error = styled.div`
