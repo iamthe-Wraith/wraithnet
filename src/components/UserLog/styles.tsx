@@ -30,26 +30,43 @@ export const NoEntries = styled.div`
     text-align: center;
 `;
 
+export const SearchContainer = styled.div`
+    & > :first-child {
+        display: flex;
+
+        .search {
+            flex-grow: 1;
+            font-size: 18px;
+            margin-right: 10px;
+            padding: 10px;
+        }
+
+        .search-button {
+            font-size: 12px;
+            padding: 5px 15px;
+        }
+    }
+
+    & > :last-child {
+        .clear-search-button {
+            color: ${({theme}: IThemeProps) => theme.primary};
+
+            :hover {
+                color: ${({theme}: IThemeProps) => theme.primaryDark};
+            }
+        }
+    }
+`;
+
 export const UserLogContainer = styled.div`
     border: 1px solid ${({theme}: IThemeProps) => theme.darkGray};
     height: calc(100% - 10px);
     width: calc(100% - 10px);
 `;
 
-export const UserLogEntries = styled.div`
-    height: calc(100% - 40px);
-    max-width: 50%;
-    min-width: 50%;
-    overflow: auto;
-    
-    &::-webkit-scrollbar {
-        display: none;
-    }
-`;
-
 export const UserLogHeader = styled.div`
     align-items: center;
-    background: ${({theme}: IThemeProps) => theme.darkestGray};
+    background: ${({theme}: IThemeProps) => theme.darkerGray};
     border-bottom: 1px solid ${({theme}: IThemeProps) => theme.darkGray};
     color: ${({theme}: IThemeProps) => theme.primary};
     display: flex;
@@ -64,4 +81,24 @@ export const UserLogMain = styled.div`
     width: 100%;
     height: 100%;
     padding: 5px;
+
+    & > div {
+        height: calc(100% - 40px);
+    }
+
+    & > :first-child {
+        max-width: 60%;
+        min-width: 60%;
+        overflow: auto;
+        
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    & > :last-child {
+        max-width: 40%;
+        min-width: 40%;
+        padding: 10px;
+    }
 `;
