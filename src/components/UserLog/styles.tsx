@@ -58,6 +58,18 @@ export const SearchContainer = styled.div`
     }
 `;
 
+export const TagsContainer = styled.div`
+    padding: 20px 0 10px 10px;
+
+    .with-any-or-no-tags {
+        margin-bottom: 4px;
+    }
+
+    .tags-list {
+        padding-top: 10px;
+    }
+`;
+
 export const UserLogContainer = styled.div`
     border: 1px solid ${({theme}: IThemeProps) => theme.darkGray};
     height: calc(100% - 10px);

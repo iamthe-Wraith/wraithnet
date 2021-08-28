@@ -3,7 +3,6 @@ import { ITheme } from '../../styles/themes';
 
 export const TagContainer = styled.div`
     aligh-items: center;
-    border: 1px solid ${({theme}: { theme: ITheme }) => theme.highlight1};
     border-radius: 30px;
     color: ${({theme}: { theme: ITheme }) => theme.light};
     display: flex;
@@ -11,16 +10,54 @@ export const TagContainer = styled.div`
     line-height: 1em;
     padding: 4px 10px 2px;
 
-    &.highlight {
-        background: ${({theme}: { theme: ITheme }) => theme.highlight1}30;
+    &.light {
+        border: 1px solid ${({theme}: { theme: ITheme }) => theme.light};
+
+        &.highlight {
+            background: ${({theme}: { theme: ITheme }) => theme.light}30;
+        }
+    
+        &.withHover {
+            transition: background .2s ease-in-out;
+    
+            :hover {
+                background: ${({theme}: { theme: ITheme }) => theme.light}30;
+                cursor: default;
+            }
+        }
     }
 
-    &.withHover {
-        transition: background .2s ease-in-out;
+    &.primary {
+        border: 1px solid ${({theme}: { theme: ITheme }) => theme.primary};
 
-        :hover {
+        &.highlight {
+            background: ${({theme}: { theme: ITheme }) => theme.primary}30;
+        }
+    
+        &.withHover {
+            transition: background .2s ease-in-out;
+    
+            :hover {
+                background: ${({theme}: { theme: ITheme }) => theme.primary}30;
+                cursor: default;
+            }
+        }
+    }
+
+    &.secondary {
+        border: 1px solid ${({theme}: { theme: ITheme }) => theme.highlight1};
+
+        &.highlight {
             background: ${({theme}: { theme: ITheme }) => theme.highlight1}30;
-            cursor: default;
+        }
+    
+        &.withHover {
+            transition: background .2s ease-in-out;
+    
+            :hover {
+                background: ${({theme}: { theme: ITheme }) => theme.highlight1}30;
+                cursor: default;
+            }
         }
     }
 `;

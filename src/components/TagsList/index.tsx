@@ -2,14 +2,16 @@ import { observer } from 'mobx-react';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { TagModel, TagsModel } from '../../models/tags';
 import { Checkbox } from '../Checkbox';
-import { Tag } from '../Tag';
+import { Tag, TagType } from '../Tag';
 import { TagContainer, TagsListContainer } from './styles';
 
 interface IProps {
-    onSelectedTagsChange: (selectedTags: TagModel[]) => void;
+    className?: string;
+    forceClearSelectedList?: boolean;
+    onSelectedTagsChange?: (selectedTags: TagModel[]) => void;
 }
 
-const TagsListBase: FC<IProps> = ({ onSelectedTagsChange }) => {
+const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelectedTagsChange }) => {
     const tagsModel = useRef(new TagsModel()).current;
     const [selectedTags, setSelectedTags] = useState<TagModel[]>([]);
 
@@ -18,7 +20,13 @@ const TagsListBase: FC<IProps> = ({ onSelectedTagsChange }) => {
     }, []);
 
     useEffect(() => {
-        onSelectedTagsChange(selectedTags);
+        if (forceClearSelectedList) {
+            setSelectedTags([]);
+        }
+    }, [forceClearSelectedList]);
+
+    useEffect(() => {
+        onSelectedTagsChange?.(selectedTags);
     }, [selectedTags]);
 
     const onTagChange = (tag: TagModel) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,6 +47,7 @@ const TagsListBase: FC<IProps> = ({ onSelectedTagsChange }) => {
                     allowHoverHighlight={ !!onSelectedTagsChange }
                     isHighlighted={ isChecked }
                     text={ t.text }
+                    type={ TagType.Secondary }
                 />
             )
 
@@ -62,7 +71,7 @@ const TagsListBase: FC<IProps> = ({ onSelectedTagsChange }) => {
     }
 
     return (
-        <TagsListContainer>
+        <TagsListContainer className={ className }>
             { renderTags() }
         </TagsListContainer>
     )
