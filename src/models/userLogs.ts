@@ -33,7 +33,8 @@ export interface IUserLogResponse {
     entries: IUserLogEntry[];
 }
 
-type PrivateFields = '_count' |
+type PrivateFields = '_busy' |
+    '_count' |
     '_criteria' |
     '_entries' |
     '_page';
@@ -81,20 +82,23 @@ export class UserLogEntryModel {
 
 export class UserLogsModel extends BaseModel {
     private _entries: UserLogEntryModel[] = [];
-    private _count: number = 0;
+    private _count = 0;
     private _criteria: IEntryQueryOptions = {};
-    private _page: number = 0;
+    private _page = 0;
+    private _busy = false;
 
     constructor () {
         super();
 
         makeObservable<UserLogsModel, PrivateFields>(this, {
+            _busy: observable,
             _count: observable,
             _criteria: observable,
             _entries: observable,
             _page: observable,
             count: computed,
             entries: computed,
+            isBusy: computed,
             webServiceHelper: computed,
             getEntries: action.bound,
             setCriteria: action.bound,
@@ -113,6 +117,10 @@ export class UserLogsModel extends BaseModel {
         return this._entries ?? [];
     }
 
+    get isBusy() {
+        return this._busy;
+    }
+
     public setCriteria = async (opts: IEntryQueryOptions, forceCriteriaReset?: boolean) => {
         const origCriteria = { ...this._criteria };
         this._page = 0;
@@ -125,6 +133,8 @@ export class UserLogsModel extends BaseModel {
     }
 
     public getEntries = async (forcePaginationReset?: boolean) => {
+        this._busy = true;
+
         if (forcePaginationReset) {
             this._page = 0;
             this._entries = [];
@@ -137,10 +147,15 @@ export class UserLogsModel extends BaseModel {
 
         if (result.success) {
             runInAction(() => {
+                this._busy = false;
                 this._entries = [...this._entries, ...result.value.entries.map(e => new UserLogEntryModel(e))];
                 this._count = result.value.count;
             }); 
         } else {
+            runInAction(() => {
+                this._busy = false;
+            });
+            
             throw new Error(result.error);
         }
     }

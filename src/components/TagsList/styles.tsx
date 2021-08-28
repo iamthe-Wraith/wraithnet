@@ -17,4 +17,10 @@ export const TagsListContainer = styled.div`
     align-items: flex-start;    
     display: flex;
     flex-direction: column;
+    min-height: 100px;
+    position: relative;
+
+    .loading-spinner {
+        left: 60px;
+    }
 `;

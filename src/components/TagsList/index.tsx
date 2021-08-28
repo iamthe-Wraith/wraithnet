@@ -2,6 +2,7 @@ import { observer } from 'mobx-react';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { TagModel, TagsModel } from '../../models/tags';
 import { Checkbox } from '../Checkbox';
+import { LoadingSpinner, SpinnerSize } from '../LoadingSpinner';
 import { Tag, TagType } from '../Tag';
 import { NoTagsContainer, TagContainer, TagsListContainer } from './styles';
 
@@ -46,6 +47,10 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
     }
 
     const renderTags = () => {
+        if (tagsModel.isBusy) {
+            return <LoadingSpinner className='loading-spinner' size={ SpinnerSize.Small } />
+        }
+
         if (tagsModel.tags.length === 0) {
             return (
                 <NoTagsContainer>

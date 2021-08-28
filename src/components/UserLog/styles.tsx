@@ -40,11 +40,6 @@ export const SearchContainer = styled.div`
             margin-right: 10px;
             padding: 10px;
         }
-
-        .search-button {
-            font-size: 12px;
-            padding: 5px 15px;
-        }
     }
 
     & > :last-child {
@@ -102,9 +97,14 @@ export const UserLogMain = styled.div`
         max-width: 60%;
         min-width: 60%;
         overflow: auto;
+        position: relative;
         
         &::-webkit-scrollbar {
             display: none;
+        }
+
+        .loading-spinner {
+            top: 20%;
         }
     }
 

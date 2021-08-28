@@ -24,7 +24,7 @@ export interface ITag {
 }
 
 type PrivateTagFields = '_tag';
-type PrivateTagsFields = '_count' | '_criteria' | '_page' | '_tags';
+type PrivateTagsFields = '_busy' | '_count' | '_criteria' | '_page' | '_tags';
 
 export class TagModel {
     private _tag: ITag = null;
@@ -62,11 +62,13 @@ export class TagsModel extends BaseModel {
     private _count: number = 0;
     private _criteria: ITagQueryOptions = {};
     private _page: number = 0;
+    private _busy = false;
 
     constructor() {
         super();
 
         makeObservable<TagsModel, PrivateTagsFields>(this, {
+            _busy: observable,
             _count: observable,
             _criteria: observable,
             _page: observable,
@@ -81,6 +83,10 @@ export class TagsModel extends BaseModel {
 
     get count() {
         return this._count;
+    }
+
+    get isBusy() {
+        return this._busy;
     }
 
     get tags() {
@@ -109,6 +115,8 @@ export class TagsModel extends BaseModel {
             this._tags = [];
         }
 
+        this._busy = true;
+
         const result = await this.webServiceHelper.sendRequest<ITagsResponse>({
             path: `${this.composeUrl('/tags')}${this.constructQuery()}`,
             method: 'GET',
@@ -116,10 +124,15 @@ export class TagsModel extends BaseModel {
 
         if (result.success) {
             runInAction(() => {
+                this._busy = false;
                 this._tags = [...this._tags, ...result.value.tags.map(t => new TagModel(t))];
                 this._count = result.value.count;
             }); 
         } else {
+            runInAction(() => {
+                this._busy = false;
+            });
+
             throw new Error(result.error);
         }
     }

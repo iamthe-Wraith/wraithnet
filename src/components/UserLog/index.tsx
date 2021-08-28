@@ -8,6 +8,7 @@ import { Button, ButtonType } from '../Button';
 import { Checkbox } from '../Checkbox';
 import { NextArrowIcon } from '../icons/NextArrowIcon';
 import { PrevArrowIcon } from '../icons/PrevArrowIcon';
+import { LoadingSpinner, SpinnerType } from '../LoadingSpinner';
 import { Tag, TagType } from '../Tag';
 import { TagsList } from '../TagsList';
 import { TextInput } from '../TextInput';
@@ -39,6 +40,7 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
     const [withAnyTag, setWithAnyTag] = useState(false);
     const [withNoTag, setWithNoTag] = useState(false);
     const [search, setSearch] = useState('');
+    const timeout = useRef<number>(null);
 
     const onUserLogUpdate = () => {
         if (selectedDate.isSame(dayjs().local(), 'date')) {
@@ -59,6 +61,13 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
             tags: selectedTags
         });
     }, [selectedDate, selectedTags, withAnyTag, withNoTag]);
+
+    useEffect(() => {
+        clearTimeout(timeout.current);
+        timeout.current = window.setTimeout(() => {
+            userLogsModel.setCriteria({ text: search });
+        }, 400);
+    }, [search]);
 
     const onClearSearchClick = useCallback(() => {
         () => {
@@ -85,22 +94,6 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
         setSearch(e.target.value);
     }
 
-    const onSearchClick = () => {
-        if (search) {
-            userLogsModel.setCriteria({ text: search });
-        }
-    };
-
-    const onSearchKeyDown = (e: KeyboardEvent) => {
-        switch (e.key) {
-            case 'Enter':
-                onSearchClick();
-                break;
-            default:
-                break;
-        }
-    }
-
     const onWithAnyTagChange = () => {
         const isChecked = !withAnyTag;
 
@@ -124,6 +117,10 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
     }
  
     const renderEntries = () => {
+        if (userLogsModel.isBusy) {
+            return <LoadingSpinner className='loading-spinner' type={ SpinnerType.One } />
+        }
+
         if (userLogsModel.entries.length === 0) {
             return (
                 <NoEntries>
@@ -169,17 +166,9 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
                                 className='search'
                                 inputId='userlog-search'
                                 onChange={ onSearchChange }
-                                onKeyDown={ onSearchKeyDown }
                                 placeholder='Search'
                                 value={ search }
                             />
-                            <Button
-                                className='search-button'
-                                onClick={ onSearchClick }
-                                type={ ButtonType.PrimaryReverse }
-                            >
-                                Search
-                            </Button>
                         </div>
                         {
                             !!search && (

@@ -24,7 +24,7 @@ export interface ITheme {
 }
 
 export interface IThemeProps {
-    theme: ITheme;
+    theme?: ITheme;
 }
 
 const Base = {

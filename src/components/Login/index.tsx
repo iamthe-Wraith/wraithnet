@@ -1,10 +1,11 @@
 import React, { FC, ChangeEvent, useState } from 'react';
 import { LoginIpcRenderer as IpcRenderer } from '../../models/ipcRenderers/login';
+import { IThemeProps } from '../../styles/themes';
 import { Button } from '../Button';
 import { TextInput } from '../TextInput';
 import { ButtonContainer, Container, InputWrapper } from './styles';
 
-export const Login: FC<any> = ({ theme }) => {
+export const Login: FC<IThemeProps> = ({ theme }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');

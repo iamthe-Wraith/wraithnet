@@ -8,7 +8,7 @@ import { CommandInput } from '../CommandInput';
 
 import { Container, FeedItem } from './styles';
 
-export const TerminalBase: React.FC<any> = ({ theme }) => {
+export const TerminalBase: React.FC = () => {
     const user = useContext(UserContext);
     const terminalModel = useContext(TerminalContext);
     const [inputDisabled, setInputDisabled] = useState(false);
