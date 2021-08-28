@@ -1,11 +1,10 @@
 import { action, computed, makeObservable, observable, runInAction } from "mobx";
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import equals from 'fast-deep-equal';
 import timezone from 'dayjs/plugin/timezone';
-import { WraithnetApiWebServiceHelper } from "../lib/webServiceHelpers/wraithnetApiWebServiceHelper";
 import { BaseModel } from "./base";
 import { ITag, TagModel } from "./tags";
-import { Tag } from "../components/Tag";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -13,7 +12,9 @@ dayjs.extend(timezone);
 export interface IEntryQueryOptions {
     page?: number;
     text?: string;
-    tags?: string[];
+    tags?: ITag[];
+    noTags?: boolean;
+    anyTags?: boolean;
     created?: string;
     createdBefore?: string;
     createdAfter?: string;
@@ -35,8 +36,7 @@ export interface IUserLogResponse {
 type PrivateFields = '_count' |
     '_criteria' |
     '_entries' |
-    '_page' |
-    '_webServiceHelper';
+    '_page';
 
 type EntryPrivateFields = '_entry' | '_tags';
 
@@ -84,7 +84,6 @@ export class UserLogsModel extends BaseModel {
     private _count: number = 0;
     private _criteria: IEntryQueryOptions = {};
     private _page: number = 0;
-    private _webServiceHelper: WraithnetApiWebServiceHelper = null;
 
     constructor () {
         super();
@@ -94,7 +93,6 @@ export class UserLogsModel extends BaseModel {
             _criteria: observable,
             _entries: observable,
             _page: observable,
-            _webServiceHelper: observable,
             count: computed,
             entries: computed,
             webServiceHelper: computed,
@@ -107,26 +105,23 @@ export class UserLogsModel extends BaseModel {
         return this._count;
     }
 
+    get criteria() {
+        return this._criteria;
+    }
+
     get entries() {
         return this._entries ?? [];
     }
 
-    get webServiceHelper() {
-        if (!this._webServiceHelper) {
-          // only want to instantiate object when used...
-          this._webServiceHelper = new WraithnetApiWebServiceHelper();
-        }
-    
-        return this._webServiceHelper;
-    }
-
-    public setCriteria = (opts: IEntryQueryOptions) => {
+    public setCriteria = async (opts: IEntryQueryOptions, forceCriteriaReset?: boolean) => {
+        const origCriteria = { ...this._criteria };
         this._page = 0;
         this._entries = [];
         this._count = 0;
-        this._criteria = { ...opts };
+        this._criteria = forceCriteriaReset ? { ...opts } : { ...this._criteria, ...opts };
 
-        return this.getEntries();
+        // only call getEntries if criteria has changed
+        if (!equals(origCriteria, this._criteria)) return this.getEntries();
     }
 
     public getEntries = async (forcePaginationReset?: boolean) => {
@@ -146,7 +141,7 @@ export class UserLogsModel extends BaseModel {
                 this._count = result.value.count;
             }); 
         } else {
-            console.log('error getting user log entries: ', result.value);
+            throw new Error(result.error);
         }
     }
 
@@ -155,7 +150,13 @@ export class UserLogsModel extends BaseModel {
 
         Object.entries(this._criteria).forEach(([key, value]) => {
             if (value) {
-                query.push(`${key}=${value}`);
+                if (key === 'tags') {
+                    if ((value || []).length) {
+                        query.push(`${key}=${value.map((t: ITag) => t.id)}`)
+                    }
+                } else {
+                    query.push(`${key}=${value}`);
+                }
             }
         });
 

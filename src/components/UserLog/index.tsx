@@ -1,11 +1,13 @@
 import dayjs from 'dayjs';
 import { observer } from 'mobx-react';
-import React, { ChangeEvent, FC, KeyboardEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, FC, KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { UserLogsModel } from '../../models/userLogs';
+import { TagModel } from '../../models/tags';
+import { IEntryQueryOptions, UserLogsModel } from '../../models/userLogs';
 import { Button, ButtonType } from '../Button';
 import { NextArrowIcon } from '../icons/NextArrowIcon';
 import { PrevArrowIcon } from '../icons/PrevArrowIcon';
+import { TagsList } from '../TagsList';
 import { TextInput } from '../TextInput';
 import { UserLogEntry } from '../UserLogEntry';
 
@@ -30,19 +32,26 @@ enum DateChangeDirection {
 const UserLogBase: FC<IProps> = ({ className = '' }) => {
     const userLogsModel = useRef(new UserLogsModel()).current;
     const [selectedDate, setSelectedDate] = useState(dayjs().local());
+    const [selectedTags, setSelectedTags] = useState<TagModel[]>([])
     const [search, setSearch] = useState('');
 
     useEffect(() => {
-        userLogsModel.setCriteria({ created: selectedDate.format() });
-    }, [selectedDate]);
+        userLogsModel.setCriteria({ created: selectedDate.format(), tags: selectedTags });
+    }, [selectedDate, selectedTags, search]);
 
-    const onClearSearchClick = () => {
-        userLogsModel.setCriteria({ created: selectedDate.format() });
-        setSearch('');
-    }
+    const onClearSearchClick = useCallback(() => {
+        () => {
+            userLogsModel.setCriteria({ created: selectedDate.format() });
+            setSearch('');
+        }
+    }, [userLogsModel.criteria, selectedDate]);
 
     const onDateChangeClick = (direction: DateChangeDirection) => () => {
         setSelectedDate(selectedDate[direction === DateChangeDirection.Next ? 'add' : 'subtract'](1, 'day'));
+    }
+
+    const onFilterTagChange = (newTags: TagModel[]) => {
+        setSelectedTags(newTags);
     }
 
     const onSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -137,6 +146,7 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
                             )
                         }
                     </SearchContainer>
+                    <TagsList onSelectedTagsChange={ onFilterTagChange } />
                 </div>
             </UserLogMain>
         </UserLogContainer>

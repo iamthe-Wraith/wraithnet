@@ -3,3 +3,5 @@ export const getKeyTarService = () => {
         ? 'wraithnet'
         : 'wraithnet-dev';
 };
+
+export const noop = () => {};

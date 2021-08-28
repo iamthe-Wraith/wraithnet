@@ -143,6 +143,17 @@ export const Error = styled.div`
   text-align: left;
 `;
 
+export const FlexCenter = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+`;
+
+export const FlexHorizontalCenter = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 /**
  * ANIMATIONS
  */
