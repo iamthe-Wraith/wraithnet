@@ -15,9 +15,9 @@ export const UserLogEntry: React.FC<IProps> = ({ className = '', entry }) => {
         return entry.tags.map((tag, i) => {
             return (
                 <Tag
-                    key={ `${tag}-${i}` }
+                    key={ tag.id }
                     className='userlog-entry-tag'
-                    text={ tag }
+                    text={ tag.text }
                 />
             )
         });

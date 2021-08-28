@@ -4,6 +4,8 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { WraithnetApiWebServiceHelper } from "../lib/webServiceHelpers/wraithnetApiWebServiceHelper";
 import { BaseModel } from "./base";
+import { ITag, TagModel } from "./tags";
+import { Tag } from "../components/Tag";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -18,11 +20,11 @@ export interface IEntryQueryOptions {
 }
 
 export interface IUserLogEntry {
-    _id: string;
+    id: string;
     content: string;
     createdAt: string;
     owner: string;
-    tags: string[];
+    tags: ITag[];
 }
 
 export interface IUserLogResponse {
@@ -36,23 +38,28 @@ type PrivateFields = '_count' |
     '_page' |
     '_webServiceHelper';
 
-type EntryPrivateFields = '_entry';
+type EntryPrivateFields = '_entry' | '_tags';
 
 export class UserLogEntryModel {
     private _entry: IUserLogEntry = null;
+    private _tags: TagModel[] = null;
     constructor(entry: IUserLogEntry) {
         makeObservable<UserLogEntryModel, EntryPrivateFields>(this, {
             _entry: observable,
+            _tags: observable,
             id: computed,
             content: computed,
             createdAt: computed,
         });
 
+        this._tags = entry.tags
+            .filter(t => !!t)
+            .map(t => new TagModel(t));
         this._entry = entry;
     }
 
     get id() {
-        return this._entry._id;
+        return this._entry.id;
     }
 
     get content() {
@@ -68,7 +75,7 @@ export class UserLogEntryModel {
     }
 
     get tags() {
-        return this._entry.tags || [];
+        return this._tags;
     }
 }
 
