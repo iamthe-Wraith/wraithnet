@@ -3,7 +3,7 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import { TagModel, TagsModel } from '../../models/tags';
 import { Checkbox } from '../Checkbox';
 import { Tag, TagType } from '../Tag';
-import { TagContainer, TagsListContainer } from './styles';
+import { NoTagsContainer, TagContainer, TagsListContainer } from './styles';
 
 interface IProps {
     className?: string;
@@ -15,8 +15,14 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
     const tagsModel = useRef(new TagsModel()).current;
     const [selectedTags, setSelectedTags] = useState<TagModel[]>([]);
 
+    const onUserLogUpdate = () => {
+        tagsModel.getTags(true);
+    };
+
     useEffect(() => {
         tagsModel.getTags();
+        window.addEventListener('userlog-update', onUserLogUpdate);
+        return () => window.removeEventListener('userlog-update', onUserLogUpdate);
     }, []);
 
     useEffect(() => {
@@ -40,6 +46,14 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
     }
 
     const renderTags = () => {
+        if (tagsModel.tags.length === 0) {
+            return (
+                <NoTagsContainer>
+                    No tags found
+                </NoTagsContainer>
+            )
+        }
+
         return tagsModel.tags.map(t => {
             const isChecked = !!selectedTags.find(selectedTag => selectedTag.id === t.id);
             const tag = (

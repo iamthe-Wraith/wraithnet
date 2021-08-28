@@ -40,6 +40,17 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
     const [withNoTag, setWithNoTag] = useState(false);
     const [search, setSearch] = useState('');
 
+    const onUserLogUpdate = () => {
+        if (selectedDate.isSame(dayjs().local(), 'date')) {
+            userLogsModel.getEntries(true);
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('userlog-update', onUserLogUpdate);
+        return () => window.removeEventListener('userlog-update', onUserLogUpdate);
+    }, []);
+
     useEffect(() => {
         userLogsModel.setCriteria({
             anyTags: withAnyTag,
