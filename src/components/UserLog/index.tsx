@@ -3,17 +3,21 @@ import { observer } from 'mobx-react';
 import React, { ChangeEvent, FC, useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Waypoint } from 'react-waypoint';
+import { withTheme } from 'styled-components';
 import { TagModel } from '../../models/tags';
 import { UserLogsModel } from '../../models/userLogs';
+import { IThemeProps } from '../../styles/themes';
 import { Button, ButtonType } from '../Button';
 import { Checkbox } from '../Checkbox';
 import { NextArrowIcon } from '../icons/NextArrowIcon';
 import { PrevArrowIcon } from '../icons/PrevArrowIcon';
+import { XIcon } from '../icons/XIcon';
 import { LoadingSpinner, SpinnerSize, SpinnerType } from '../LoadingSpinner';
 import { Spinner } from '../LoadingSpinner/styles';
 import { Tag, TagType } from '../Tag';
 import { TagsList } from '../TagsList';
 import { TextInput } from '../TextInput';
+import { Theme } from '../Theme';
 import { UserLogEntry } from '../UserLogEntry';
 
 import {
@@ -28,7 +32,7 @@ import {
     WaypointContainer,
 } from './styles';
 
-interface IProps {
+interface IProps extends IThemeProps {
     className?: string;
 }
 
@@ -37,7 +41,7 @@ enum DateChangeDirection {
     Prev = 'prev',
 }
 
-const UserLogBase: FC<IProps> = ({ className = '' }) => {
+const UserLogBase: FC<IProps> = ({ className = '', theme }) => {
     const userLogsModel = useRef(new UserLogsModel()).current;
     const [selectedDate, setSelectedDate] = useState(dayjs().local());
     const [selectedTags, setSelectedTags] = useState<TagModel[]>([])
@@ -184,7 +188,9 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
                     </Button>
                 </DateContainer>
                 <span>entries: { userLogsModel.count }</span>
-                <Link to='/'>close</Link>
+                <Link to='/' className='close'>
+                    <XIcon fill='none' />
+                </Link>
             </UserLogHeader>
             <UserLogMain>
                 <div>
@@ -256,4 +262,5 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
     )
 };
 
-export const UserLog = observer(UserLogBase);
+const UserLogAsObserver = observer(UserLogBase);
+export const UserLog = withTheme(UserLogAsObserver);

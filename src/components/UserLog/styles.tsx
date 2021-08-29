@@ -94,6 +94,16 @@ export const UserLogHeader = styled.div`
     justify-content: space-between;
     height: 40px;
     padding: 0 20px;
+
+    .close {
+        fill: ${({theme}: IThemeProps) => theme.light};
+        padding-top: 4px;
+
+        :hover {
+            cursor: default;
+            fill: ${({theme}: IThemeProps) => theme.primary};
+        }
+    }
 `;
 
 export const UserLogMain = styled.div`
