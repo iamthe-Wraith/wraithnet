@@ -60,12 +60,13 @@ export const SearchContainer = styled.div`
 `;
 
 export const TagsContainer = styled.div`
+    border-bottom: 1px solid ${({theme}: IThemeProps) => theme.gray};
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     overflow: hidden;
     max-height: 50%;
-    padding: 20px 0 10px 10px;
+    padding: 20px 0 0 10px;
 
     .with-any-or-no-tags {
         margin-bottom: 4px;
@@ -106,8 +107,8 @@ export const UserLogMain = styled.div`
     }
 
     & > :first-child {
-        max-width: 60%;
-        min-width: 60%;
+        max-width: calc(100% - 300px);
+        min-width: calc(100% - 300px);
         overflow: auto;
         position: relative;
         
@@ -123,8 +124,8 @@ export const UserLogMain = styled.div`
     & > :last-child {
         display: flex;
         flex-direction: column;
-        max-width: 40%;
-        min-width: 40%;
+        max-width: 300px;
+        min-width: 300px;
         padding: 10px;
     }
 `;

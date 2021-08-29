@@ -74,6 +74,7 @@ export const Side = styled.div`
         align-items: center;
         display: flex;
         margin-top: 10px;
+        padding-top: 10px;
         position: relative;
         width: 96%;
 
