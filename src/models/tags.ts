@@ -24,7 +24,7 @@ export interface ITag {
 }
 
 type PrivateTagFields = '_tag';
-type PrivateTagsFields = '_busy' | '_count' | '_criteria' | '_page' | '_tags';
+type PrivateTagsFields = '_busy' | '_count' | '_criteria' | '_loaded' | '_page' | '_tags';
 
 export class TagModel {
     private _tag: ITag = null;
@@ -63,6 +63,8 @@ export class TagsModel extends BaseModel {
     private _criteria: ITagQueryOptions = {};
     private _page: number = 0;
     private _busy = false;
+    private _loaded = false;
+    private _pageSize = 20;
 
     constructor() {
         super();
@@ -71,14 +73,22 @@ export class TagsModel extends BaseModel {
             _busy: observable,
             _count: observable,
             _criteria: observable,
+            _loaded: observable,
             _page: observable,
             _tags: observable,
+            allTagsLoaded: computed,
             count: computed,
+            isBusy: computed,
+            isLoaded: computed,
             webServiceHelper: computed,
             getTags: action.bound,
             setCriteria: action.bound,
             tags: computed,
         });
+    }
+
+    get allTagsLoaded() {
+        return this._tags.length === this._count;
     }
 
     get count() {
@@ -87,6 +97,10 @@ export class TagsModel extends BaseModel {
 
     get isBusy() {
         return this._busy;
+    }
+
+    get isLoaded() {
+        return this._loaded;
     }
 
     get tags() {
@@ -102,7 +116,7 @@ export class TagsModel extends BaseModel {
             }
         });
 
-        query.push(`page=${this._page}`);
+        query.push(`page=${this._page}&pageSize=${this._pageSize}`);
 
         return query.length > 0
             ? `?${query.join('&')}`
@@ -111,6 +125,7 @@ export class TagsModel extends BaseModel {
 
     public getTags = async (forcePaginationReset?: boolean) => {
         if (forcePaginationReset) {
+            this._loaded = false;
             this._page = 0;
             this._tags = [];
         }
@@ -125,8 +140,12 @@ export class TagsModel extends BaseModel {
         if (result.success) {
             runInAction(() => {
                 this._busy = false;
+                this._loaded = true;
                 this._tags = [...this._tags, ...result.value.tags.map(t => new TagModel(t))];
                 this._count = result.value.count;
+                if (!this.allTagsLoaded) {
+                    this._page += 1;
+                }
             }); 
         } else {
             runInAction(() => {
@@ -139,6 +158,7 @@ export class TagsModel extends BaseModel {
 
     public setCriteria = (opts: ITagQueryOptions) => {
         this._page = 0;
+        this._loaded = false;
         this._tags = [];
         this._count = 0;
         this._criteria = { ...opts };

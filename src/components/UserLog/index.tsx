@@ -9,7 +9,8 @@ import { Button, ButtonType } from '../Button';
 import { Checkbox } from '../Checkbox';
 import { NextArrowIcon } from '../icons/NextArrowIcon';
 import { PrevArrowIcon } from '../icons/PrevArrowIcon';
-import { LoadingSpinner, SpinnerType } from '../LoadingSpinner';
+import { LoadingSpinner, SpinnerSize, SpinnerType } from '../LoadingSpinner';
+import { Spinner } from '../LoadingSpinner/styles';
 import { Tag, TagType } from '../Tag';
 import { TagsList } from '../TagsList';
 import { TextInput } from '../TextInput';
@@ -17,12 +18,14 @@ import { UserLogEntry } from '../UserLogEntry';
 
 import {
     DateContainer,
+    LoadingSpinnerContainer,
     NoEntries,
     SearchContainer,
     TagsContainer,
     UserLogContainer,
     UserLogHeader,
     UserLogMain,
+    WaypointContainer,
 } from './styles';
 
 interface IProps {
@@ -133,10 +136,27 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
         const entries = userLogsModel.entries.map(entry => <UserLogEntry key={ entry.id } entry={ entry } />);
 
         if (userLogsModel.isBusy) {
-            entries.push(<LoadingSpinner className='loading-spinner' key='loading-spinner' type={ SpinnerType.One } />)
+            const spinner = (
+                <LoadingSpinner
+                    className={ userLogsModel.isLoaded ? '' : 'loading-spinner' }
+                    key='loading-spinner'
+                    size={ SpinnerSize.Small }
+                    type={ SpinnerType.One }
+                />
+            );
+
+            if (userLogsModel.isLoaded) {
+                entries.push((
+                    <LoadingSpinnerContainer key='loading-spinner-container'>
+                        { spinner }
+                    </LoadingSpinnerContainer>
+                ))
+            } else {
+                entries.push(spinner);
+            }
         }
 
-        if (!userLogsModel.allEntriesLoaded) {
+        if (!userLogsModel.allEntriesLoaded && !userLogsModel.isBusy && userLogsModel.isLoaded) {
             return [...entries, <Waypoint key='waypoint' onEnter={ loadMore } topOffset={ 100 } />];
         }
 
@@ -195,7 +215,7 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
                             )
                         }
                     </SearchContainer>
-                    <TagsContainer>
+                    <TagsContainer className='tags-container'>
                         <Checkbox
                             checked={ withAnyTag }
                             className='with-any-or-no-tags'

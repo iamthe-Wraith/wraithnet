@@ -1,10 +1,11 @@
 import { observer } from 'mobx-react';
 import React, { FC, useEffect, useRef, useState } from 'react';
+import { Waypoint } from 'react-waypoint';
 import { TagModel, TagsModel } from '../../models/tags';
 import { Checkbox } from '../Checkbox';
-import { LoadingSpinner, SpinnerSize } from '../LoadingSpinner';
+import { LoadingSpinner, SpinnerSize, SpinnerType } from '../LoadingSpinner';
 import { Tag, TagType } from '../Tag';
-import { NoTagsContainer, TagContainer, TagsListContainer } from './styles';
+import { LoadingSpinnerContainer, NoTagsContainer, TagContainer, TagsListContainer } from './styles';
 
 interface IProps {
     className?: string;
@@ -36,6 +37,10 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
         onSelectedTagsChange?.(selectedTags);
     }, [selectedTags]);
 
+    const loadMore = () => {
+        tagsModel.getTags();
+    };
+
     const onTagChange = (tag: TagModel) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const isSelected = selectedTags.find(selectedTag => selectedTag.id === tag.id);
 
@@ -47,11 +52,7 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
     }
 
     const renderTags = () => {
-        if (tagsModel.isBusy) {
-            return <LoadingSpinner className='loading-spinner' size={ SpinnerSize.Small } />
-        }
-
-        if (tagsModel.tags.length === 0) {
+        if (tagsModel.isLoaded && tagsModel.tags.length === 0) {
             return (
                 <NoTagsContainer>
                     No tags found
@@ -59,7 +60,7 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
             )
         }
 
-        return tagsModel.tags.map(t => {
+        const tags = tagsModel.tags.map(t => {
             const isChecked = !!selectedTags.find(selectedTag => selectedTag.id === t.id);
             const tag = (
                 <Tag
@@ -87,6 +88,33 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
                 </TagContainer>
             )
         });
+
+        if (tagsModel.isBusy) {
+            const spinner = (
+                <LoadingSpinner
+                    className={ tagsModel.isLoaded ? '' : 'loading-spinner' }
+                    key='loading-spinner'
+                    size={ SpinnerSize.Small }
+                    type={ SpinnerType.Two }
+                />
+            );
+
+            if (tagsModel.isLoaded) {
+                tags.push((
+                    <LoadingSpinnerContainer key='loading-spinner-container'>
+                        { spinner }
+                    </LoadingSpinnerContainer>
+                ))
+            } else {
+                tags.push(spinner);
+            }
+        }
+
+        if (!tagsModel.allTagsLoaded && !tagsModel.isBusy && tagsModel.isLoaded) {
+            return [...tags, <Waypoint key='waypoint' onEnter={ loadMore } topOffset={ 700 } />];
+        }
+
+        return tags
     }
 
     return (

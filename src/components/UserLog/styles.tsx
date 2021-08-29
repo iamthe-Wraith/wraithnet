@@ -24,6 +24,12 @@ export const DateContainer = styled.div`
     }
 `;
 
+export const LoadingSpinnerContainer = styled.div`
+    min-height: 50px;
+    margin: 10px 0;
+    position: relative;
+`;
+
 export const NoEntries = styled.div`
     color: ${({theme}: IThemeProps) => theme.gray};
     margin-top: 30px;
@@ -54,6 +60,11 @@ export const SearchContainer = styled.div`
 `;
 
 export const TagsContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+    max-height: 50%;
     padding: 20px 0 10px 10px;
 
     .with-any-or-no-tags {
@@ -61,7 +72,8 @@ export const TagsContainer = styled.div`
     }
 
     .tags-list {
-        padding-top: 10px;
+        flex-grow: 1;
+        margin: 10px 0;
     }
 `;
 
@@ -109,8 +121,15 @@ export const UserLogMain = styled.div`
     }
 
     & > :last-child {
+        display: flex;
+        flex-direction: column;
         max-width: 40%;
         min-width: 40%;
         padding: 10px;
     }
+`;
+
+export const WaypointContainer = styled.div`
+    min-height: 50px;
+    position: relative;
 `;

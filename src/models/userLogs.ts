@@ -143,7 +143,7 @@ export class UserLogsModel extends BaseModel {
         this._loaded = false;
 
         // only call getEntries if criteria has changed
-        if (!equals(origCriteria, this._criteria)) return this.getEntries();
+        if (!equals(origCriteria, this._criteria)) return this.getEntries(true);
     }
 
     public getEntries = async (forcePaginationReset?: boolean) => {
@@ -152,6 +152,7 @@ export class UserLogsModel extends BaseModel {
         if (forcePaginationReset) {
             this._page = 0;
             this._entries = [];
+            this._count = 0;
             this._loaded = false;
         }
 
