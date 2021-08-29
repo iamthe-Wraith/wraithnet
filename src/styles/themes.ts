@@ -34,7 +34,7 @@ const Base = {
     darkGray: '#505050',
     error: '#e3350d',
     gray: '#787878',
-    light: '#ffffff',
+    light: '#ededed',
     lighterGray: '#bebebe',
     lightestGray: '#e6e6e6',
     lightGray: '#a0a0a0',

@@ -67,7 +67,7 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
                     allowHoverHighlight={ !!onSelectedTagsChange }
                     isHighlighted={ isChecked }
                     text={ t.text }
-                    type={ TagType.Secondary }
+                    type={ isChecked ? TagType.Secondary : TagType.Primary }
                 />
             )
 
