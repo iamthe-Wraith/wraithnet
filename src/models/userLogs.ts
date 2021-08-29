@@ -37,6 +37,7 @@ type PrivateFields = '_busy' |
     '_count' |
     '_criteria' |
     '_entries' |
+    '_loaded' |
     '_page';
 
 type EntryPrivateFields = '_entry' | '_tags';
@@ -86,6 +87,7 @@ export class UserLogsModel extends BaseModel {
     private _criteria: IEntryQueryOptions = {};
     private _page = 0;
     private _busy = false;
+    private _loaded = false;
 
     constructor () {
         super();
@@ -95,14 +97,21 @@ export class UserLogsModel extends BaseModel {
             _count: observable,
             _criteria: observable,
             _entries: observable,
+            _loaded: observable,
             _page: observable,
+            allEntriesLoaded: computed,
             count: computed,
             entries: computed,
             isBusy: computed,
+            isLoaded: computed,
             webServiceHelper: computed,
             getEntries: action.bound,
             setCriteria: action.bound,
         });
+    }
+
+    get allEntriesLoaded() {
+        return this._entries.length === this._count;
     }
 
     get count() {
@@ -121,12 +130,17 @@ export class UserLogsModel extends BaseModel {
         return this._busy;
     }
 
+    get isLoaded() {
+        return this._loaded;
+    }
+
     public setCriteria = async (opts: IEntryQueryOptions, forceCriteriaReset?: boolean) => {
         const origCriteria = { ...this._criteria };
         this._page = 0;
         this._entries = [];
         this._count = 0;
         this._criteria = forceCriteriaReset ? { ...opts } : { ...this._criteria, ...opts };
+        this._loaded = false;
 
         // only call getEntries if criteria has changed
         if (!equals(origCriteria, this._criteria)) return this.getEntries();
@@ -138,6 +152,7 @@ export class UserLogsModel extends BaseModel {
         if (forcePaginationReset) {
             this._page = 0;
             this._entries = [];
+            this._loaded = false;
         }
 
         const result = await this.webServiceHelper.sendRequest<IUserLogResponse>({
@@ -148,8 +163,12 @@ export class UserLogsModel extends BaseModel {
         if (result.success) {
             runInAction(() => {
                 this._busy = false;
+                this._loaded = true;
                 this._entries = [...this._entries, ...result.value.entries.map(e => new UserLogEntryModel(e))];
                 this._count = result.value.count;
+                if (!this.allEntriesLoaded) {
+                    this._page += 1;
+                }
             }); 
         } else {
             runInAction(() => {

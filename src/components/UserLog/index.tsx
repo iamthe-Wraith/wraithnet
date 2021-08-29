@@ -1,9 +1,10 @@
 import dayjs from 'dayjs';
 import { observer } from 'mobx-react';
-import React, { ChangeEvent, FC, KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Waypoint } from 'react-waypoint';
 import { TagModel } from '../../models/tags';
-import { IEntryQueryOptions, UserLogsModel } from '../../models/userLogs';
+import { UserLogsModel } from '../../models/userLogs';
 import { Button, ButtonType } from '../Button';
 import { Checkbox } from '../Checkbox';
 import { NextArrowIcon } from '../icons/NextArrowIcon';
@@ -69,6 +70,10 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
         }, 400);
     }, [search]);
 
+    const loadMore = () => {
+        userLogsModel.getEntries();
+    }
+
     const onClearSearchClick = useCallback(() => {
         () => {
             userLogsModel.setCriteria({ created: selectedDate.format() });
@@ -117,11 +122,7 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
     }
  
     const renderEntries = () => {
-        if (userLogsModel.isBusy) {
-            return <LoadingSpinner className='loading-spinner' type={ SpinnerType.One } />
-        }
-
-        if (userLogsModel.entries.length === 0) {
+        if (userLogsModel.isLoaded && userLogsModel.entries.length === 0) {
             return (
                 <NoEntries>
                     No entries found
@@ -129,7 +130,17 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
             );
         }
 
-        return userLogsModel.entries.map(entry => <UserLogEntry key={ entry.id } entry={ entry } />);
+        const entries = userLogsModel.entries.map(entry => <UserLogEntry key={ entry.id } entry={ entry } />);
+
+        if (userLogsModel.isBusy) {
+            entries.push(<LoadingSpinner className='loading-spinner' key='loading-spinner' type={ SpinnerType.One } />)
+        }
+
+        if (!userLogsModel.allEntriesLoaded) {
+            return [...entries, <Waypoint key='waypoint' onEnter={ loadMore } topOffset={ 100 } />];
+        }
+
+        return entries;
     }
 
     return (
