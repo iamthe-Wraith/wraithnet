@@ -6,6 +6,7 @@ export const Container = styled.label`
     width: 100vw;
     padding: 10px;
     font-size: 14px;
+    overflow: auto;
 `;
 
 export const FeedItem = styled.div`

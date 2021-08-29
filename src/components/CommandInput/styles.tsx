@@ -4,6 +4,7 @@ export const Container = styled.div`
     align-items: center;
     display: flex;
     font-size: 14px;
+    padding-bottom: 20px;
 
     .input {
         border: none;
