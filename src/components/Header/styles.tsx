@@ -105,12 +105,18 @@ export const Side = styled.div`
             cursor: default;
 
             svg {
-                fill: ${({theme}: IThemeProps) => theme.light};
+                fill: ${({theme}: IThemeProps) => theme.primary};
+            }
+        }
+
+        &.selected {
+            svg {
+                fill: ${({theme}: IThemeProps) => theme.primary};
             }
         }
 
         svg {
-            fill: ${({theme}: IThemeProps) => theme.darkerGray};
+            fill: ${({theme}: IThemeProps) => theme.light};
             transition: .15s ease-in-out;
         }
     }

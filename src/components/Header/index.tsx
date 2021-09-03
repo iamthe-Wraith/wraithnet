@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react';
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { UserContext } from '../../contexts/User';
 import { LogIcon } from '../icons/LogIcon';
 import { Center, Container, Side, UserId, Username } from './styles';
@@ -11,6 +11,7 @@ interface IProps {
 
 export const HeaderBase: React.FC<IProps> = ({ className = '' }) => {
     const user = useContext(UserContext);
+    const location = useLocation();
 
     return (
         <Container className={ className }>
@@ -26,7 +27,7 @@ export const HeaderBase: React.FC<IProps> = ({ className = '' }) => {
             <Side className='right'>
                 <div />
                 <div>
-                    <Link to='/user-log' className='icon-link'>
+                    <Link to='/user-log' className={`icon-link ${location.pathname === '/user-log' ? 'selected' : ''}`}>
                         <LogIcon />
                     </Link>
                 </div>
