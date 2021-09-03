@@ -134,7 +134,7 @@ export class UserLogsModel extends BaseModel {
         return this._loaded;
     }
 
-    public setCriteria = async (opts: IEntryQueryOptions, forceCriteriaReset?: boolean) => {
+    public setCriteria =  async (opts: IEntryQueryOptions, forceCriteriaReset?: boolean) => {
         const origCriteria = { ...this._criteria };
         this._page = 0;
         this._entries = [];

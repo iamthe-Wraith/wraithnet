@@ -64,7 +64,7 @@ export class TagsModel extends BaseModel {
     private _page: number = 0;
     private _busy = false;
     private _loaded = false;
-    private _pageSize = 20;
+    private _pageSize = 50;
 
     constructor() {
         super();

@@ -4,24 +4,23 @@ import React, { ChangeEvent, FC, useCallback, useEffect, useRef, useState } from
 import { Link } from 'react-router-dom';
 import { Waypoint } from 'react-waypoint';
 import { withTheme } from 'styled-components';
+import { RangeModifier } from 'react-day-picker';
 import { TagModel } from '../../models/tags';
-import { UserLogsModel } from '../../models/userLogs';
+import { IEntryQueryOptions, UserLogsModel } from '../../models/userLogs';
 import { IThemeProps } from '../../styles/themes';
 import { Button, ButtonType } from '../Button';
 import { Checkbox } from '../Checkbox';
-import { NextArrowIcon } from '../icons/NextArrowIcon';
-import { PrevArrowIcon } from '../icons/PrevArrowIcon';
 import { XIcon } from '../icons/XIcon';
 import { LoadingSpinner, SpinnerSize, SpinnerType } from '../LoadingSpinner';
-import { Spinner } from '../LoadingSpinner/styles';
 import { Tag, TagType } from '../Tag';
 import { TagsList } from '../TagsList';
+import { DayPicker } from '../DayPicker';
 import { TextInput } from '../TextInput';
-import { Theme } from '../Theme';
 import { UserLogEntry } from '../UserLogEntry';
 
 import {
     DateContainer,
+    DayPickerContainer,
     LoadingSpinnerContainer,
     NoEntries,
     SearchContainer,
@@ -29,46 +28,62 @@ import {
     UserLogContainer,
     UserLogHeader,
     UserLogMain,
-    WaypointContainer,
 } from './styles';
 
 interface IProps extends IThemeProps {
     className?: string;
 }
 
-enum DateChangeDirection {
-    Next = 'next',
-    Prev = 'prev',
-}
-
 const UserLogBase: FC<IProps> = ({ className = '', theme }) => {
     const userLogsModel = useRef(new UserLogsModel()).current;
-    const [selectedDate, setSelectedDate] = useState(dayjs().local());
+    const [dateRange, setDateRange] = useState<RangeModifier>({ from: dayjs().local().toDate(), to: null });
     const [selectedTags, setSelectedTags] = useState<TagModel[]>([])
     const [withAnyTag, setWithAnyTag] = useState(false);
     const [withNoTag, setWithNoTag] = useState(false);
+    const [disableNextButton, setDisableNextButton] = useState(true);
     const [search, setSearch] = useState('');
     const timeout = useRef<number>(null);
+    const today = useRef(new Date()).current;
 
     const onUserLogUpdate = () => {
-        if (selectedDate.isSame(dayjs().local(), 'date')) {
-            userLogsModel.getEntries(true);
-        }
+        const now = dayjs().local();
+        const from = dayjs(dateRange.from);
+        const to = dayjs(dateRange.to);
+        
+        if (from.isSame(now, 'date') || to.isSame(now, 'date')) userLogsModel.getEntries(true);
     };
 
     useEffect(() => {
+        window.removeEventListener('userlog-update', onUserLogUpdate);
         window.addEventListener('userlog-update', onUserLogUpdate);
         return () => window.removeEventListener('userlog-update', onUserLogUpdate);
-    }, []);
+    }, [dateRange]);
 
     useEffect(() => {
-        userLogsModel.setCriteria({
+        let opts: IEntryQueryOptions = {
             anyTags: withAnyTag,
-            created: selectedDate.format(),
             noTags: withNoTag,
             tags: selectedTags
-        });
-    }, [selectedDate, selectedTags, withAnyTag, withNoTag]);
+        };
+
+        if (!!dateRange.from && !!dateRange.to) {
+            opts = {
+                ...opts,
+                created: null,
+                createdAfter: dayjs(dateRange.from).format(),
+                createdBefore: dayjs(dateRange.to).format(),
+            }
+        } else {
+            opts = {
+                ...opts,
+                created: dayjs(dateRange.from).format(),
+                createdAfter: null,
+                createdBefore: null,
+            }
+        }
+        
+        userLogsModel.setCriteria(opts);
+    }, [dateRange, selectedTags, withAnyTag, withNoTag]);
 
     useEffect(() => {
         clearTimeout(timeout.current);
@@ -77,20 +92,32 @@ const UserLogBase: FC<IProps> = ({ className = '', theme }) => {
         }, 400);
     }, [search]);
 
+    const getSelectedDatesAsString = () => {
+        const format = 'MMM DD, YYYY';
+        if (!!dateRange.from && !!dateRange.to) {
+            const from = dayjs(dateRange.from);
+            const to = dayjs(dateRange.to);
+            return from.isSame(to)
+                ? dayjs(dateRange.from).format(format)
+                : `${dayjs(dateRange.from).format(format)} - ${dayjs(dateRange.to).format(format)}`;
+        }
+
+        if (dateRange.from) return dayjs(dateRange.from).format(format);
+        if (dateRange.to) return dayjs(dateRange.to).format(format);
+
+        return '--';
+    }
+
     const loadMore = () => {
         userLogsModel.getEntries();
     }
 
     const onClearSearchClick = useCallback(() => {
         () => {
-            userLogsModel.setCriteria({ created: selectedDate.format() });
+            userLogsModel.setCriteria({ text: null });
             setSearch('');
         }
-    }, [userLogsModel.criteria, selectedDate]);
-
-    const onDateChangeClick = (direction: DateChangeDirection) => () => {
-        setSelectedDate(selectedDate[direction === DateChangeDirection.Next ? 'add' : 'subtract'](1, 'day'));
-    }
+    }, [userLogsModel.criteria]);
 
     const onFilterTagChange = (newTags: TagModel[]) => {
         // disable withAnyTag and withNoTag flags if a new tag has been added to list
@@ -117,6 +144,24 @@ const UserLogBase: FC<IProps> = ({ className = '', theme }) => {
         }
     }
 
+    const onWillChangeToNextMonth = (_: React.MouseEvent<HTMLElement>, nextMonth?: Date) => {
+        const now = dayjs();
+        const next = dayjs(nextMonth).set('date', 1).set('hour', 0).set('minute', 0).set('second', 0);
+
+        if (next.isAfter(now) || now.month() === next.month()) {
+            setDisableNextButton(true);
+        }
+    }
+
+    const onWillChangeToPreviousMonth = (_: React.MouseEvent<HTMLElement>, prevMonth?: Date) => {
+        const now = dayjs();
+        const prev = dayjs(prevMonth);
+
+        if (prev.isBefore(now, 'month')) {
+            setDisableNextButton(false);
+        }
+    }
+
     const onWithNoTagChange = () => {
         const isChecked = !withNoTag;
 
@@ -127,7 +172,7 @@ const UserLogBase: FC<IProps> = ({ className = '', theme }) => {
             if (selectedTags.length) setSelectedTags([]);
         }
     }
- 
+
     const renderEntries = () => {
         if (userLogsModel.isLoaded && userLogsModel.entries.length === 0) {
             return (
@@ -171,21 +216,7 @@ const UserLogBase: FC<IProps> = ({ className = '', theme }) => {
         <UserLogContainer className={ className }>
             <UserLogHeader>
                 <DateContainer>
-                    <Button
-                        className='date-arrow-button'
-                        onClick={ onDateChangeClick(DateChangeDirection.Prev) }
-                        type={ ButtonType.Blank }
-                    >
-                        <PrevArrowIcon />
-                    </Button>
-                    <span>{ selectedDate.format('MMM DD, YYYY') }</span>
-                    <Button
-                        className='date-arrow-button'
-                        onClick={ onDateChangeClick(DateChangeDirection.Next) }
-                        type={ ButtonType.Blank }
-                    >
-                        <NextArrowIcon />
-                    </Button>
+                    <span>{ getSelectedDatesAsString() }</span>
                 </DateContainer>
                 <span>entries: { userLogsModel.count }</span>
                 <Link to='/' className='close'>
@@ -221,6 +252,18 @@ const UserLogBase: FC<IProps> = ({ className = '', theme }) => {
                             )
                         }
                     </SearchContainer>
+                    <DayPickerContainer>
+                        <DayPicker
+                            defaultDateRange={ dateRange }
+                            disabledDays={ [{ after: today }] }
+                            disableNextButton={ disableNextButton }
+                            onDateRangeChange={ setDateRange }
+                            onWillChangeToNextMonth={ onWillChangeToNextMonth }
+                            onWillChangeToPreviousMonth={ onWillChangeToPreviousMonth }
+                            selectedDays={ [dateRange.from, { from: dateRange.from, to: dateRange.to }] }
+                            showReset={ true }
+                        />
+                    </DayPickerContainer>
                     <TagsContainer className='tags-container'>
                         <Checkbox
                             checked={ withAnyTag }

@@ -5,8 +5,8 @@ import { Btn } from './styles';
 interface IProps {
   className?: string;
   disabled?: boolean;
-  onClick:() => void;
-  onHover?:() => void;
+  onClick:(e: React.MouseEvent<HTMLElement>) => void;
+  onHover?:(e: React.MouseEvent<HTMLElement>) => void;
   type?: ButtonType;
 }
 
@@ -15,7 +15,9 @@ export enum ButtonType {
   PrimaryReverse = 'primary-reverse',
   Secondary = 'secondary',
   SecondaryReverse = 'secondary-reverse',
-  Blank = 'blank'
+  Blank = 'blank',
+  Link = 'link',
+  SecondaryLink = 'secondary-link',
 }
 
 export const Button: FC<IProps> = ({

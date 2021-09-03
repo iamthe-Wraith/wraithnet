@@ -50,6 +50,8 @@ class Auth extends Base {
             path: '/auth'
         }, true);
 
+        console.log(result);
+
         if (result.success) {
             this._onSuccess();
             setTimeout(() => {

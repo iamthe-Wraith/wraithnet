@@ -24,6 +24,8 @@ export const DateContainer = styled.div`
     }
 `;
 
+export const DayPickerContainer = styled.div``;
+
 export const LoadingSpinnerContainer = styled.div`
     min-height: 50px;
     margin: 10px 0;
@@ -60,13 +62,12 @@ export const SearchContainer = styled.div`
 `;
 
 export const TagsContainer = styled.div`
-    border-bottom: 1px solid ${({theme}: IThemeProps) => theme.gray};
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     overflow: hidden;
-    max-height: 50%;
-    padding: 20px 0 0 10px;
+    // max-height: 50%;
+    padding: 30px 0 0 10px;
 
     .with-any-or-no-tags {
         margin-bottom: 4px;

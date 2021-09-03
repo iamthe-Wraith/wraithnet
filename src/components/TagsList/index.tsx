@@ -23,9 +23,10 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
 
     useEffect(() => {
         tagsModel.getTags();
+        window.removeEventListener('userlog-update', onUserLogUpdate);
         window.addEventListener('userlog-update', onUserLogUpdate);
         return () => window.removeEventListener('userlog-update', onUserLogUpdate);
-    }, []);
+    }, [tagsModel]);
 
     useEffect(() => {
         if (forceClearSelectedList) {

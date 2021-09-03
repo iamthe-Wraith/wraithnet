@@ -28,6 +28,10 @@ export const TagsListContainer = styled.div`
     overflow: auto;
     position: relative;
 
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
     .loading-spinner {
         left: 60px;
     }

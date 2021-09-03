@@ -68,4 +68,20 @@ export const Btn = styled.button`
     &.blank {
         color: ${({theme}: { theme: ITheme }) => theme.light};
     }
+
+    &.link {
+        color: ${({theme}: { theme: ITheme }) => theme.primary};
+        
+        :hover {
+            color: ${({theme}: { theme: ITheme }) => theme.primaryDark};
+        }
+    }
+
+    &.secondary-link {
+        color: ${({theme}: { theme: ITheme }) => theme.highlight1};
+        
+        :hover {
+            color: ${({theme}: { theme: ITheme }) => theme.highlight2};
+        }
+    }
 `;
