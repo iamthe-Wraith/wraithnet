@@ -5,7 +5,7 @@ import { Footer } from '../Footer';
 import { Header } from '../Header';
 import { Main } from '../Main';
 import { UserLogsCount } from '../UserLogsCount';
-import { Container, LeftCol, MainCol, MainContainer } from './styles';
+import { Container, LeftCol, MainCol, MainContainer, RightCol } from './styles';
 
 export const DashboardBase: React.FC = () => {
     const history = useHistory();
@@ -35,6 +35,9 @@ export const DashboardBase: React.FC = () => {
                 <MainCol>
                     <Main />
                 </MainCol>
+                <RightCol>
+                    right
+                </RightCol>
             </MainContainer>
             <Footer />
         </Container>

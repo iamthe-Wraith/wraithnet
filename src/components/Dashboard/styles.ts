@@ -9,7 +9,7 @@ export const Container = styled.div`
     width: 100vw;
 `;
 
-export const LeftCol = styled.div`
+export const Col = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -19,10 +19,13 @@ export const LeftCol = styled.div`
     padding: 10px;
 `;
 
+export const LeftCol = styled(Col)``;
+
+export const RightCol = styled(Col)``;
+
 export const MainCol = styled.div`
     height: 100%;
-    max-width: calc(100% - 200px);
-    min-width: calc(100% - 200px);
+    flex-grow: 1;
 `;
 
 export const MainContainer = styled.div`

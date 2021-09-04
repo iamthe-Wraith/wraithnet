@@ -10,7 +10,7 @@ interface IProps {
     className?: string;
 }
 
-export const HeaderBase: React.FC<IProps> = ({ className = '' }) => {
+const HeaderBase: React.FC<IProps> = ({ className = '' }) => {
     const user = useContext(UserContext);
     const location = useLocation();
     const [currentDate, setCurrentDate] = useState(dayjs().local().format('MMM DD, YYYY'))
