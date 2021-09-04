@@ -91,7 +91,7 @@ ipcMain.on('logout', async () => {
         createLoginWindow(onAuthenticationSuccess, dev);
 
         Object.keys(windows).forEach(window => {
-        windows[window]?.close();
+            windows[window]?.close();
         });
     } catch (err) {
         console.log('an error occurred while loging out: ', err.message);

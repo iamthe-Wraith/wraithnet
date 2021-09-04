@@ -1,10 +1,11 @@
 import React, { FC, ChangeEvent, useState } from 'react';
 import { LoginIpcRenderer as IpcRenderer } from '../../models/ipcRenderers/login';
+import { IThemeProps } from '../../styles/themes';
 import { Button } from '../Button';
 import { TextInput } from '../TextInput';
 import { ButtonContainer, Container, InputWrapper } from './styles';
 
-export const Login: FC<any> = ({ theme }) => {
+export const Login: FC<IThemeProps> = ({ theme }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -14,7 +15,8 @@ export const Login: FC<any> = ({ theme }) => {
   const onLoginClick = () => {
     IpcRenderer.authenticate(username, password)
       .catch((err: Error) => {
-        console.log('inside <Login /> error: ', err);
+        console.log('inside <Login /> error');
+        console.log(err.message);
         setError(err.message);
       });
   }

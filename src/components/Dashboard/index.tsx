@@ -1,19 +1,42 @@
 import { observer } from 'mobx-react';
-import React, { useContext, useEffect } from 'react';
-import { UserContext } from '../../contexts/User';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { Footer } from '../Footer';
+import { Header } from '../Header';
+import { Main } from '../Main';
 import { UserLogsCount } from '../UserLogsCount';
+import { Container, LeftCol, MainCol, MainContainer } from './styles';
 
-import { Container } from './styles';
+export const DashboardBase: React.FC = () => {
+    const history = useHistory();
 
-interface IProps {}
+    const onOpen = (e: CustomEventInit<string>) => {
+        switch (e.detail) {
+            case 'userlog':
+                history.push('/user-log');
+                break;
+            default:
+                console.error(`invalid open command argument: ${e.detail}`);
+                break;
+        }
+    };
 
-export const DashboardBase: React.FC<IProps> = () => {
-    const user = useContext(UserContext);
+    useEffect(() => {
+        window.addEventListener('open-command', onOpen);
+    }, []);
 
     return (
         <Container>
-            Dashboard - { user?.username }
-            <UserLogsCount />
+            <Header />
+            <MainContainer>
+                <LeftCol>
+                    <UserLogsCount />
+                </LeftCol>
+                <MainCol>
+                    <Main />
+                </MainCol>
+            </MainContainer>
+            <Footer />
         </Container>
     )
 };

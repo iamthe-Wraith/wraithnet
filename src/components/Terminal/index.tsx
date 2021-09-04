@@ -8,8 +8,9 @@ import { CommandInput } from '../CommandInput';
 
 import { Container, FeedItem } from './styles';
 
-export const TerminalBase: React.FC<any> = ({ theme }) => {
+export const TerminalBase: React.FC = () => {
     const user = useContext(UserContext);
+    const inputRef = useRef<HTMLDivElement>(null);
     const terminalModel = useContext(TerminalContext);
     const [inputDisabled, setInputDisabled] = useState(false);
 
@@ -22,7 +23,14 @@ export const TerminalBase: React.FC<any> = ({ theme }) => {
     const onCommandSubmit = (command: string) => {
         setInputDisabled(true);
         terminalModel.exec(command)
-            .finally(() => setInputDisabled(false));
+            .finally(() => {
+                setInputDisabled(false);
+                inputRef.current.scrollIntoView();
+            });
+    }
+
+    const onInputRef = (r: HTMLDivElement) => {
+        inputRef.current = r;
     }
 
     const renderFeed = () => {
@@ -48,7 +56,14 @@ export const TerminalBase: React.FC<any> = ({ theme }) => {
     return (
         <Container htmlFor='command-input'>
             { renderFeed() }
-            { !inputDisabled && <CommandInput id='command-input' onSubmit={ onCommandSubmit } /> }
+            { !inputDisabled && (
+                    <CommandInput
+                        id='command-input'
+                        onSubmit={ onCommandSubmit }
+                        onCommandInputRef={ onInputRef }
+                    />
+                )
+            }
         </Container>
     )
 };

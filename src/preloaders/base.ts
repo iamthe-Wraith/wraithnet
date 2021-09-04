@@ -22,7 +22,7 @@ export const basePreloader = {
     init: async () => {
         // listen for any broadcasted events from other windows
         ipcRenderer.on('broadcast-event', (_, { event, data }) => {
-            window.dispatchEvent(new window.CustomEvent(event, data));
+            window.dispatchEvent(new window.CustomEvent(event, { detail: data }));
         });
     },
     setToken: (token: string) => ipcRendererAction('set-token', token),

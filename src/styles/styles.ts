@@ -114,6 +114,8 @@ export const AppContainer = styled.div`
     color: ${({ theme }) => theme.light};
     font-family: Rajdhani;
     letter-spacing: 1px;
+    margin: 0;
+    padding: 0;
   }
 
   h1,
@@ -129,11 +131,27 @@ export const AppContainer = styled.div`
   }
 `;
 
+export const PrimaryFont = styled.div`
+    font-family: "Orbitron";
+    letter-spacing: .05em;
+`;
+
 export const Error = styled.div`
   color: ${({ theme }) => theme.error };
   font-size: 14px;
   margin: 0;
   text-align: left;
+`;
+
+export const FlexCenter = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+`;
+
+export const FlexHorizontalCenter = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 /**

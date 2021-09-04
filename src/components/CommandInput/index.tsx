@@ -6,11 +6,12 @@ import { Container } from './styles';
 
 interface IProps {
     id: string;
+    onCommandInputRef: (e: HTMLDivElement) => void;
     onSubmit: (command: string) => void;
     username?: string;
 }
 
-export const CommandInputBase: React.FC<IProps> = ({ id, onSubmit, username = '' }) => {
+export const CommandInputBase: React.FC<IProps> = ({ onCommandInputRef, id, onSubmit }) => {
     const user = useContext(UserContext);
     const inputRef = useRef(null);
     const [command, setCommand] = useState<string>('');
@@ -20,6 +21,10 @@ export const CommandInputBase: React.FC<IProps> = ({ id, onSubmit, username = ''
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => setCommand(e.target.value);
 
+    const onContainerRef = (r: HTMLDivElement) => {
+        onCommandInputRef(r);
+    }
+
     const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             onSubmit(command);
@@ -28,7 +33,7 @@ export const CommandInputBase: React.FC<IProps> = ({ id, onSubmit, username = ''
     }
 
     return (
-        <Container>
+        <Container ref={ onContainerRef }>
             <div>{ `${user.username} $` }</div>
             <TextInput
                 className='input'

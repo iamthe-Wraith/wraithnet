@@ -9,6 +9,12 @@ interface IRequestConfig {
   path: string;
 }
 
+interface IResponse<T> {
+    success: boolean;
+    value?: T;
+    error?: string;
+}
+
 export class WraithnetApiWebServiceHelper {
   private _apiBaseUrl: string = null;
   private _authToken: string = '';
@@ -61,11 +67,11 @@ export class WraithnetApiWebServiceHelper {
     }, err => Promise.reject(err));
   }
 
-  sendRequest = async ({ data, method, path }: IRequestConfig, tokenOptional?: boolean) => {
+  sendRequest = async <T>({ data, method, path }: IRequestConfig, tokenOptional?: boolean): Promise<IResponse<T>> => {
     if (!this._client) {
       return {
         success: false,
-        value: 'web service client not found',
+        error: 'web service client not found',
       };
     }
 
@@ -76,7 +82,7 @@ export class WraithnetApiWebServiceHelper {
       } catch (err) {
         return {
           success: false,
-          value: 'no token found'
+          error: 'no token found'
         }
       }
     }
@@ -91,7 +97,7 @@ export class WraithnetApiWebServiceHelper {
     } catch (error) {
       return {
         success: false,
-        value: error.response?.data,
+        error: error.response?.data,
       };
     }
   }
