@@ -80,15 +80,15 @@ export const TagsContainer = styled.div`
 `;
 
 export const UserLogContainer = styled.div`
-    border: 1px solid ${({theme}: IThemeProps) => theme.darkGray};
+    border: 1px solid ${({theme}: IThemeProps) => theme.primaryDark};
     height: calc(100% - 10px);
     width: calc(100% - 10px);
 `;
 
 export const UserLogHeader = styled.div`
     align-items: center;
-    background: ${({theme}: IThemeProps) => theme.darkerGray};
-    border-bottom: 1px solid ${({theme}: IThemeProps) => theme.darkGray};
+    background: ${({theme}: IThemeProps) => theme.primaryDark}20;
+    border-bottom: 1px solid ${({theme}: IThemeProps) => theme.primaryDark};
     color: ${({theme}: IThemeProps) => theme.primary};
     display: flex;
     font-size: 14px;
