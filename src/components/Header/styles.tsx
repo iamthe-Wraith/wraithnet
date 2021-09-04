@@ -5,9 +5,9 @@ import { IThemeProps } from '../../styles/themes';
 export const headerHeight = 80;
 
 export const Center = styled.div`
-    background: ${({theme}: IThemeProps) => theme.darkerGray};
-    clip-path: polygon(0% 0%, 100% 0%, 100% ${headerHeight / 2}px, calc(100% - ${headerHeight / 2}px) 100%, ${headerHeight / 2}px 100%, 0% calc(100% - ${headerHeight / 2}px));
-    margin: 0 -1px 0 -1px;
+    background: ${({theme}: IThemeProps) => theme.primaryDark}50;
+    clip-path: polygon(calc(0% - 1px) 0%, calc(100% + 1px) 0%, calc(100% + 1px) ${headerHeight / 2}px, calc(100% - ${headerHeight / 2}px) 100%, ${headerHeight / 2}px 100%, calc(0% - 1px) calc(100% - ${headerHeight / 2}px));
+    margin: 0;
     padding: 20px 50px 0;
     position: relative;
 `;
@@ -16,6 +16,10 @@ export const Container = styled.div`
     display: flex;
     height: ${headerHeight}px;
     justify-content: center;
+`;
+
+export const DateContainer = styled(PrimaryFont)`
+    color: ${({theme}: IThemeProps) => theme.primaryDark};
 `;
 
 export const Side = styled.div`
@@ -30,10 +34,14 @@ export const Side = styled.div`
 
     &.left {
         & > :first-child {
-            background: ${({theme}: IThemeProps) => `linear-gradient(to right, transparent, ${ theme.darkerGray})`};
+            background: ${({theme}: IThemeProps) => `linear-gradient(to right, transparent, ${ theme.primaryDark}50)`};
         }
 
         & > :last-child {
+            display: flex;
+            justify-content: space-between;
+            padding-right: 20px;
+
             &:before {
                 background: ${({theme}: IThemeProps) => `linear-gradient(to right, transparent, ${theme.highlight1})`};
                 clip-path: polygon(0% 0%, 100% 0%, 100% 100%, calc(100% - 2px) 100%, calc(100% - 2px) 1px, 0% 1px);
@@ -51,7 +59,7 @@ export const Side = styled.div`
         align-items: flex-end;
 
         & > :first-child {
-            background: ${({theme}: IThemeProps) => `linear-gradient(to right, ${ theme.darkerGray}, transparent)`};
+            background: ${({theme}: IThemeProps) => `linear-gradient(to right, ${ theme.primaryDark}50, transparent)`};
         }
 
         & > :last-child {
@@ -123,7 +131,7 @@ export const Side = styled.div`
 `;
 
 export const UserId = styled.div`
-    color: ${({theme}: IThemeProps) => theme.primaryDark};
+    color: ${({theme}: IThemeProps) => theme.darkGray};
     font-size: 12px;
     padding-left: 20px;
 `;

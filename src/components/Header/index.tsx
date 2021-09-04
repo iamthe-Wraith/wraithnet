@@ -1,9 +1,10 @@
+import dayjs from 'dayjs';
 import { observer } from 'mobx-react';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { UserContext } from '../../contexts/User';
 import { LogIcon } from '../icons/LogIcon';
-import { Center, Container, Side, UserId, Username } from './styles';
+import { Center, Container, DateContainer, Side, UserId, Username } from './styles';
 
 interface IProps {
     className?: string;
@@ -12,6 +13,7 @@ interface IProps {
 export const HeaderBase: React.FC<IProps> = ({ className = '' }) => {
     const user = useContext(UserContext);
     const location = useLocation();
+    const [currentDate, setCurrentDate] = useState(dayjs().local().format('MMM DD, YYYY'))
 
     return (
         <Container className={ className }>
@@ -19,6 +21,7 @@ export const HeaderBase: React.FC<IProps> = ({ className = '' }) => {
                 <div />
                 <div>
                     <UserId>{ user?.id }</UserId>
+                    <DateContainer>{ currentDate }</DateContainer>
                 </div>
             </Side>
             <Center>
