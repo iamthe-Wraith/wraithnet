@@ -14,7 +14,7 @@ export const Label = styled.div`
 `;
 
 export const UserLogsCountContainer = styled.div`
-    border: 1px solid ${({theme}: IThemeProps) => theme.darkerGray};
+    border: 1px solid ${({theme}: IThemeProps) => theme.primaryDark};
     color: ${({theme}: { theme: ITheme }) => theme.darkGray};
     display: flex;
     flex-direction: column;
