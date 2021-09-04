@@ -7,4 +7,9 @@ export const MainEmptyContainer = styled.div`
     justify-content: center;
     padding: 20px;
     width: 100%;
+
+    &.dots {
+        flex-direction: column;
+        justify-content: flex-end;
+    }
 `;
