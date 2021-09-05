@@ -36,6 +36,11 @@ const HeaderBase: React.FC<IProps> = ({ className = '' }) => {
             <Side className='right'>
                 <div />
                 <div>
+                    <Link to='/' className={`icon-link ${location.pathname === '/' ? 'selected' : ''}`}>
+                        <Hex size={ HexSize.Tiny } color={ 'none' }>
+                            <span className='icon'>W</span>
+                        </Hex>
+                    </Link>
                     <Link to='/user-log' className={`icon-link ${location.pathname === '/user-log' ? 'selected' : ''}`}>
                         <Hex size={ HexSize.Tiny } color={ 'none' }>
                             <LogIcon className='icon' />
