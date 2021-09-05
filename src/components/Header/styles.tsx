@@ -18,7 +18,8 @@ export const Container = styled.div`
     justify-content: center;
 `;
 
-export const DateContainer = styled(PrimaryFont)`
+export const DateContainer = styled.div`
+    ${ PrimaryFont }
     color: ${({theme}: IThemeProps) => theme.primaryDark};
 `;
 
@@ -136,7 +137,8 @@ export const UserId = styled.div`
     padding-left: 20px;
 `;
 
-export const Username = styled(PrimaryFont)`
+export const Username = styled.div`
+    ${ PrimaryFont }
     color: ${({theme}: IThemeProps) => theme.primary};
     font-size: 30px;
     position: relative;

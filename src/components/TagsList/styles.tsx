@@ -8,12 +8,14 @@ export const LoadingSpinnerContainer = styled.div`
     position: relative;
 `;
 
-export const NoTagsContainer = styled(FlexCenter)`
+export const NoTagsContainer = styled.div`
+    ${ FlexCenter }
     color: ${({theme}: IThemeProps) => theme.gray};
     font-size: 12px;
 `;
 
-export const TagContainer = styled(FlexHorizontalCenter)`
+export const TagContainer = styled.div`
+    ${ FlexHorizontalCenter }
     :not(:last-child) {
         margin-bottom: 4px;
     }

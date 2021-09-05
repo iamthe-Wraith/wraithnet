@@ -21,7 +21,17 @@ export const Col = styled.div`
 
 export const LeftCol = styled(Col)``;
 
-export const RightCol = styled(Col)``;
+export const RightCol = styled(Col)`
+    justify-content: flex-start;
+
+    .time {
+        font-size: 21px;
+
+        span:not(.colon) {
+            min-width: 40px;
+        }
+    }
+`;
 
 export const MainCol = styled.div`
     height: 100%;

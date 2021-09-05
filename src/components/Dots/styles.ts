@@ -9,7 +9,8 @@ interface IProps extends IThemeProps {
     width?: string;
 }
 
-export const Dot = styled(FlexCenter)`
+export const Dot = styled.div`
+    ${ FlexCenter }
     height: ${ cellSize }px;
     width: ${ cellSize }px;
 

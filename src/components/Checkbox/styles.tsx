@@ -2,7 +2,8 @@ import styled from 'styled-components';
 import { FlexCenter } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 
-export const Box = styled(FlexCenter)`
+export const Box = styled.div`
+    ${ FlexCenter }
     height: 16px;
     margin-right: 10px;
     width: 16px;

@@ -1,4 +1,4 @@
-import styled, { createGlobalStyle, keyframes } from 'styled-components';
+import styled, { createGlobalStyle, css, keyframes } from 'styled-components';
 import './fonts/Orbitron/static/Orbitron-Regular.ttf';
 import './fonts/Orbitron/static/Orbitron-Medium.ttf';
 import './fonts/Orbitron/static/Orbitron-SemiBold.ttf';
@@ -131,25 +131,25 @@ export const AppContainer = styled.div`
   }
 `;
 
-export const PrimaryFont = styled.div`
+export const PrimaryFont = css`
     font-family: "Orbitron";
     letter-spacing: .05em;
 `;
 
-export const Error = styled.div`
+export const Error = css`
   color: ${({ theme }) => theme.error };
   font-size: 14px;
   margin: 0;
   text-align: left;
 `;
 
-export const FlexCenter = styled.div`
+export const FlexCenter = css`
   align-items: center;
   display: flex;
   justify-content: center;
 `;
 
-export const FlexHorizontalCenter = styled.div`
+export const FlexHorizontalCenter = css`
   display: flex;
   align-items: center;
 `;

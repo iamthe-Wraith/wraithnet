@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { Footer } from '../Footer';
 import { Header } from '../Header';
 import { Main } from '../Main';
+import { Time } from '../Time';
 import { UserLogsCount } from '../UserLogsCount';
 import { Container, LeftCol, MainCol, MainContainer, RightCol } from './styles';
 
@@ -36,7 +37,7 @@ export const DashboardBase: React.FC = () => {
                     <Main />
                 </MainCol>
                 <RightCol>
-                    right
+                    <Time className='time' />
                 </RightCol>
             </MainContainer>
             <Footer />
