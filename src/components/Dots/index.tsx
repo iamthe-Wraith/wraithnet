@@ -7,15 +7,21 @@ interface IProps {
     width?: string;
 }
 
-export const Dots: FC<IProps> = ({ className = '', height, width }) => {
+export const Dots: FC<IProps> = ({ className = '', height = '100%', width = '100%' }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [rows, setRows] = useState(0);
     const [cols, setCols] = useState(0);
 
-    useEffect(() => {
+    const calcDots = () => {
         const { clientHeight, clientWidth } = containerRef.current;
         setRows(Math.floor(clientHeight / cellSize));
         setCols(Math.floor(clientWidth / cellSize));
+    };
+
+    useEffect(() => {
+        window.addEventListener('resize', calcDots);
+        calcDots();
+        return () => window.removeEventListener('resize', calcDots);
     }, [containerRef.current]);
 
     const renderDots = () => {

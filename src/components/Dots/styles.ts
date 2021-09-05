@@ -27,6 +27,7 @@ export const Dot = styled.div`
 export const DotsContainer = styled.div<IProps>`
     display: flex;
     flex-wrap: wrap;
-    min-width: ${({width}) => width || '100%'};
-    min-height: ${({height}) => height || '100%'};
+    width: ${({width}) => width };
+    height: ${({height}) => height };
+    overflow: hidden;
 `;
