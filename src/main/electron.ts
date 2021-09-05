@@ -3,7 +3,6 @@ import "core-js/stable";
 import "regenerator-runtime/runtime";
 import keytar from 'keytar';
 import { app, globalShortcut, ipcMain } from 'electron';
-import electronReload from 'electron-reload';
 
 import { IWindow } from '../types';
 import { IpcMainEvent } from 'electron/main';
@@ -13,6 +12,7 @@ import { createLoginWindow } from './login';
 import { getKeyTarService } from '../lib/utils';
 
 if (process.env.NODE_ENV === 'development') {
+    const electronReload = require('electron-reload');
     electronReload(path.join(__dirname, '..'), {
         electron: path.join(__dirname, '..', 'node_modules', '.bin', 'electron')
     });   
@@ -93,7 +93,7 @@ ipcMain.on('logout', async () => {
         Object.keys(windows).forEach(window => {
             windows[window]?.close();
         });
-    } catch (err) {
+    } catch (err: any) {
         console.log('an error occurred while loging out: ', err.message);
     }
 });

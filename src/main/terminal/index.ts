@@ -35,13 +35,14 @@ export const createTerminalWindow = (onClose: () => void, isDev: boolean, broadc
     window = new Window({
         backgroundColor: bgColor,
         display: 'cursor',
-        filename: path.resolve('.', 'dist', 'terminal.html'),
+        filename: path.resolve(__dirname, 'terminal.html'),
         height: 400,
         width: 800,
         x: 'center',
         y: 'bottom',
         resizable: isDev,
         webPreferences: {
+            devTools: process.env.NODE_ENV === 'development',
             preload: path.resolve(__dirname, 'terminalPreloader.js'),
         },
         onClosed: () => {
