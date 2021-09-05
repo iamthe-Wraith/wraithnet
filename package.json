@@ -71,6 +71,7 @@
     "react-spring": "^9.2.3",
     "react-waypoint": "^10.1.0",
     "regenerator-runtime": "^0.13.7",
-    "styled-components": "5.3.0"
+    "styled-components": "5.3.0",
+    "uuid": "^8.3.2"
   }
 }

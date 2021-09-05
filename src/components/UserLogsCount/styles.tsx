@@ -2,7 +2,8 @@ import styled from 'styled-components';
 import { PrimaryFont } from '../../styles/styles';
 import { ITheme, IThemeProps } from '../../styles/themes';
 
-export const Count = styled(PrimaryFont)`
+export const Count = styled.div`
+    ${ PrimaryFont }
     color: ${({theme}: { theme: ITheme }) => theme.primary};
     font-size: 18px;
     padding-left: 20px;
@@ -14,7 +15,7 @@ export const Label = styled.div`
 `;
 
 export const UserLogsCountContainer = styled.div`
-    border: 1px solid ${({theme}: IThemeProps) => theme.darkerGray};
+    border: 1px solid ${({theme}: IThemeProps) => theme.primaryDark};
     color: ${({theme}: { theme: ITheme }) => theme.darkGray};
     display: flex;
     flex-direction: column;
