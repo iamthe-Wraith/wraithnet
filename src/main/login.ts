@@ -71,6 +71,7 @@ class Auth extends Base {
             width: 370,
             resizable: this._isDev,
             webPreferences: {
+                devTools: process.env.NODE_ENV === 'development',
                 preload: path.resolve(__dirname, 'loginPreloader.js'),
             },
             onClosed: () => {

@@ -26,6 +26,7 @@ export const createDashboardWindow = (onClose: () => void, isDev: boolean) => {
         width: 'full',
         resizable: isDev,
         webPreferences: {
+            devTools: process.env.NODE_ENV === 'development',
             preload: path.resolve(__dirname, 'dashboardPreloader.js'),
         },
         onClosed: () => {

@@ -42,6 +42,7 @@ export const createTerminalWindow = (onClose: () => void, isDev: boolean, broadc
         y: 'bottom',
         resizable: isDev,
         webPreferences: {
+            devTools: process.env.NODE_ENV === 'development',
             preload: path.resolve(__dirname, 'terminalPreloader.js'),
         },
         onClosed: () => {
