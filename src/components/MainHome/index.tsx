@@ -1,10 +1,13 @@
 import React from 'react';
+import { Hex } from '../containers/Hex';
 import { Dots } from '../Dots';
+import { LogIcon } from '../icons/LogIcon';
 import { MainEmptyContainer } from './styles';
 
-export const MainEmpty: React.FC = () => {
+export const MainHome: React.FC = () => {
     return (
-        <MainEmptyContainer className='dots'>
+        <MainEmptyContainer>
+            <div />
             <Dots height='150px' />
         </MainEmptyContainer>
     );

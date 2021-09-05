@@ -18,6 +18,9 @@ export const Theme: FC<IProps> = ({ children }) => {
         }
     }
 
+    console.log('Theme loading...');
+    
+
     return (
         <ThemeProvider theme={getTheme()}>
             <GlobalStyles theme={ getTheme() } />

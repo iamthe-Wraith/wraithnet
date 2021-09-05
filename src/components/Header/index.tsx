@@ -2,11 +2,15 @@ import dayjs from 'dayjs';
 import { observer } from 'mobx-react';
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { withTheme } from 'styled-components';
 import { UserContext } from '../../contexts/User';
+import { IThemeProps } from '../../styles/themes';
+import { Hex } from '../containers/Hex';
+import { HexSize } from '../containers/Hex/styles';
 import { LogIcon } from '../icons/LogIcon';
 import { Center, Container, DateContainer, Side, UserId, Username } from './styles';
 
-interface IProps {
+interface IProps extends IThemeProps {
     className?: string;
 }
 
@@ -14,6 +18,8 @@ const HeaderBase: React.FC<IProps> = ({ className = '' }) => {
     const user = useContext(UserContext);
     const location = useLocation();
     const [currentDate, setCurrentDate] = useState(dayjs().local().format('MMM DD, YYYY'))
+
+    // TODO - setTimeout to change date
 
     return (
         <Container className={ className }>
@@ -31,7 +37,9 @@ const HeaderBase: React.FC<IProps> = ({ className = '' }) => {
                 <div />
                 <div>
                     <Link to='/user-log' className={`icon-link ${location.pathname === '/user-log' ? 'selected' : ''}`}>
-                        <LogIcon />
+                        <Hex size={ HexSize.Tiny } color={ 'none' }>
+                            <LogIcon className='icon' />
+                        </Hex>
                     </Link>
                 </div>
             </Side>

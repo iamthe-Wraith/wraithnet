@@ -98,7 +98,7 @@ export const GlobalStyles = createGlobalStyle`
 /**
  * STYLED COMPONENTS
  */
-export const AbsoluteCenter = styled.div`
+export const AbsoluteCenter = css`
   position: absolute;
   top: 50%;
   left: 50%;

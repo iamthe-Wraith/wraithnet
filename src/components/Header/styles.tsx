@@ -113,20 +113,30 @@ export const Side = styled.div`
         &:hover {
             cursor: default;
 
-            svg {
-                fill: ${({theme}: IThemeProps) => theme.primary};
+            svg.icon {
+                fill: ${({theme}: IThemeProps) => theme.highlight1};
             }
         }
 
         &.selected {
             svg {
-                fill: ${({theme}: IThemeProps) => theme.primary};
+                fill: ${({theme}: IThemeProps) => theme.light};
+
+                &.icon {
+                    fill: ${({theme}: IThemeProps) => theme.primary};
+                }
             }
         }
 
         svg {
-            fill: ${({theme}: IThemeProps) => theme.light};
+            fill: ${({theme}: IThemeProps) => theme.darkGray};
+            
             transition: .15s ease-in-out;
+            
+            &.icon {
+                height: 15px;
+                width: 15px;
+            }
         }
     }
 `;

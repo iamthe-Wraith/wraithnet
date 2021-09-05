@@ -34,7 +34,7 @@ interface IProps extends IThemeProps {
     className?: string;
 }
 
-const UserLogBase: FC<IProps> = ({ className = '', theme }) => {
+const UserLogBase: FC<IProps> = ({ className = '' }) => {
     const userLogsModel = useRef(new UserLogsModel()).current;
     const [dateRange, setDateRange] = useState<RangeModifier>({ from: dayjs().local().toDate(), to: null });
     const [selectedTags, setSelectedTags] = useState<TagModel[]>([])
@@ -45,13 +45,13 @@ const UserLogBase: FC<IProps> = ({ className = '', theme }) => {
     const timeout = useRef<number>(null);
     const today = useRef(new Date()).current;
 
-    const onUserLogUpdate = () => {
+    const onUserLogUpdate = useCallback(() => {
         const now = dayjs().local();
         const from = dayjs(dateRange.from);
         const to = dayjs(dateRange.to);
         
         if (from.isSame(now, 'date') || to.isSame(now, 'date')) userLogsModel.getEntries(true);
-    };
+    }, [dateRange, userLogsModel]);
 
     useEffect(() => {
         window.removeEventListener('userlog-update', onUserLogUpdate);
@@ -108,9 +108,9 @@ const UserLogBase: FC<IProps> = ({ className = '', theme }) => {
         return '--';
     }
 
-    const loadMore = () => {
+    const loadMore = useCallback(() => {
         userLogsModel.getEntries();
-    }
+    }, [userLogsModel]);
 
     const onClearSearchClick = useCallback(() => {
         () => {
@@ -119,7 +119,7 @@ const UserLogBase: FC<IProps> = ({ className = '', theme }) => {
         }
     }, [userLogsModel.criteria]);
 
-    const onFilterTagChange = (newTags: TagModel[]) => {
+    const onFilterTagChange = useCallback((newTags: TagModel[]) => {
         // disable withAnyTag and withNoTag flags if a new tag has been added to list
         if (newTags.length > selectedTags.length) {
             if (withAnyTag) setWithAnyTag(false);
@@ -127,13 +127,13 @@ const UserLogBase: FC<IProps> = ({ className = '', theme }) => {
         }
 
         setSelectedTags(newTags);
-    }
+    }, [selectedTags, withAnyTag, withNoTag]);
 
-    const onSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const onSearchChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value);
-    }
+    }, []);
 
-    const onWithAnyTagChange = () => {
+    const onWithAnyTagChange = useCallback(() => {
         const isChecked = !withAnyTag;
 
         setWithAnyTag(isChecked);
@@ -142,27 +142,27 @@ const UserLogBase: FC<IProps> = ({ className = '', theme }) => {
             if (withNoTag) setWithNoTag(false);
             if (selectedTags.length) setSelectedTags([]);
         }
-    }
+    }, [withAnyTag, withNoTag, selectedTags]);
 
-    const onWillChangeToNextMonth = (_: React.MouseEvent<HTMLElement>, nextMonth?: Date) => {
+    const onWillChangeToNextMonth = useCallback((_: React.MouseEvent<HTMLElement>, nextMonth?: Date) => {
         const now = dayjs();
         const next = dayjs(nextMonth).set('date', 1).set('hour', 0).set('minute', 0).set('second', 0);
 
         if (next.isAfter(now) || now.month() === next.month()) {
             setDisableNextButton(true);
         }
-    }
+    }, []);
 
-    const onWillChangeToPreviousMonth = (_: React.MouseEvent<HTMLElement>, prevMonth?: Date) => {
+    const onWillChangeToPreviousMonth = useCallback((_: React.MouseEvent<HTMLElement>, prevMonth?: Date) => {
         const now = dayjs();
         const prev = dayjs(prevMonth);
 
         if (prev.isBefore(now, 'month')) {
             setDisableNextButton(false);
         }
-    }
+    }, []);
 
-    const onWithNoTagChange = () => {
+    const onWithNoTagChange = useCallback(() => {
         const isChecked = !withNoTag;
 
         setWithNoTag(isChecked);
@@ -171,7 +171,7 @@ const UserLogBase: FC<IProps> = ({ className = '', theme }) => {
             if (withAnyTag) setWithAnyTag(false);
             if (selectedTags.length) setSelectedTags([]);
         }
-    }
+    }, [withNoTag, withAnyTag, selectedTags]);
 
     const renderEntries = () => {
         if (userLogsModel.isLoaded && userLogsModel.entries.length === 0) {
@@ -305,5 +305,4 @@ const UserLogBase: FC<IProps> = ({ className = '', theme }) => {
     )
 };
 
-const UserLogAsObserver = observer(UserLogBase);
-export const UserLog = withTheme(UserLogAsObserver);
+export const UserLog = observer(UserLogBase);
