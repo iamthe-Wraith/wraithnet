@@ -66,7 +66,7 @@ class Auth extends Base {
         this._window = new Window({
             backgroundColor: bgColor,
             display: 'cursor',
-            filename: path.resolve('.', 'dist', 'login.html'),
+            filename: path.resolve(__dirname, 'login.html'),
             height: 250,
             width: 370,
             resizable: this._isDev,
@@ -92,7 +92,7 @@ class Auth extends Base {
             } else {
                 try {
                     await this.authenticate(username, password);
-                } catch (err) {
+                } catch (err: any) {
                     e.sender.send('authentication-error', err.message);
                 }
             }

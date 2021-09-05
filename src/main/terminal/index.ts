@@ -35,7 +35,7 @@ export const createTerminalWindow = (onClose: () => void, isDev: boolean, broadc
     window = new Window({
         backgroundColor: bgColor,
         display: 'cursor',
-        filename: path.resolve('.', 'dist', 'terminal.html'),
+        filename: path.resolve(__dirname, 'terminal.html'),
         height: 400,
         width: 800,
         x: 'center',
