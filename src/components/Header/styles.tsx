@@ -109,9 +109,14 @@ export const Side = styled.div`
 
     .icon-link {
         line-height: 0;
+        margin-right: 10px;
 
-        &:hover {
+        &:hover:not(.selected) {
             cursor: default;
+
+            span.icon {
+                color: ${({theme}: IThemeProps) => theme.highlight1};
+            }
 
             svg.icon {
                 fill: ${({theme}: IThemeProps) => theme.highlight1};
@@ -119,6 +124,10 @@ export const Side = styled.div`
         }
 
         &.selected {
+            span {
+                color: ${({theme}: IThemeProps) => theme.primary};
+            }
+
             svg {
                 fill: ${({theme}: IThemeProps) => theme.light};
 
@@ -126,6 +135,12 @@ export const Side = styled.div`
                     fill: ${({theme}: IThemeProps) => theme.primary};
                 }
             }
+        }
+
+        span {
+            color: ${({theme}: IThemeProps) => theme.darkGray};
+            display: block;
+            padding: 3px 0 0 2px;
         }
 
         svg {
