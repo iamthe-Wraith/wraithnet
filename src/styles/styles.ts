@@ -149,6 +149,11 @@ export const FlexCenter = css`
   justify-content: center;
 `;
 
+export const FlexCol = css`
+  display: flex;
+  flex-direction: column;
+`;
+
 export const FlexHorizontalCenter = css`
   display: flex;
   align-items: center;

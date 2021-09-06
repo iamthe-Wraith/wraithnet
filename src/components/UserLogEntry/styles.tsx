@@ -2,13 +2,15 @@ import styled from 'styled-components';
 import { ITheme, IThemeProps } from '../../styles/themes';
 
 export const EntryContainer = styled.div`
-    background: ${({theme}: IThemeProps) => theme.darkestGray};
     border-left: 4px solid ${({theme}: { theme: ITheme }) => theme.primary};
     margin: 8px 0;
-    padding: 4px 10px;
 
     &:first-child {
         margin-top: 10px;
+    }
+
+    .angle-corner {
+        padding: 4px 10px;
     }
 `;
 
