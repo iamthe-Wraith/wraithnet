@@ -10,6 +10,7 @@ import './fonts/Rajdhani/Rajdhani-Regular.ttf';
 import './fonts/Rajdhani/Rajdhani-Medium.ttf';
 import './fonts/Rajdhani/Rajdhani-SemiBold.ttf';
 import './fonts/Rajdhani/Rajdhani-Bold.ttf';
+import { IThemeProps } from './themes';
 
 export const GlobalStyles = createGlobalStyle`
   @font-face {
@@ -105,8 +106,8 @@ export const AbsoluteCenter = css`
   transform: translate(-50%, -50%);
 `;
 
-export const AppContainer = styled.div`
-  background: radial-gradient(ellipse at top left, ${({ theme }) => theme.darkestGray}, ${({ theme }) => theme.dark});
+export const AppContainer = styled.div<IThemeProps>`
+  background: radial-gradient(ellipse at top left, ${({theme}) => `${theme.dark}, ${theme.dark}, ${theme.primaryDark}35`});
   overflow: hidden;
   
   * {
