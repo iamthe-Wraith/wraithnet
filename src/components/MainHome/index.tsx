@@ -1,7 +1,7 @@
 import React from 'react';
-import { Hex } from '../containers/Hex';
+import { AngleCorner } from '../containers/AngleCorner';
+import { AnglePos, AngleSize } from '../containers/AngleCorner/styles';
 import { Dots } from '../Dots';
-import { LogIcon } from '../icons/LogIcon';
 import { MainEmptyContainer } from './styles';
 
 export const MainHome: React.FC = () => {
