@@ -40,7 +40,7 @@ const broadcast = (channel: string, msg?: string) => {
 const setGlobalShortcuts = () => {
     globalShortcut.register('ctrl+/', () => {
         if (!windows.terminal) {
-            windows.terminal = createTerminalWindow(() => { windows.terminal = null; }, dev, broadcast);
+            windows.terminal = createTerminalWindow(() => { windows.terminal = null; }, dev, broadcast, app.quit);
         } else {
             windows.terminal.close();
         }

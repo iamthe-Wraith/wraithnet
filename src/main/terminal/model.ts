@@ -43,10 +43,12 @@ interface ICommandValues<TArguments, TFlags, TParameters> {
 export class TerminalModel extends Base {
     private _command: IParsedCommand = null;
     private _broadcast: (channel: string, msg?: string) => void;
+    private _quitApp: () => void;
 
-    constructor (broadcast: (channel: string, msg?: string) => void) {
+    constructor (broadcast: (channel: string, msg?: string) => void, quitApp: () => void) {
         super();
         this._broadcast = broadcast;
+        this._quitApp = quitApp;
     }
 
     private initParseCommand = (command: string) => {
@@ -158,6 +160,9 @@ export class TerminalModel extends Base {
         }
 
         switch (this._command.pieces[0]) {
+            case 'exit':
+                this._quitApp();
+                return;
             case 'log':
                 return this.submitUserLogEntry();
             case 'open':
@@ -217,7 +222,7 @@ export class TerminalModel extends Base {
             } else {
                 return { error: result.value as string };
             }
-        } catch (err) {
+        } catch (err: any) {
             return { error: err.message };
         }
     }
