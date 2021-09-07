@@ -5,6 +5,7 @@ import equals from 'fast-deep-equal';
 import timezone from 'dayjs/plugin/timezone';
 import { BaseModel } from "./base";
 import { ITag, TagModel } from "./tags";
+import { UserLogEntry } from "../components/UserLogEntry";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -83,6 +84,7 @@ export class UserLogEntryModel {
 
 export class UserLogsModel extends BaseModel {
     private _entries: UserLogEntryModel[] = [];
+    private _entriesSet = new Set();
     private _count = 0;
     private _criteria: IEntryQueryOptions = {};
     private _page = 0;
@@ -138,46 +140,66 @@ export class UserLogsModel extends BaseModel {
         const origCriteria = { ...this._criteria };
         this._page = 0;
         this._entries = [];
+        this._entriesSet = new Set();
         this._count = 0;
         this._criteria = forceCriteriaReset ? { ...opts } : { ...this._criteria, ...opts };
         this._loaded = false;
 
         // only call getEntries if criteria has changed
-        if (!equals(origCriteria, this._criteria)) return this.getEntries(true);
+        if (!equals(origCriteria, this._criteria)) {
+
+            return this.getEntries(true);
+        }
     }
 
     public getEntries = async (forcePaginationReset?: boolean) => {
-        this._busy = true;
+        if (!this._busy) {
+            this._busy = true;
 
-        if (forcePaginationReset) {
-            this._page = 0;
-            this._entries = [];
-            this._count = 0;
-            this._loaded = false;
+            if (forcePaginationReset) {
+                this._page = 0;
+                this._entries = [];
+                this._count = 0;
+                this._loaded = false;
+            }
+    
+            const result = await this.webServiceHelper.sendRequest<IUserLogResponse>({
+                path: `${this.composeUrl('/user-log')}${this.constructQuery()}`,
+                method: 'GET',
+            });
+    
+            if (result.success) {
+                runInAction(() => {
+                    this._busy = false;
+                    this._loaded = true;
+                    const newEntries = this.setEntriesToAdd(result.value.entries);
+                    this._entries = [...this._entries, ...newEntries];
+                    this._count = result.value.count;
+                    if (!this.allEntriesLoaded) {
+                        this._page += 1;
+                    }
+                }); 
+            } else {
+                runInAction(() => {
+                    this._busy = false;
+                });
+                
+                throw new Error(result.error);
+            }
         }
+    }
 
-        const result = await this.webServiceHelper.sendRequest<IUserLogResponse>({
-            path: `${this.composeUrl('/user-log')}${this.constructQuery()}`,
-            method: 'GET',
+    private setEntriesToAdd = (newEntries: IUserLogEntry[]) => {
+        const entriesToAdd: UserLogEntryModel[] = [];
+
+        newEntries.forEach(e => {
+            if (!this._entriesSet.has(e.id)) {
+                this._entriesSet.add(e.id);
+                entriesToAdd.push(new UserLogEntryModel(e));
+            }
         });
 
-        if (result.success) {
-            runInAction(() => {
-                this._busy = false;
-                this._loaded = true;
-                this._entries = [...this._entries, ...result.value.entries.map(e => new UserLogEntryModel(e))];
-                this._count = result.value.count;
-                if (!this.allEntriesLoaded) {
-                    this._page += 1;
-                }
-            }); 
-        } else {
-            runInAction(() => {
-                this._busy = false;
-            });
-            
-            throw new Error(result.error);
-        }
+        return entriesToAdd;
     }
 
     private constructQuery = () => {
