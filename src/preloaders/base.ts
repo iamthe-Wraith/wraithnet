@@ -15,7 +15,7 @@ export const ipcRendererAction = <T>(channel: string, data?: any, timeout = 5000
 
 export const basePreloader = {
     close: () => {
-        ipcRenderer.send('close-login-window');
+        ipcRenderer.send('close-app');
     },
     deleteToken: () => ipcRendererAction('delete-token'),
     getToken: () => ipcRendererAction<string>('get-token'),

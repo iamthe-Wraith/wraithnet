@@ -244,7 +244,7 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
                                     <Button
                                         className='clear-search-button'
                                         onClick={ onClearSearchClick }
-                                        type={ ButtonType.Blank }
+                                        buttonType={ ButtonType.Blank }
                                     >
                                         Clear search
                                     </Button>

@@ -12,15 +12,32 @@ export const Center = styled.div`
     position: relative;
 `;
 
-export const Container = styled.div`
-    display: flex;
-    height: ${headerHeight}px;
-    justify-content: center;
-`;
-
 export const DateContainer = styled.div`
     ${ PrimaryFont }
     color: ${({theme}: IThemeProps) => theme.primaryDark};
+`;
+
+export const HeaderContainer = styled.div<IThemeProps>`
+    display: flex;
+    height: ${headerHeight}px;
+    justify-content: center;
+    position: relative;
+
+    .close {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+
+        :hover {
+            svg {
+                fill: ${({theme}) => theme.error};
+            }
+        }
+
+        svg {
+            fill: ${({theme}) => theme.darkGray};
+        }
+    }
 `;
 
 export const Side = styled.div`
