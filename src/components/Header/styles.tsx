@@ -127,6 +127,7 @@ export const Side = styled.div`
     .icon-link {
         line-height: 0;
         margin-right: 10px;
+        padding: 0; 
 
         &:hover:not(.selected) {
             cursor: default;

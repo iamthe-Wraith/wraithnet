@@ -10,6 +10,7 @@ import { Hex } from '../containers/Hex';
 import { HexSize } from '../containers/Hex/styles';
 import { LogIcon } from '../icons/LogIcon';
 import { XIcon } from '../icons/XIcon';
+import { LogoutIcon } from '../svgs/LogoutIcon';
 import { Center, DateContainer, HeaderContainer, Side, UserId, Username } from './styles';
 
 interface IProps extends IThemeProps {
@@ -55,6 +56,15 @@ const HeaderBase: React.FC<IProps> = ({ className = '' }) => {
                             <LogIcon className='icon' />
                         </Hex>
                     </Link>
+                    <Button
+                        buttonType={ ButtonType.Blank }
+                        className='icon-link'
+                        onClick={ DashboardIpcRenderer.logout }
+                    >
+                        <Hex size={ HexSize.Tiny } color={ 'none' }>
+                            <LogoutIcon className='icon' />
+                        </Hex>
+                    </Button>
                 </div>
             </Side>
         </HeaderContainer>
