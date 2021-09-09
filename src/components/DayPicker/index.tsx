@@ -72,7 +72,7 @@ const NavBar: React.FC<IProps & NavbarElementProps & Partial<INavBarNavigationHo
                 disabled={ disablePrevButton }
                 onClick={ onPrevMonthClicked }
                 className='daypicker-button daypicker-prev-button'
-                type={ ButtonType.Blank }
+                buttonType={ ButtonType.Blank }
             >
 				<PrevArrowIcon className='daypicker-button-icon' />
 			</Button>
@@ -83,7 +83,7 @@ const NavBar: React.FC<IProps & NavbarElementProps & Partial<INavBarNavigationHo
                 disabled={ disableNextButton }
                 onClick={ onNextMonthClicked }
                 className='daypicker-button daypicker-next-button'
-                type={ ButtonType.Blank }
+                buttonType={ ButtonType.Blank }
             >
 				<NextArrowIcon className='daypicker-button-icon' />
 			</Button>
@@ -233,7 +233,7 @@ export const DayPicker: FC<IProps> = ({
                 {
                     showReset && (
                         <Button
-                            type={ ButtonType.Link }
+                            buttonType={ ButtonType.Link }
                             onClick={ onResetDatesClick }
                         >
                             { `Reset date${ onDateRangeChange ? 's' : '' }` }

@@ -9,4 +9,5 @@ contextBridge.exposeInMainWorld('App', {
             reject(new Error(msg));
         });
     }),
+    loaded: () => ipcRenderer.send('login-loaded'),
 });

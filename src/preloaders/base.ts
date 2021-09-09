@@ -14,8 +14,8 @@ export const ipcRendererAction = <T>(channel: string, data?: any, timeout = 5000
 });
 
 export const basePreloader = {
-    close: () => {
-        ipcRenderer.send('close-login-window');
+    closeApp: () => {
+        ipcRenderer.send('close-app');
     },
     deleteToken: () => ipcRendererAction('delete-token'),
     getToken: () => ipcRendererAction<string>('get-token'),
@@ -25,6 +25,7 @@ export const basePreloader = {
             window.dispatchEvent(new window.CustomEvent(event, { detail: data }));
         });
     },
+    logout: () => ipcRenderer.send('logout'),
     setToken: (token: string) => ipcRendererAction('set-token', token),
     test: (data: string) => {
         ipcRenderer.send('test', data);

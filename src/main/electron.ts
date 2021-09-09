@@ -6,10 +6,11 @@ import { app, globalShortcut, ipcMain } from 'electron';
 
 import { IWindow } from '../types';
 import { IpcMainEvent } from 'electron/main';
-import { createTerminalWindow } from './terminal';
-import { createDashboardWindow } from './dashboard';
-import { createLoginWindow } from './login';
-import { getKeyTarService } from '../lib/utils';
+import { Terminal } from './terminal';
+import { Dashboard } from './dashboard';
+import { Login } from './login';
+import { getKeyTarService, noop } from '../lib/utils';
+import { Base } from './base';
 
 if (process.env.NODE_ENV === 'development') {
     const electronReload = require('electron-reload');
@@ -20,36 +21,38 @@ if (process.env.NODE_ENV === 'development') {
 
 const dev = process.env.NODE_ENV === 'development';
 
-const windows: {[key: string]: IWindow | null} = {
+interface IWindows {
+    dashboard: Base;
+    login: Base;
+    terminal: Base;
+}
+
+let windows: IWindows = {
     dashboard: null,
-    terminal: null,
+    login: null,
+    terminal: null
 };
 
-const closeApp = () => {
-    Object.keys(windows).forEach(window => {
-        windows[window]?.close();
+const quitApp = () => {
+    Object.entries(windows).forEach(([name, window]) => {
+        console.log(`quitApp: closing ${name}`);
+        window?.close();
     });
 }
 
 const broadcast = (channel: string, msg?: string) => {
-    Object.values(windows).forEach((window: IWindow) => {
+    Object.values(windows).forEach(window => {
         window?.send('broadcast-event', { event: channel, data: msg });
     });
 }
 
 const setGlobalShortcuts = () => {
-    globalShortcut.register('ctrl+/', () => {
-        if (!windows.terminal) {
-            windows.terminal = createTerminalWindow(() => { windows.terminal = null; }, dev, broadcast);
-        } else {
-            windows.terminal.close();
-        }
-    });
+    globalShortcut.register('ctrl+/', (windows.terminal as Terminal).toggle);
 };
 
 const onAuthenticationSuccess = () => {
     setGlobalShortcuts();
-    windows.dashboard = createDashboardWindow(() => { windows.dashboard = null; }, dev);
+    windows.dashboard.init();
 }
 
 const deleteToken = (e: IpcMainEvent) => {
@@ -65,13 +68,32 @@ const getToken = (e: IpcMainEvent) => {
             if (result) {
                 e.sender.send('get-token', result);
             } else {
-                createLoginWindow(onAuthenticationSuccess, dev);
-                Object.values((window: IWindow) => window?.close());
+                windows.login.init();
             }
         })
         .catch(err => {
             console.log(err);
         });
+}
+
+const logout = async () => {
+    try {
+        const service = getKeyTarService();
+        await keytar.deletePassword(service, service);
+
+        windows.login.init();
+    } catch (err: any) {
+        console.log('an error occurred while loging out: ', err.message);
+    }
+}
+
+const onLoginLoad = () => {
+    Object.entries(windows).forEach(([name, window]) => {
+        if (name !== 'login') {
+            console.log(`onLoginLoad: closing ${name}`);
+            window.close();
+        };
+    });
 }
 
 const setToken = (e: IpcMainEvent, token: string) => {
@@ -81,28 +103,31 @@ const setToken = (e: IpcMainEvent, token: string) => {
 }
 
 app.on('ready', () => {
-    createLoginWindow(onAuthenticationSuccess, dev);
-});
-
-ipcMain.on('logout', async () => {
-    try {
-        const service = getKeyTarService();
-        await keytar.deletePassword(service, service);
-        createLoginWindow(onAuthenticationSuccess, dev);
-
-        Object.keys(windows).forEach(window => {
-            windows[window]?.close();
-        });
-    } catch (err: any) {
-        console.log('an error occurred while loging out: ', err.message);
+    windows = {
+        dashboard: new Dashboard({ isDev: dev }),
+        login: new Login({
+            isDev: dev,
+            onLoad: onLoginLoad,
+            onSuccess: onAuthenticationSuccess,
+        }),
+        terminal: new Terminal({
+            broadcast,
+            logout,
+            quitApp,
+            isDev: dev,
+        }),
     }
+
+    windows.login.init();
 });
+
+ipcMain.on('logout', logout);
 
 ipcMain.on('user-profile-updated', () => {
     Object.values((window: IWindow) => window?.send('user-profile-update', true));
 });
 
-ipcMain.on('close-app', closeApp);
+ipcMain.on('close-app', quitApp);
 ipcMain.on('delete-token', deleteToken);
 ipcMain.on('get-token', getToken);
 ipcMain.on('set-token', setToken);

@@ -5,25 +5,28 @@ import { ipcMain } from 'electron';
 import Window from '../lib/window';
 import { IpcMainEvent } from 'electron/main';
 import { Base, IBaseProps } from './base';
-import { getKeyTarService } from '../lib/utils';
+import { getKeyTarService, noop } from '../lib/utils';
 
 const bgColor = '#000';
 
+type AuthenticationRequest = [string, string];
+
 interface IProps extends IBaseProps {
   isDev: boolean;
+  onLoad?: () => void;
   onSuccess: () => void;
 }
 
-class Auth extends Base {
-    private _isDev: boolean;
-    private _window: Window;
+export class Login extends Base {
+    private _onLoad: () => void;
     private _onSuccess: () => void;
     private _authToken: string;
 
     constructor(props: IProps) {
-        super();
-        this._isDev = props.isDev;
+        super(props);
+        this._windowName = 'login';
         this._onSuccess = props.onSuccess;
+        this._onLoad = props.onLoad || noop;
     }
 
     public init = async () => new Promise((resolve, reject) => {
@@ -31,8 +34,8 @@ class Auth extends Base {
         keytar.getPassword(service, service)
             .then(result => {
                 if (!result) {
-                    this.setListeners();
-                    this.createWindow();
+                    this._createWindow();
+                    this._setListeners();
                 } else {
                     this._authToken = result;
                     this.verifyToken();
@@ -42,27 +45,33 @@ class Auth extends Base {
                 console.log(err);
             });
     })
+            
+    private _authenticate = async (e: IpcMainEvent, [username, password]: AuthenticationRequest) => {
+        if (!username) {
+            e.sender.send('authentication-error', 'username is required');
+            return;
+        } else if (!password) {
+            e.sender.send('authentication-error', 'password is required');
+            return;
+        }
 
-    private authenticate = async (username: string, password: string) => {
         const result = await this.webServiceHelper.sendRequest<void>({
             data: { username, password },
             method: 'POST',
             path: '/auth'
         }, true);
 
-        console.log(result);
-
         if (result.success) {
             this._onSuccess();
             setTimeout(() => {
-                this._window.close();
+                this._window?.close();
             }, 2000);
         } else {
-            throw new Error(result.error ?? 'Authentication Error');
+            e.sender.send('authentication-error', result.error || 'Authentication Error');
         }
     }
 
-    private createWindow = () => {
+    protected _createWindow = () => {
         this._window = new Window({
             backgroundColor: bgColor,
             display: 'cursor',
@@ -75,29 +84,24 @@ class Auth extends Base {
                 preload: path.resolve(__dirname, 'loginPreloader.js'),
             },
             onClosed: () => {
-                this._window = null;
+                this._shutdownListeners();
+                this._onCloseCallback?.();
             },
         });
+
+        this._isOpen = true;
     }
 
-    private setListeners = async () => {
-        ipcMain.on('close-login-window', () => {
-            this._window?.close();
-        });
+    private _setListeners = () => {
+        ipcMain.on('close-login-window', this._window?.close);
+        ipcMain.on('authenticate', this._authenticate);
+        ipcMain.on('login-loaded', this._onLoad);
+    }
 
-        ipcMain.on('authenticate', async (e: IpcMainEvent, [username, password]) => {
-            if (!username) {
-                e.sender.send('authentication-error', 'username is required');
-            } else if (!password) {
-                e.sender.send('authentication-error', 'password is required');
-            } else {
-                try {
-                    await this.authenticate(username, password);
-                } catch (err: any) {
-                    e.sender.send('authentication-error', err.message);
-                }
-            }
-        });
+    private _shutdownListeners = () => {
+        ipcMain.off('close-login-window', this._window?.close);
+        ipcMain.off('authenticate', this._authenticate);
+        ipcMain.off('login-loaded', this._onLoad);
     }
 
     private verifyToken = async () => {
@@ -109,13 +113,13 @@ class Auth extends Base {
         if (result.success) {
             this._onSuccess();
         } else {
-            this.setListeners();
-            this.createWindow();
+            this._createWindow();
+            this._setListeners();
         }
     }
 }
 
-export const createLoginWindow = async (onSuccess: () => void, isDev: boolean) => {
-    const login = new Auth({ isDev, onSuccess });
+export const createLoginWindow = async (onSuccess: () => void, onLoad: () => void, isDev: boolean) => {
+    const login = new Login({ isDev, onLoad, onSuccess });
     login.init();
 }

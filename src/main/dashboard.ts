@@ -2,40 +2,55 @@ import { ipcMain } from 'electron';
 import path from 'path';
 
 import Window from '../lib/window';
+import { Base, IBaseProps } from './base';
 
-const bgColor = '#000';
+export class Dashboard extends Base {
+    constructor(props: IBaseProps) {
+        super(props);
+        this._windowName = 'dashboard';
+    }
 
-const dashboardInit = (window: Window) => () => {
-    window.send('dashboard-init', true);
-};
+    protected _createWindow = () => {
+        this._window = new Window({
+            backgroundColor: '#000',
+            display: 'cursor',
+            filename: path.resolve(__dirname, 'dashboard.html'),
+            height: 'full',
+            width: 'full',
+            resizable: this._isDev,
+            webPreferences: {
+                devTools: process.env.NODE_ENV === 'development',
+                preload: path.resolve(__dirname, 'dashboardPreloader.js'),
+            },
+            onClosed: () => {
+                this._shutdownListeners();
+                this._onCloseCallback?.();
+            },
+        });
 
-const setListeners = (window: Window) => {
-    ipcMain.on('dashboard-init', dashboardInit(window));
-};
+        this._isOpen = true;
+    }
 
-const shutDownListeners = () => {
-    ipcMain.off('dashboard-init', dashboardInit);
+    public init = () => {
+        this._createWindow();
+        this._setListeners();
+    }
+
+    private _onDashboardInit = () => {
+        try {
+            this._window.send('dashboard-init', true);
+        } catch (err) {
+            console.log('dashboardInit error', err);
+        }
+    };
+
+    private _setListeners = () => {
+        ipcMain.on('close-dashboard', this.close);
+        ipcMain.on('dashboard-init', this._onDashboardInit);
+    }
+
+    private _shutdownListeners = () => {
+        ipcMain.off('close-dashboard', this.close);
+        ipcMain.off('dashboard-init', this._onDashboardInit);
+    }
 }
-
-export const createDashboardWindow = (onClose: () => void, isDev: boolean) => {
-    const window = new Window({
-        backgroundColor: bgColor,
-        display: 'cursor',
-        filename: path.resolve(__dirname, 'dashboard.html'),
-        height: 'full',
-        width: 'full',
-        resizable: isDev,
-        webPreferences: {
-            devTools: process.env.NODE_ENV === 'development',
-            preload: path.resolve(__dirname, 'dashboardPreloader.js'),
-        },
-        onClosed: () => {
-            shutDownListeners();
-            onClose();
-        },
-    });
-
-    setListeners(window);
-
-    return window;
-};

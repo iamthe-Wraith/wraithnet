@@ -3,11 +3,11 @@ import React, { FC, useRef } from 'react';
 import { Btn } from './styles';
 
 interface IProps {
+  buttonType?: ButtonType;
   className?: string;
   disabled?: boolean;
   onClick:(e: React.MouseEvent<HTMLElement>) => void;
   onHover?:(e: React.MouseEvent<HTMLElement>) => void;
-  type?: ButtonType;
 }
 
 export enum ButtonType {
@@ -21,14 +21,14 @@ export enum ButtonType {
 }
 
 export const Button: FC<IProps> = ({
+  buttonType = ButtonType.Primary,
   children,
   className,
   disabled = false,
   onClick,
-  type = ButtonType.Primary
 }) => (
     <Btn
-        className={ `${type} ${className}` }
+        className={ `${buttonType} ${className}` }
         disabled={ disabled }
         onClick={ onClick }
     >

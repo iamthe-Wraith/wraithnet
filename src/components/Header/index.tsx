@@ -2,13 +2,16 @@ import dayjs from 'dayjs';
 import { observer } from 'mobx-react';
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { withTheme } from 'styled-components';
 import { UserContext } from '../../contexts/User';
+import { DashboardIpcRenderer } from '../../models/ipcRenderers/dashboard';
 import { IThemeProps } from '../../styles/themes';
+import { Button, ButtonType } from '../Button';
 import { Hex } from '../containers/Hex';
 import { HexSize } from '../containers/Hex/styles';
 import { LogIcon } from '../icons/LogIcon';
-import { Center, Container, DateContainer, Side, UserId, Username } from './styles';
+import { XIcon } from '../icons/XIcon';
+import { LogoutIcon } from '../svgs/LogoutIcon';
+import { Center, DateContainer, HeaderContainer, Side, UserId, Username } from './styles';
 
 interface IProps extends IThemeProps {
     className?: string;
@@ -22,7 +25,14 @@ const HeaderBase: React.FC<IProps> = ({ className = '' }) => {
     // TODO - setTimeout to change date
 
     return (
-        <Container className={ className }>
+        <HeaderContainer className={ className }>
+            <Button
+                buttonType={ ButtonType.Blank }
+                className='close'
+                onClick={ DashboardIpcRenderer.close }
+            >
+                <XIcon />
+            </Button>
             <Side className='left'>
                 <div />
                 <div>
@@ -46,9 +56,18 @@ const HeaderBase: React.FC<IProps> = ({ className = '' }) => {
                             <LogIcon className='icon' />
                         </Hex>
                     </Link>
+                    <Button
+                        buttonType={ ButtonType.Blank }
+                        className='icon-link'
+                        onClick={ DashboardIpcRenderer.logout }
+                    >
+                        <Hex size={ HexSize.Tiny } color={ 'none' }>
+                            <LogoutIcon className='icon' />
+                        </Hex>
+                    </Button>
                 </div>
             </Side>
-        </Container>
+        </HeaderContainer>
     )
 };
 
