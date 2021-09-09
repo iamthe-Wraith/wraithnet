@@ -45,16 +45,21 @@ interface ICommandValues<TArguments, TFlags, TParameters> {
 
 interface IProps extends IBaseProps {
     broadcast: (channel: string, msg?: string) => void,
+    logout: () => void;
     quitApp: () => void
 }
 
 export class Terminal extends Base {
     private _broadcast: (channel: string, msg?: string) => void;
     private _command: IParsedCommand = null;
+    private _logout: () => void;
     private _quitApp: () => void;
 
     constructor(props: IProps) {
         super(props);
+        this._broadcast = props.broadcast;
+        this._logout = props.logout;
+        this._quitApp = props.quitApp;
         this._windowName = 'terminal';
     }
 
@@ -132,11 +137,16 @@ export class Terminal extends Base {
 
         switch (this._command.pieces[0]) {
             case 'exit':
+                this.close();
                 this._quitApp();
                 return;
             case 'log':
                 return this._submitUserLogEntry();
+            case 'logout':
+                this._logout();
+                return;
             case 'open':
+                this.close();
                 return this._execOpenCommand();
             default:
                 return { error: `command not found: ${this._command.pieces[0]}` };

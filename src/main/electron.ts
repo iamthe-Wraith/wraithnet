@@ -76,6 +76,17 @@ const getToken = (e: IpcMainEvent) => {
         });
 }
 
+const logout = async () => {
+    try {
+        const service = getKeyTarService();
+        await keytar.deletePassword(service, service);
+
+        windows.login.init();
+    } catch (err: any) {
+        console.log('an error occurred while loging out: ', err.message);
+    }
+}
+
 const onLoginLoad = () => {
     Object.entries(windows).forEach(([name, window]) => {
         if (name !== 'login') {
@@ -101,6 +112,7 @@ app.on('ready', () => {
         }),
         terminal: new Terminal({
             broadcast,
+            logout,
             quitApp,
             isDev: dev,
         }),
@@ -109,16 +121,7 @@ app.on('ready', () => {
     windows.login.init();
 });
 
-ipcMain.on('logout', async () => {
-    try {
-        const service = getKeyTarService();
-        await keytar.deletePassword(service, service);
-
-        windows.login.init();
-    } catch (err: any) {
-        console.log('an error occurred while loging out: ', err.message);
-    }
-});
+ipcMain.on('logout', logout);
 
 ipcMain.on('user-profile-updated', () => {
     Object.values((window: IWindow) => window?.send('user-profile-update', true));
