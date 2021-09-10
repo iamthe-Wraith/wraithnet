@@ -1,0 +1,17 @@
+name: publish-app
+on:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+jobs:
+  publish-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: merged
+        if: ${{ github.event.pull_request.merged }}
+        run: npm run build:prod
+        run: npm run publish
+      - name: not-merged
+        if: ${{ !github.event.pull_request.merged }}
+        run: echo "noop"
