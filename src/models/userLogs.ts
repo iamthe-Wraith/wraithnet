@@ -159,6 +159,7 @@ export class UserLogsModel extends BaseModel {
             if (forcePaginationReset) {
                 this._page = 0;
                 this._entries = [];
+                this._entriesSet = new Set();
                 this._count = 0;
                 this._loaded = false;
             }
