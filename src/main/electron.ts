@@ -3,6 +3,7 @@ import "core-js/stable";
 import "regenerator-runtime/runtime";
 import keytar from 'keytar';
 import { app, globalShortcut, ipcMain } from 'electron';
+import updateElectronApp from 'update-electron-app';
 
 import { IWindow } from '../types';
 import { IpcMainEvent } from 'electron/main';
@@ -11,6 +12,8 @@ import { Dashboard } from './dashboard';
 import { Login } from './login';
 import { getKeyTarService, noop } from '../lib/utils';
 import { Base } from './base';
+
+updateElectronApp({ repo: 'iamthe-Wraith/wraithnet' });
 
 if (process.env.NODE_ENV === 'development') {
     const electronReload = require('electron-reload');
