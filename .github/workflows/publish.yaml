@@ -8,10 +8,12 @@ jobs:
   publish-app:
     runs-on: ubuntu-latest
     steps:
-      - name: merged
+      - name: build
         if: ${{ github.event.pull_request.merged }}
         run: npm run build:prod
+      - name: publish
+        if: ${{ github.event.pull_request.merged }}
         run: npm run publish
-      - name: not-merged
+      - name: noop
         if: ${{ !github.event.pull_request.merged }}
         run: echo "noop"
