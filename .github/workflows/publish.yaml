@@ -8,6 +8,9 @@ jobs:
   publish-app:
     runs-on: ubuntu-latest
     steps:
+      - name: log
+        if: ${{ github.event.pull_request.merged }}
+        run: ls
       - name: build
         if: ${{ github.event.pull_request.merged }}
         run: npm run build:prod
