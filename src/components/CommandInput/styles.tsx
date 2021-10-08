@@ -1,18 +1,18 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-    align-items: center;
+    align-items: flex-start;
     display: flex;
     font-size: 14px;
     padding-bottom: 20px;
 
-    .input {
-        border: none;
+    .textareaContainer {
         flex-grow: 1;
         margin-left: 3px;
+        border: none;
+    }
 
-        input {
-            font-size: 14px;
-        }
+    .textarea {
+        fontSize: 14px;
     }
 `;

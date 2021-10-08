@@ -7,22 +7,8 @@ export const Container = styled.label`
     padding: 10px;
     font-size: 14px;
     overflow: auto;
-`;
 
-export const FeedItem = styled.div`
-    align-items: center;
-    display: flex;
-    height: 20px;
-
-    &.command {
-        color: #fff;
-    }
-
-    &.error {
-        color: ${({theme}) => theme.error};
-    }
-
-    &.result {
-        color: ${({theme}) => theme.primary};
+    &::-webkit-scrollbar {
+        display: none;
     }
 `;

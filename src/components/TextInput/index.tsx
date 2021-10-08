@@ -26,20 +26,20 @@ export const TextInput: FC<IProps> = ({
   type = 'text',
   ...restProps
 }) => {
-  const [isFocused, setIsFocused] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
 	let inRef: HTMLInputElement;
 
-  const onInputBlur = (e: FocusEvent<HTMLInputElement>) => {
-    setIsFocused(false);
-    onBlur?.(e);
-  }
+    const onInputBlur = (e: FocusEvent<HTMLInputElement>) => {
+        setIsFocused(false);
+        onBlur?.(e);
+    }
 
-  const onInputFocus = (e: FocusEvent<HTMLInputElement>) => {
-    setIsFocused(true);
-    onFocus?.(e);
-  }
+    const onInputFocus = (e: FocusEvent<HTMLInputElement>) => {
+        setIsFocused(true);
+        onFocus?.(e);
+    }
 
-  const onPaddingClicked = (e: React.MouseEvent<HTMLDivElement>) => {
+    const onPaddingClicked = (e: React.MouseEvent<HTMLDivElement>) => {
 		if (!!inRef) {
 			inRef.focus();
 		}
@@ -48,30 +48,30 @@ export const TextInput: FC<IProps> = ({
 		e.stopPropagation();
 	};
 
-	const onRef = (ref: HTMLInputElement | null) => {
-    if (ref) {
-      inRef = ref;
+    const onRef = (ref: HTMLInputElement | null) => {
+        if (ref) {
+            inRef = ref;
 
-      if (!!inputRef) {
-        inputRef(ref);
-      }
-    }
+            if (!!inputRef) {
+                inputRef(ref);
+            }
+        }
 	};
 
-  return (
-    <Container className={ `${isFocused && 'focused'} ${className}`} onClick={ onPaddingClicked }>
-      { leftAccessory }
-      <input
-        { ...restProps }
-        autoComplete={ allowAutoComplete ? 'on' : 'off' }
-        className={ inputClassName }
-        id={ inputId }
-        onBlur={ onInputBlur }
-        onFocus={ onInputFocus }
-        ref={ onRef }
-        type={ type }
-      />
-      { rightAccessory }
-    </Container>
-  );
+    return (
+        <Container className={ `${isFocused && 'focused'} ${className}`} onClick={ onPaddingClicked }>
+            { leftAccessory }
+            <input
+                { ...restProps }
+                autoComplete={ allowAutoComplete ? 'on' : 'off' }
+                className={ inputClassName }
+                id={ inputId }
+                onBlur={ onInputBlur }
+                onFocus={ onInputFocus }
+                ref={ onRef }
+                type={ type }
+            />
+            { rightAccessory }
+        </Container>
+    );
 };
