@@ -1,14 +1,14 @@
 import styled from 'styled-components';
-import { ITheme } from '../../styles/themes';
+import { ITheme, IThemeProps } from '../../styles/themes';
 
-export const Btn = styled.button`
+export const Btn = styled.button<IThemeProps>`
     align-items: center;
     background: none;
     border: none;
     display: flex;
     justify-content: center;
     outline: none;
-    padding: 5px;
+    padding: 5px 10px;
     transition: all .15s ease-in-out;
 
     &:hover {
@@ -16,7 +16,7 @@ export const Btn = styled.button`
     }
 
     &.primary {
-        ${({theme}: { theme: ITheme }) => (`
+        ${({theme}) => (`
             background: ${theme.primary};
             color: ${theme.light};
 
@@ -28,7 +28,7 @@ export const Btn = styled.button`
     }
 
     &.primary-reverse {
-        ${({theme}: { theme: ITheme }) => (`
+        ${({theme}) => (`
             border: 1px solid ${theme.primary};
             color: ${theme.light};
 
@@ -41,7 +41,7 @@ export const Btn = styled.button`
     }
 
     &.secondary {
-        ${({theme}: { theme: ITheme }) => (`
+        ${({theme}) => (`
             background: ${theme.highlight1};
             color: ${theme.light};
 
@@ -53,7 +53,7 @@ export const Btn = styled.button`
     }
 
     &.secondary-reverse {
-        ${({theme}: { theme: ITheme }) => (`
+        ${({theme}) => (`
             border: 1px solid ${theme.highlight1};
             color: ${theme.light};
 
@@ -66,22 +66,26 @@ export const Btn = styled.button`
     }
 
     &.blank {
-        color: ${({theme}: { theme: ITheme }) => theme.light};
+        color: ${({theme}) => theme.light};
+
+        &:hover {
+            color: ${({theme}) => theme.primaryDark};
+        }
     }
 
     &.link {
-        color: ${({theme}: { theme: ITheme }) => theme.primary};
+        color: ${({theme}) => theme.primary};
         
         :hover {
-            color: ${({theme}: { theme: ITheme }) => theme.primaryDark};
+            color: ${({theme}) => theme.primaryDark};
         }
     }
 
     &.secondary-link {
-        color: ${({theme}: { theme: ITheme }) => theme.highlight1};
+        color: ${({theme}) => theme.highlight1};
         
         :hover {
-            color: ${({theme}: { theme: ITheme }) => theme.highlight2};
+            color: ${({theme}) => theme.highlight2};
         }
     }
 `;
