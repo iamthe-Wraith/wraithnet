@@ -20,7 +20,9 @@ jobs:
         run: npm run build:prod
       - name: publish
         if: ${{ github.event.pull_request.merged }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run publish
-      - name: noop
+      - name: fallback
         if: ${{ !github.event.pull_request.merged }}
         run: echo "noop"
