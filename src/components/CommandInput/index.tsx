@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { UserContext } from '../../contexts/User';
+import { TextArea } from '../TextArea';
 import { TextInput } from '../TextInput';
 import { Container } from './styles';
 
@@ -13,19 +14,23 @@ interface IProps {
 
 export const CommandInputBase: React.FC<IProps> = ({ onCommandInputRef, id, onSubmit }) => {
     const user = useContext(UserContext);
-    const inputRef = useRef(null);
+    const textareaRef = useRef(null);
     const [command, setCommand] = useState<string>('');
+    const [commandInputHeight, setCommandInputHeight] = useState(35);
     useEffect(() => {
-        inputRef.current?.focus();
+        textareaRef.current?.focus();
     }, []);
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => setCommand(e.target.value);
+    const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setCommand(e.target.value)
+        setCommandInputHeight(textareaRef.current.scrollHeight);
+    };
 
     const onContainerRef = (r: HTMLDivElement) => {
         onCommandInputRef(r);
     }
 
-    const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Enter') {
             onSubmit(command);
             setCommand('');
@@ -35,12 +40,14 @@ export const CommandInputBase: React.FC<IProps> = ({ onCommandInputRef, id, onSu
     return (
         <Container ref={ onContainerRef }>
             <div>{ `${user.username} $` }</div>
-            <TextInput
-                className='input'
-                inputId={ id }
-                inputRef={ ref => inputRef.current = ref }
+            <TextArea
+                className='textareaContainer'
+                textareaClassName='textarea'
+                textareaId={ id }
+                textareaRef={ (ref: HTMLElement) => textareaRef.current = ref }
                 onChange={ onChange }
                 onKeyDown={ onKeyDown }
+                style={ { height: `${commandInputHeight}px` } }
                 value={ command }
             />
         </Container>

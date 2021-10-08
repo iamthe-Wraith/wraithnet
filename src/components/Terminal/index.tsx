@@ -5,8 +5,9 @@ import { UserContext } from '../../contexts/User';
 import { CommandType } from '../../models/command';
 import { TerminalIpcRenderer as IpcRenderer } from '../../models/ipcRenderers/terminal';
 import { CommandInput } from '../CommandInput';
+import { FeedItem } from './FeedItem';
 
-import { Container, FeedItem } from './styles';
+import { Container } from './styles';
 
 export const TerminalBase: React.FC = () => {
     const user = useContext(UserContext);
@@ -34,22 +35,22 @@ export const TerminalBase: React.FC = () => {
     }
 
     const renderFeed = () => {
-        return terminalModel.feed.map((f, i) => {
-            const text = f.type === CommandType.COMMAND
-                    ? `${user.username ?? '/'} $ ${f.command}`
-                    : f.command
-
-            return (
-                <FeedItem key={ `command-${i}` } className={ f.type.toLowerCase() }>
-                    { text }
-                </FeedItem>
-            );
-        })
+        return terminalModel.feed.map((f, i) => (
+            <FeedItem
+                id={ `command-${i}` }
+                key={ `command-${i}` }
+                ps1={ `${user.username} $` }
+                body={ f.command }
+                type={ f.type }
+            />
+        ))
     }
 
     if (!user.username) {
         return (
-            <span>Loading...</span>
+            <Container htmlFor='command-input'>
+                <span>Loading...</span>
+            </Container>
         );
     }
 
