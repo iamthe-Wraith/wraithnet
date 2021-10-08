@@ -8,12 +8,21 @@ jobs:
   publish-app:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@master
+        with:
+          node-version: 14
+      - name: install
+        if: ${{ github.event.pull_request.merged }}
+        run: npm install
       - name: build
         if: ${{ github.event.pull_request.merged }}
         run: npm run build:prod
       - name: publish
         if: ${{ github.event.pull_request.merged }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run publish
-      - name: noop
+      - name: fallback
         if: ${{ !github.event.pull_request.merged }}
         run: echo "noop"
