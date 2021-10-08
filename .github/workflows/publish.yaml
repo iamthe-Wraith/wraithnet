@@ -8,9 +8,13 @@ jobs:
   publish-app:
     runs-on: ubuntu-latest
     steps:
-      - name: log
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@master
+        with:
+          node-version: 14
+      - name: install
         if: ${{ github.event.pull_request.merged }}
-        run: ls
+        run: npm install
       - name: build
         if: ${{ github.event.pull_request.merged }}
         run: npm run build:prod
