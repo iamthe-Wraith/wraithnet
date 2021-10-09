@@ -8,13 +8,10 @@ const config = {
         icon: path.resolve(__dirname, 'src', 'assets', 'wraithnet-logo.icns'),
         appBundleId: 'com.electron.wraithnet',
         osxSign: {
-            identity: 'Apple Development: allhailthewraith@protonmail.com (3X4XYG8SH3)',
+            identity: 'Developer ID Application: Jacob Lundberg (KF39MP8648)',
             'hardened-runtime': true,
-            'signature-flags': 'library',
-            'gatekeeper-assess': false,
             entitlements: 'static/entitlements.plist',
             'entitlements-inherit': 'static/entitlements.plist',
-            'signature-flags': 'library',
         },
     },
     makers: [
@@ -71,7 +68,6 @@ function notarizeMaybe() {
         appBundleId: 'com.electron.wraithnet',
         appleId: process.env.APPLE_ID,
         appleIdPassword: process.env.APPLE_ID_PASSWORD,
-        ascProvider: '3X4XYG8SH3',
     };
 }
   
