@@ -12,9 +12,12 @@ export const Center = styled.div`
     position: relative;
 `;
 
-export const DateContainer = styled.div`
+export const CenterContent = styled.div<IThemeProps>`
     ${ PrimaryFont }
-    color: ${({theme}: IThemeProps) => theme.primaryDark};
+    color: ${({theme}) => theme.primary};
+    font-size: 30px;
+    position: relative;
+    z-index: 1;
 `;
 
 export const HeaderContainer = styled.div<IThemeProps>`
@@ -123,67 +126,4 @@ export const Side = styled.div`
             height: 1px;
         }
     }
-
-    .icon-link {
-        line-height: 0;
-        margin-right: 10px;
-        padding: 0; 
-
-        &:hover:not(.selected) {
-            cursor: default;
-
-            span.icon {
-                color: ${({theme}: IThemeProps) => theme.highlight1};
-            }
-
-            svg.icon {
-                fill: ${({theme}: IThemeProps) => theme.highlight1};
-            }
-        }
-
-        &.selected {
-            span {
-                color: ${({theme}: IThemeProps) => theme.primary};
-            }
-
-            svg {
-                fill: ${({theme}: IThemeProps) => theme.light};
-
-                &.icon {
-                    fill: ${({theme}: IThemeProps) => theme.primary};
-                }
-            }
-        }
-
-        span {
-            color: ${({theme}: IThemeProps) => theme.darkGray};
-            display: block;
-            padding: 3px 0 0 2px;
-        }
-
-        svg {
-            fill: ${({theme}: IThemeProps) => theme.darkGray};
-            
-            transition: .15s ease-in-out;
-            
-            &.icon {
-                height: 15px;
-                width: 15px;
-            }
-        }
-    }
-`;
-
-export const UserId = styled.div`
-    color: ${({theme}: IThemeProps) => theme.darkGray};
-    font-size: 12px;
-    padding-left: 20px;
-`;
-
-export const Username = styled.div`
-    ${ PrimaryFont }
-    color: ${({theme}: IThemeProps) => theme.primary};
-    font-size: 30px;
-    position: relative;
-    z-index: 1;
 `;
