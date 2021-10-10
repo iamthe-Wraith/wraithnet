@@ -8,5 +8,8 @@ contextBridge.exposeInMainWorld('App', {
         // send message initialize any functionality
         // needed in the main process for this window
         return ipcRendererAction('dashboard-init');
+    },
+    open: (win: string) => {
+        ipcRenderer.send('open', win);
     }
 });

@@ -2,11 +2,10 @@ import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import ReactDayPicker, { DateUtils, DayModifiers, Modifier, RangeModifier } from 'react-day-picker';
 import { DayPickerProps, NavbarElementProps } from 'react-day-picker/types/props';
 import dayjs from 'dayjs';
-import { PrevArrowIcon } from '../icons/PrevArrowIcon';
-import { NextArrowIcon } from '../icons/NextArrowIcon';
+import { PrevArrowIcon } from '../svgs/icons/PrevArrowIcon';
+import { NextArrowIcon } from '../svgs/icons/NextArrowIcon';
 import { Button, ButtonType } from '../Button';
 import { Day, DayPickerContainer, NavBarContainer } from './styles';
-import { OBSERVABLE_SHALLOW } from 'mobx/dist/internal';
 
 interface IProps extends DayPickerProps, INavBarNavigationHooks {
     className?: string;

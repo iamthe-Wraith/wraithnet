@@ -118,8 +118,3 @@ export class Login extends Base {
         }
     }
 }
-
-export const createLoginWindow = async (onSuccess: () => void, onLoad: () => void, isDev: boolean) => {
-    const login = new Login({ isDev, onLoad, onSuccess });
-    login.init();
-}

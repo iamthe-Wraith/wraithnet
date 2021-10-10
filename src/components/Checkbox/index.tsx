@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { noop } from '../../lib/utils';
-import { XIcon } from '../icons/XIcon';
+import { XIcon } from '../svgs/icons/XIcon';
 import { Box, CheckboxContainer } from './styles';
 
 interface IProps {
