@@ -18,6 +18,10 @@ export const DnDBase: React.FC = () => {
         IpcRenderer.init();
 
         campaigns.getCampaigns()
+            .then(() => {
+                // TODO: this is only for development purposes...needs to be removed...
+                campaigns.forceSelect();
+            })
             .catch(err => {
                 console.error(err);
             });

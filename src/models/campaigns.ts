@@ -8,8 +8,11 @@ type PrivateFields = '_busy' |
 
 type CampaignPrivateFields = '_busy' |
     '_campaign' |
-    '_dailyChecklist' |
-    '_gettingDailyChecklist';
+    '_dailyChecklist';
+
+type CampaignDailyChecklistPrivateFields = '_busy' |
+    '_campaign' |
+    '_items';
 
 export interface ICampaign extends IBase {
     name: string;
@@ -21,51 +24,45 @@ export interface IDailyChecklistItem extends IBase {
     order?: number;
 }
 
-export class CampaignModel extends BaseModel {
+class CampaignDailyChecklistModel extends BaseModel {
     private _busy = false;
     private _campaign: ICampaign = null;
-    private _dailyChecklist: IDailyChecklistItem[] = [];
-    private _gettingDailyChecklist = false;
+    private _items: IDailyChecklistItem[] = [];
 
     constructor (campaign: ICampaign) {
         super();
-        makeObservable<CampaignModel, CampaignPrivateFields>(this, {
+        makeObservable<CampaignDailyChecklistModel, CampaignDailyChecklistPrivateFields>(this, {
             _busy: observable,
             _campaign: observable,
-            _dailyChecklist: observable,
-            _gettingDailyChecklist: observable,
+            _items: observable,
             busy: computed,
-            createdAt: computed,
-            dailyChecklist: computed,
-            gettingDailyChecklist: computed,
-            id: computed,
-            name: computed,
-            getDailyChecklist: action.bound,
+            items: computed,
         });
 
         this._campaign = campaign;
     }
 
-    get busy() { return this._busy }
-    get createdAt() { return this._campaign.createdAt }
-    get dailyChecklist() { return this._dailyChecklist }
-    get gettingDailyChecklist() { return this._gettingDailyChecklist }
-    get id() { return this._campaign.id }
-    get name() { return this._campaign.name }
+    get busy() {
+        return this._busy;
+    }
 
-    public getDailyChecklist = async () => {
-        if (!this._gettingDailyChecklist) {
-            this._gettingDailyChecklist = true;
+    get items() {
+        return this._items || [];
+    }
+
+    public load = async () => {
+        if (!this._busy) {
+            this._busy = true;
 
             const result = await this.webServiceHelper.sendRequest<IDailyChecklistItem[]>({
-                path: this.composeUrl(`/dnd/${this.id}/daily-checklist`),
+                path: this.composeUrl(`/dnd/${this._campaign.id}/daily-checklist`),
                 method: 'GET',
             });
     
             if (result.success) {
                 runInAction(() => {
                     this._busy = false;
-                    this._dailyChecklist = result.value;
+                    this._items = result.value;
                 }); 
             } else {
                 runInAction(() => {
@@ -76,6 +73,35 @@ export class CampaignModel extends BaseModel {
             }
         }
     }
+}
+
+export class CampaignModel extends BaseModel {
+    private _busy = false;
+    private _campaign: ICampaign = null;
+    private _dailyChecklist: CampaignDailyChecklistModel = null;
+
+    constructor (campaign: ICampaign) {
+        super();
+        makeObservable<CampaignModel, CampaignPrivateFields>(this, {
+            _busy: observable,
+            _campaign: observable,
+            _dailyChecklist: observable,
+            busy: computed,
+            createdAt: computed,
+            dailyChecklist: computed,
+            id: computed,
+            name: computed,
+        });
+
+        this._campaign = campaign;
+        this._dailyChecklist = new CampaignDailyChecklistModel(this._campaign);
+    }
+
+    get busy() { return this._busy }
+    get createdAt() { return this._campaign.createdAt }
+    get dailyChecklist() { return this._dailyChecklist }
+    get id() { return this._campaign.id }
+    get name() { return this._campaign.name }
 }
 
 export class CampaignsModel extends BaseModel {
@@ -136,5 +162,9 @@ export class CampaignsModel extends BaseModel {
 
     public setCampaign = (campaign: ICampaign) => {
         this._campaign = new CampaignModel(campaign);
+    }
+
+    public forceSelect = () => {
+        this._campaign = new CampaignModel(this.campaigns[0]);
     }
 }
