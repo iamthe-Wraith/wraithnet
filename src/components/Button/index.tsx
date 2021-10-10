@@ -2,7 +2,7 @@ import React, { FC, useRef } from 'react';
 
 import { Btn } from './styles';
 
-interface IProps {
+interface IProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   buttonType?: ButtonType;
   className?: string;
   disabled?: boolean;
@@ -26,11 +26,13 @@ export const Button: FC<IProps> = ({
   className,
   disabled = false,
   onClick,
+  ...restProps
 }) => (
     <Btn
         className={ `${buttonType} ${className}` }
         disabled={ disabled }
         onClick={ onClick }
+        { ...restProps }
     >
         { children }
     </Btn>

@@ -7,17 +7,20 @@ import { Theme } from '../components/Theme';
 import { UserStore } from '../contexts/User';
 import { TerminalStore } from '../contexts/Terminal';
 import { DnD } from '../components/DnD';
+import { CampaignsStore } from '../contexts/Campaigns';
 
 const App = () => (
     <TerminalStore>
         <UserStore>
-            <ThemeStore>
-                <Theme>
-                    <AppContainer>
-                        <DnD />
-                    </AppContainer>
-                </Theme>
-            </ThemeStore>
+            <CampaignsStore>
+                <ThemeStore>
+                    <Theme>
+                        <AppContainer>
+                            <DnD />
+                        </AppContainer>
+                    </Theme>
+                </ThemeStore>
+            </CampaignsStore>
         </UserStore>
     </TerminalStore>
 );
