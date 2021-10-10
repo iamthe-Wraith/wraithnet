@@ -9,7 +9,7 @@ import { Button, ButtonType } from '../Button';
 import { AngleCorner } from '../containers/AngleCorner';
 import { AnglePos, AngleSize } from '../containers/AngleCorner/styles';
 import { Campaign } from './Campaign';
-import { CampaignsListContainer } from './styles';
+import { CampaignsContainer, CampaignsListContainer } from './styles';
 
 interface IProps extends IThemeProps {
     className: string;
@@ -42,7 +42,23 @@ const CampaignsListBase: React.FC<IProps> = ({ className = '' }) => {
 
     return (
         <CampaignsListContainer className={ className }>
-            { renderCampaigns() }
+            <div className='top top-2' />
+            <div className='top top-1' />
+            <div className='side left outer upper' />
+            <div className='side left inner upper' />
+            <div className='side left outer lower' />
+            <div className='side left inner lower' />
+
+            <CampaignsContainer>
+                { renderCampaigns() }
+            </CampaignsContainer>
+
+            <div className='side right outer upper' />
+            <div className='side right inner upper' />
+            <div className='side right outer lower' />
+            <div className='side right inner lower' />
+            <div className='bottom bottom-1' />
+            <div className='bottom bottom-2' />
         </CampaignsListContainer>
     )
 }

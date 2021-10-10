@@ -4,6 +4,7 @@ import { CampaignsContext } from '../../contexts/Campaigns';
 import { UserContext } from '../../contexts/User';
 import { DnDIpcRenderer as IpcRenderer } from '../../models/ipcRenderers/dnd';
 import { AbsoluteCenter } from '../../styles/styles';
+import { Campaign } from '../Campaign';
 import { CampaignsList } from '../CampaignsList';
 import { LoadingSpinner } from '../LoadingSpinner';
 
@@ -35,11 +36,7 @@ export const DnDBase: React.FC = () => {
             return <CampaignsList className='campaigns-list' />;
         }
 
-        return (
-            <div>
-                the selected campaign...{ campaigns.campaign.name }
-            </div>
-        )
+        return <Campaign />
     }
 
     return (

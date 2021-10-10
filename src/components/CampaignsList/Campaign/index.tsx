@@ -33,7 +33,7 @@ const CampaignBase: React.FC<IProps> = ({
         >
             <AngleCorner
                 backgroundColor={ theme.darkestGray }
-                borderColor={ isHovered ? theme.primary : 'transparent' }
+                borderColor={ isHovered ? theme.highlight1 : 'transparent' }
                 borderWidth={ 1 }
                 className='angle-corner'
                 config={[{ position: AnglePos.BottomRight, size: AngleSize.Tiny }]}
