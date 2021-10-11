@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { FlexHorizontalCenter, PrimaryFont } from '../../styles/styles';
 
 export const DnDDailyChecklistContainer = styled.div`
     position: relative;
@@ -6,7 +7,7 @@ export const DnDDailyChecklistContainer = styled.div`
 
     .list-container {
         min-height: 200px;
-        max-height: 100%;
+        max-height: calc(100% - 25px);
         overflow: auto;
 
         &::-webkit-scrollbar {
@@ -20,6 +21,42 @@ export const DnDDailyChecklistContainer = styled.div`
         &:not(:last-child) {
             margin-bottom: 5px;
         }
+    }
+
+    .add-item-container {
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        height: 25px;
+
+        button {
+            padding: 0;
+        }
+    }
+
+    .text-input {
+        input {
+            ${ PrimaryFont }
+        }
+    }
+
+    .label {
+        margin-top: 10px;
+        font-size: 12px;
+        color: ${({theme}) => theme.gray};
+    }
+
+    .details-textarea {
+        textarea {
+            height: 100px;
+            padding: 5px;
+        }
+    }
+
+    .ctas-container {
+        ${ FlexHorizontalCenter }
+        justify-content: flex-end;
+        margin-top: 10px;
     }
 
     .decorator-top {

@@ -49,6 +49,7 @@ export const ChecklistItemContainer = styled.div<IThemeProps>`
     .details {
         padding: 5px 0 0 10px;
         color: ${({theme}) => theme.primaryDark};
+        word-break: break-word;
     }
 
     .details-textarea {

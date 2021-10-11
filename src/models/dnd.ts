@@ -15,7 +15,8 @@ type CampaignDailyChecklistPrivateFields = '_busy' |
     '_items' |
     '_deletingItemId' |
     '_updatingItemId' |
-    '_setCampaign';
+    '_setCampaign' |
+    '_addingItem';
 
 export interface ICampaign extends IBase {
     name: string;
@@ -29,6 +30,7 @@ export interface IDailyChecklistItem extends IBase {
 
 class CampaignDailyChecklistModel extends BaseModel {
     private _busy = false;
+    private _addingItem = false;
     private _deletingItemId: string = null;
     private _updatingItemId: string = null;
     private _campaign: ICampaign = null;
@@ -37,14 +39,17 @@ class CampaignDailyChecklistModel extends BaseModel {
     constructor (campaign: ICampaign) {
         super();
         makeObservable<CampaignDailyChecklistModel, CampaignDailyChecklistPrivateFields>(this, {
+            _addingItem: observable,
             _busy: observable,
             _deletingItemId: observable,
             _campaign: observable,
             _items: observable,
             _updatingItemId: observable,
+            isAddingItem: computed,
             isBusy: computed,
             items: computed,
             updatingItemId: computed,
+            addItem: action.bound,
             delete: action.bound,
             load: action.bound,
             update: action.bound,
@@ -58,6 +63,10 @@ class CampaignDailyChecklistModel extends BaseModel {
         return this._deletingItemId;
     }
 
+    get isAddingItem() {
+        return this._addingItem;
+    }
+
     get isBusy() {
         return this._busy;
     }
@@ -68,6 +77,31 @@ class CampaignDailyChecklistModel extends BaseModel {
 
     get updatingItemId() {
         return this._updatingItemId;
+    }
+
+    public addItem = async (newItem: IDailyChecklistItem) => {
+        if (!this._addingItem) {
+            this._addingItem = true;
+
+            const result = await this.webServiceHelper.sendRequest<IDailyChecklistItem>({
+                path: this.composeUrl(`/dnd/${this._campaign.id}/daily-checklist`),
+                method: 'POST',
+                data: newItem,
+            });
+    
+            if (result.success) {
+                runInAction(() => {
+                    this._addingItem = null;
+                    this._items = this._sort([ ...this._items, result.value ]);
+                }); 
+            } else {
+                runInAction(() => {
+                    this._addingItem = null;
+                });
+                
+                throw new Error(result.error);
+            }
+        }
     }
 
     public delete = async (item: IDailyChecklistItem) => {
@@ -106,7 +140,7 @@ class CampaignDailyChecklistModel extends BaseModel {
             if (result.success) {
                 runInAction(() => {
                     this._busy = false;
-                    this._items = result.value;
+                    this._items = this._sort(result.value);
                 }); 
             } else {
                 runInAction(() => {
@@ -145,6 +179,18 @@ class CampaignDailyChecklistModel extends BaseModel {
 
     private _setCampaign = (campaign: ICampaign) => {
         this._campaign = campaign;
+    }
+
+    private _sort = (items: IDailyChecklistItem[]) => {
+        return items.sort((x, y) => {
+            if (x.order < y.order) {
+                return -1;
+            } else if (x.order > y.order) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
     }
 }
 

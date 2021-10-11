@@ -15,13 +15,17 @@ export const Btn = styled.button<IThemeProps>`
         cursor: default;
     }
 
+    &:disabled {
+        opacity: 0.5;
+    }
+
     &.primary {
         ${({theme}) => (`
             background: ${theme.primary};
             color: ${theme.light};
 
-            &:hover,
-            &:focus {
+            &:hover:not(:disabled),
+            &:focus:not(:disabled) {
                 background: ${theme.primaryDark};
             }
         `)}
@@ -32,8 +36,8 @@ export const Btn = styled.button<IThemeProps>`
             border: 1px solid ${theme.primary};
             color: ${theme.light};
 
-            &:hover,
-            &:focus {
+            &:hover:not(:disabled),
+            &:focus:not(:disabled) {
                 background: ${theme.primaryDark}40;
                 border: 1px solid ${theme.primaryDark};
             }
@@ -45,8 +49,8 @@ export const Btn = styled.button<IThemeProps>`
             background: ${theme.highlight1};
             color: ${theme.light};
 
-            &:hover,
-            &:focus {
+            &:hover:not(:disabled),
+            &:focus:not(:disabled) {
                 background: ${theme.highlight2};
             }
         `)}
@@ -57,8 +61,8 @@ export const Btn = styled.button<IThemeProps>`
             border: 1px solid ${theme.highlight1};
             color: ${theme.light};
 
-            &:hover,
-            &:focus {
+            &:hover:not(:disabled),
+            &:focus:not(:disabled) {
                 background: ${theme.highlight2}40;
                 border: 1px solid ${theme.highlight2};
             }
@@ -68,15 +72,23 @@ export const Btn = styled.button<IThemeProps>`
     &.blank {
         color: ${({theme}) => theme.light};
 
-        &:hover {
+        &:hover:not(:disabled) {
             color: ${({theme}) => theme.primaryDark};
+        }
+    }
+
+    &.blank-reverse {
+        color: ${({theme}) => theme.light};
+
+        &:hover:not(:disabled) {
+            color: ${({theme}) => theme.highlight2};
         }
     }
 
     &.link {
         color: ${({theme}) => theme.primary};
         
-        :hover {
+        :hover:not(:disabled) {
             color: ${({theme}) => theme.primaryDark};
         }
     }
@@ -84,7 +96,7 @@ export const Btn = styled.button<IThemeProps>`
     &.secondary-link {
         color: ${({theme}) => theme.highlight1};
         
-        :hover {
+        :hover:not(:disabled) {
             color: ${({theme}) => theme.highlight2};
         }
     }

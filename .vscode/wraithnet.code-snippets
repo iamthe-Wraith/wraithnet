@@ -28,7 +28,7 @@
             "",
             "export const ${1}: React.FC<IProps> = ({ className = '' }) => {",
             "\treturn (",
-            "\t\t<Container>",
+            "\t\t<Container className={ className }>",
             "\t\t\ttemp",
             "\t\t</Container>",
             "\t);",

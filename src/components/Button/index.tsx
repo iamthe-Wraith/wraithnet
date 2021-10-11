@@ -16,6 +16,7 @@ export enum ButtonType {
   Secondary = 'secondary',
   SecondaryReverse = 'secondary-reverse',
   Blank = 'blank',
+  BlankReverse = 'blank-reverse',
   Link = 'link',
   SecondaryLink = 'secondary-link',
 }
