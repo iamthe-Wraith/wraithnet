@@ -6,6 +6,7 @@ import { Box, CheckboxContainer } from './styles';
 interface IProps {
     checked: boolean;
     className?: string;
+    disabled?: boolean;
     id: string;
     label?: JSX.Element;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -27,6 +28,7 @@ export enum CheckboxLabelPosition {
 export const Checkbox: FC<IProps> = ({
     checked,
     className = '',
+    disabled,
     id,
     label,
     onChange,
@@ -38,16 +40,20 @@ export const Checkbox: FC<IProps> = ({
     }
 
     return (
-        <CheckboxContainer htmlFor={ id } className={ className }>
+        <CheckboxContainer
+            htmlFor={ id }
+            className={ className }
+        >
             <input
                 checked={ checked }
+                disabled={ disabled }
                 hidden
                 id={ id }
                 onChange={ onCheckboxChange }
                 type='checkbox'
             />
             { label && position === CheckboxLabelPosition.Left && label }
-            <Box className={ `${type} ${checked && 'checked'}` }>
+            <Box className={ `${type} ${checked && 'checked'} ${disabled && 'disabled'}` }>
                 { checked && <XIcon fill='none' /> }
             </Box>
             { label && position === CheckboxLabelPosition.Right && label }
