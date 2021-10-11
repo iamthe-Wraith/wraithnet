@@ -6,7 +6,6 @@ export const DnDContainer = styled.div`
     display: block;
     height: 100vh;
     width: 100vw;
-    padding: 10px;
     font-size: 14px;
     overflow: hidden;
 

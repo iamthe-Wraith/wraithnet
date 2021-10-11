@@ -7,12 +7,12 @@ import { Theme } from '../components/Theme';
 import { UserStore } from '../contexts/User';
 import { TerminalStore } from '../contexts/Terminal';
 import { DnD } from '../components/DnD';
-import { CampaignsStore } from '../contexts/Campaigns';
+import { DnDStore } from '../contexts/DnD';
 
 const App = () => (
     <TerminalStore>
         <UserStore>
-            <CampaignsStore>
+            <DnDStore>
                 <ThemeStore>
                     <Theme>
                         <AppContainer>
@@ -20,7 +20,7 @@ const App = () => (
                         </AppContainer>
                     </Theme>
                 </ThemeStore>
-            </CampaignsStore>
+            </DnDStore>
         </UserStore>
     </TerminalStore>
 );

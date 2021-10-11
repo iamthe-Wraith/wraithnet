@@ -1,9 +1,8 @@
 import { observer } from 'mobx-react';
 import React, { useContext, useEffect } from 'react';
-import { CampaignsContext } from '../../contexts/Campaigns';
+import { DnDContext } from '../../contexts/DnD';
 import { UserContext } from '../../contexts/User';
 import { DnDIpcRenderer as IpcRenderer } from '../../models/ipcRenderers/dnd';
-import { AbsoluteCenter } from '../../styles/styles';
 import { Campaign } from '../Campaign';
 import { CampaignsList } from '../CampaignsList';
 import { LoadingSpinner } from '../LoadingSpinner';
@@ -12,7 +11,7 @@ import { DnDContainer } from './styles';
 
 export const DnDBase: React.FC = () => {
     const user = useContext(UserContext);
-    const campaigns = useContext(CampaignsContext);
+    const campaigns = useContext(DnDContext);
 
     useEffect(() => {
         IpcRenderer.init();

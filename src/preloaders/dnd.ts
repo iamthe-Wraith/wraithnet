@@ -3,5 +3,5 @@ import { basePreloader, ipcRendererAction } from './base';
 
 contextBridge.exposeInMainWorld('App', {
     ...basePreloader,
-    close: () => ipcRenderer.send('close', 'dnd'),
+    close: () => ipcRenderer.send('close-dnd'),
 });

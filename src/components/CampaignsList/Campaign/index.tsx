@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
 import { withTheme } from 'styled-components';
-import { ICampaign } from '../../../models/campaigns';
+import { ICampaign } from '../../../models/dnd';
 import { IThemeProps } from '../../../styles/themes';
 import { ButtonType } from '../../Button';
 import { AngleCorner } from '../../containers/AngleCorner';
@@ -25,7 +25,7 @@ const CampaignBase: React.FC<IProps> = ({
     return (
         <CampaignContainer
             buttonType={ ButtonType.Blank }
-            className='campaign-button'
+            className={ `campaign-button ${ className }` }
             key={ campaign.id }
             onClick={ onClick }
             onMouseEnter={ () => setIsHovered(true) }

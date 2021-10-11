@@ -1,13 +1,13 @@
-import dayjs from 'dayjs';
 import { observer } from 'mobx-react';
 import React, { useContext } from 'react';
 import { withTheme } from 'styled-components';
-import { CampaignsContext } from '../../contexts/Campaigns';
-import { ICampaign } from '../../models/campaigns';
+import { DnDContext } from '../../contexts/DnD';
+import { ICampaign } from '../../models/dnd';
 import { IThemeProps } from '../../styles/themes';
-import { Button, ButtonType } from '../Button';
-import { AngleCorner } from '../containers/AngleCorner';
-import { AnglePos, AngleSize } from '../containers/AngleCorner/styles';
+import { BasicBottom } from '../decorators/bottom/BasicBottom';
+import { Left1 } from '../decorators/left/Left1';
+import { Right1 } from '../decorators/right/Right1';
+import { BasicTop } from '../decorators/top/BasicTop';
 import { Campaign } from './Campaign';
 import { CampaignsContainer, CampaignsListContainer } from './styles';
 
@@ -16,20 +16,20 @@ interface IProps extends IThemeProps {
 }
 
 const CampaignsListBase: React.FC<IProps> = ({ className = '' }) => {
-    const campaigns = useContext(CampaignsContext);
+    const dnd = useContext(DnDContext);
 
     const renderCampaigns = () => {
-        if (campaigns.campaigns.length === 0) {
+        if (dnd.campaigns.length === 0) {
             return (
                 <div>No campaigns found</div>
             )
         }
 
         const onCampaignClick = (campaign: ICampaign) => () => {
-            campaigns.setCampaign(campaign);
+            dnd.setCampaign(campaign);
         }
 
-        return campaigns.campaigns.map(campaign => {
+        return dnd.campaigns.map(campaign => {
             return (
                 <Campaign
                     campaign={ campaign }
@@ -42,23 +42,15 @@ const CampaignsListBase: React.FC<IProps> = ({ className = '' }) => {
 
     return (
         <CampaignsListContainer className={ className }>
-            <div className='top top-2' />
-            <div className='top top-1' />
-            <div className='side left outer upper' />
-            <div className='side left inner upper' />
-            <div className='side left outer lower' />
-            <div className='side left inner lower' />
+            <BasicTop />
+            <Left1 />
 
             <CampaignsContainer>
                 { renderCampaigns() }
             </CampaignsContainer>
 
-            <div className='side right outer upper' />
-            <div className='side right inner upper' />
-            <div className='side right outer lower' />
-            <div className='side right inner lower' />
-            <div className='bottom bottom-1' />
-            <div className='bottom bottom-2' />
+            <Right1 />
+            <BasicBottom />
         </CampaignsListContainer>
     )
 }

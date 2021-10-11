@@ -14,10 +14,11 @@ export const Center = styled.div`
 
 export const CenterContent = styled.div<IThemeProps>`
     ${ PrimaryFont }
-    color: ${({theme}) => theme.primary};
-    font-size: 30px;
     position: relative;
+    font-size: 30px;
+    color: ${({theme}) => theme.primary};
     z-index: 1;
+    white-space: nowrap;
 `;
 
 export const HeaderContainer = styled.div<IThemeProps>`
