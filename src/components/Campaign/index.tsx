@@ -2,8 +2,10 @@ import dayjs from 'dayjs';
 import { observer } from 'mobx-react';
 import React, { useContext, useEffect } from 'react';
 import { DnDContext } from '../../contexts/DnD';
+import { DnDDate } from '../../lib/dndDate';
 import { DnDIpcRenderer } from '../../models/ipcRenderers/dnd';
 import { DnDDailyChecklist } from '../DnDDailyChecklist';
+import { DnDDayPicker } from '../DnDDayPicker';
 import { Header } from '../Header';
 import { CampaignContainer, Footer, HeaderLeftContent, Main } from './styles';
 
@@ -13,14 +15,11 @@ interface IProps {
 
 const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
     const dnd = useContext(DnDContext);
-
-    useEffect(() => {
-        dnd.campaign.dailyChecklist.load()
-            .catch (err => {
-                console.error('>>>>> error getting daily checklist: ', err);
-            });
-    }, []);
     
+    const onDayClick = (day: DnDDate) => {
+        console.log('day change: ', day);
+    }
+
     const renderHeaderLeftContent = () => {
         return (
             <HeaderLeftContent>
@@ -39,7 +38,11 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
             />
             <Main>
                 <div className='side-col left-col'>
-                    <div>left</div>
+                    <DnDDayPicker
+                        className='day-picker'
+                        onDayClick={ onDayClick }
+                        selectedDay={ dnd.campaign.currentDate }
+                    />
                     <div>left</div>
                 </div>
                 <div className='primary-display'>

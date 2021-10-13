@@ -2,7 +2,7 @@ import { observer } from 'mobx-react';
 import React, { useContext } from 'react';
 import { withTheme } from 'styled-components';
 import { DnDContext } from '../../contexts/DnD';
-import { ICampaign } from '../../models/dnd';
+import { ICampaign } from '../../models/dnd/types';
 import { IThemeProps } from '../../styles/themes';
 import { BasicBottom } from '../decorators/bottom/BasicBottom';
 import { Left1 } from '../decorators/left/Left1';

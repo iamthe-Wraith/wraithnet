@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
 import { withTheme } from 'styled-components';
-import { ICampaign } from '../../../models/dnd';
+import { ICampaign } from '../../../models/dnd/types';
 import { IThemeProps } from '../../../styles/themes';
 import { ButtonType } from '../../Button';
 import { AngleCorner } from '../../containers/AngleCorner';

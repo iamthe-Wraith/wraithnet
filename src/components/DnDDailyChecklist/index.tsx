@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
-import React, { ChangeEvent, useContext, useRef, useState } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react';
 import { DnDContext } from '../../contexts/DnD';
-import { IDailyChecklistItem } from '../../models/dnd';
+import { IDailyChecklistItem } from '../../models/dnd/daily-checklist';
 import { Button, ButtonType } from '../Button';
 import { Bottom1 } from '../decorators/bottom/Bottom1';
 import { Left2 } from '../decorators/left/Left2';
@@ -23,6 +23,13 @@ export const DnDDailyChecklistBase: React.FC<IProps> = ({ className }) => {
     const [newItemText, setNewItemText] = useState('');
     const [newItemDetails, setNewItemDetails] = useState('');
     const list = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        dnd.campaign.dailyChecklist.load()
+            .catch (err => {
+                console.error('>>>>> error getting daily checklist: ', err);
+            });
+    }, []);
 
     const onAddItemClick = () => {
         setShowAddItemModal(true);

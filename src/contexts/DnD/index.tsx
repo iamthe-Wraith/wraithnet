@@ -1,11 +1,11 @@
 import React, { createContext } from "react";
-import { CampaignsModel } from "../../models/dnd";
+import { DnDModel } from "../../models/dnd";
 
-export const DnDContext = createContext<CampaignsModel>(null);
+export const DnDContext = createContext<DnDModel>(null);
 
 export const DnDStore: React.FC = ({ children }) => {
     return (
-        <DnDContext.Provider value={new CampaignsModel()}>
+        <DnDContext.Provider value={new DnDModel()}>
             {children}
         </DnDContext.Provider>
     )

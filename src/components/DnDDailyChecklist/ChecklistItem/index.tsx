@@ -1,14 +1,11 @@
 import React, { ChangeEvent, useCallback, useContext, useEffect, useState } from 'react';
 import { animated, config, useSpring } from 'react-spring';
-import { IDailyChecklistItem } from '../../../models/dnd';
-import { AbsoluteCenter } from '../../../styles/styles';
+import { IDailyChecklistItem } from '../../../models/dnd/daily-checklist';
 import { Button, ButtonType } from '../../Button';
 import { Checkbox } from '../../Checkbox';
 import { LoadingSpinner, SpinnerSize, SpinnerType } from '../../LoadingSpinner';
-import { Spinner } from '../../LoadingSpinner/styles';
 import { EditIcon } from '../../svgs/icons/EditIcon';
 import { TrashIcon } from '../../svgs/icons/TrashIcon';
-import { XIcon } from '../../svgs/icons/XIcon';
 import { TextArea } from '../../TextArea';
 import { TextInput } from '../../TextInput';
 import { ChecklistItemContainer } from './styles';
