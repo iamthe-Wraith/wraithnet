@@ -1,6 +1,6 @@
 import { dndCalendar, DnDMonth, IDnDCalendarDay } from "../static/dnd-calendar";
 
-enum Reckoning {
+export enum Reckoning {
     DR = 'DR',
     CR = 'CR',
     TR = 'TR',
@@ -10,7 +10,7 @@ enum Reckoning {
     PR = 'PR',
 }
 
-interface IDnDYear {
+export interface IDnDYear {
     num: number;
     reckoning: Reckoning;
 }

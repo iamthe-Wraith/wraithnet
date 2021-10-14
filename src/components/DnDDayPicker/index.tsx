@@ -1,12 +1,13 @@
 import { observer } from 'mobx-react-lite';
 import React, { useCallback, useEffect, useState } from 'react';
 import { withTheme } from 'styled-components';
-import { DnDDate } from '../../lib/dndDate';
+import { DnDDate, IDnDYear } from '../../lib/dndDate';
 import { dndCalendar, DnDMonthOrder, IDnDCalendarDay } from '../../static/dnd-calendar';
 import { IThemeProps } from '../../styles/themes';
 import { Button, ButtonType } from '../Button';
 import { AngleCorner } from '../containers/AngleCorner';
 import { AnglePos, AngleSize } from '../containers/AngleCorner/styles';
+import { DnDYearEditor } from '../DnDYearEditor';
 import { NextArrowIcon } from '../svgs/icons/NextArrowIcon';
 import { PrevArrowIcon } from '../svgs/icons/PrevArrowIcon';
 import { PopoverType, TinyPopover } from '../TinyPopover';
@@ -171,31 +172,18 @@ export const DnDDayPickerBase: React.FC<IProps> = ({
             </div>
         );
     }
-    
-    const renderYearEditor = () => {
-        return (
-            <TinyPopover
-                engageOnHover={ false }
-                anchor={ (
-                    <div onClick={() => setShowReckonings(!showReckonings)}>
-                        Reckoning
-                    </div>
-                ) }
-                className='popover'
-                dismissOnOutsideAction={ true }
-                isOpen={ showReckonings }
-                onRequestClose={() => setShowReckonings(false)}
-                type={ PopoverType.error }
-            >
-                <div>reckoning options...</div>
-            </TinyPopover>
-        )
-    }
 
     return (
         <DnDDayPickerContainer className={ className }>
             {
-                (allowYearEdit || true) && renderYearEditor()
+                allowYearEdit && (
+                    <div className='year-editor-container'>
+                        <DnDYearEditor
+                            defaultYear={ selectedDay.year }
+                            onChange={year => setYear(year)}
+                        />
+                    </div>
+                )
             }
             <div className='header'>
                 <Button

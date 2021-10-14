@@ -14,6 +14,12 @@ export const day = css`
 export const DnDDayPickerContainer = styled.div<IThemeProps>`
     width: 300px;
 
+    .year-editor-container {
+        ${ FlexCenter }
+        width: 100%;
+        padding-bottom: 5px;
+    }
+
     .header {
         ${ FlexHorizontalCenter }
         justify-content: space-between;

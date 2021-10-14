@@ -41,7 +41,7 @@ export const Main = styled.div`
     }
 
     .left-col {
-        padding: 10px 5px 5px 10px;
+        padding: 30px 5px 5px 10px;
     }
 
     .primary-display {

@@ -59,7 +59,7 @@ export const TextInput: FC<IProps> = ({
 	};
 
     return (
-        <Container className={ `${isFocused && 'focused'} ${className}`} onClick={ onPaddingClicked }>
+        <Container className={ `${isFocused && 'focused'} ${className} ${type}`} onClick={ onPaddingClicked }>
             { leftAccessory }
             <input
                 { ...restProps }

@@ -40,6 +40,7 @@ export enum PopoverType {
 	error,
     light,
     primary,
+    primaryDark,
     highlight,
 }
 
@@ -58,6 +59,11 @@ const getStylesByType = (type: PopoverType) => {
         case PopoverType.primary: {
 			return {
 				containerClassName: 'tiny-popover-primary',
+			};
+		}
+        case PopoverType.primaryDark: {
+			return {
+				containerClassName: 'tiny-popover-primary-dark',
 			};
 		}
         case PopoverType.highlight: {
