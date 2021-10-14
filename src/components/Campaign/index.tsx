@@ -24,7 +24,7 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
         return (
             <HeaderLeftContent>
                 <div className='campaign-id'>{ dnd.campaign.id }</div>
-                <div>current date: xxx</div>
+                <div>{ dnd.campaign.currentDate.stringify() }</div>
             </HeaderLeftContent>
         );
     }
