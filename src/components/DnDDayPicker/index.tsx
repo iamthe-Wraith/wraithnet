@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { withTheme } from 'styled-components';
 import { DnDDate } from '../../lib/dndDate';
 import { dndCalendar, DnDMonthOrder, IDnDCalendarDay } from '../../static/dnd-calendar';
@@ -9,10 +9,12 @@ import { AngleCorner } from '../containers/AngleCorner';
 import { AnglePos, AngleSize } from '../containers/AngleCorner/styles';
 import { NextArrowIcon } from '../svgs/icons/NextArrowIcon';
 import { PrevArrowIcon } from '../svgs/icons/PrevArrowIcon';
+import { PopoverType, TinyPopover } from '../TinyPopover';
 
 import { Day, DnDDayPickerContainer } from './styles';
 
 interface IProps extends IThemeProps {
+    allowYearEdit?: boolean;
     className?: string;
     daysWithEvents?: DnDDate[];
     onDayClick?:(day: DnDDate) => void;
@@ -20,6 +22,7 @@ interface IProps extends IThemeProps {
 }
 
 export const DnDDayPickerBase: React.FC<IProps> = ({
+    allowYearEdit,
     className = '',
     daysWithEvents = [],
     onDayClick,
@@ -32,6 +35,7 @@ export const DnDDayPickerBase: React.FC<IProps> = ({
     const [days, setDays] = useState(dndCalendar.filter(d => d.month === selectedDay.month).map(d => new DnDDate(d, year)));
     const [specialDays, setSpecialDays] = useState<DnDDate[]>([]);
     const [dayHovered, setDayHovered] = useState<DnDDate>(null);
+    const [showReckonings, setShowReckonings] = useState(false);
 
     useEffect(() => {
         setSelectedDay(selectedDay);
@@ -167,9 +171,32 @@ export const DnDDayPickerBase: React.FC<IProps> = ({
             </div>
         );
     }
+    
+    const renderYearEditor = () => {
+        return (
+            <TinyPopover
+                engageOnHover={ false }
+                anchor={ (
+                    <div onClick={() => setShowReckonings(!showReckonings)}>
+                        Reckoning
+                    </div>
+                ) }
+                className='popover'
+                dismissOnOutsideAction={ true }
+                isOpen={ showReckonings }
+                onRequestClose={() => setShowReckonings(false)}
+                type={ PopoverType.error }
+            >
+                <div>reckoning options...</div>
+            </TinyPopover>
+        )
+    }
 
     return (
         <DnDDayPickerContainer className={ className }>
+            {
+                (allowYearEdit || true) && renderYearEditor()
+            }
             <div className='header'>
                 <Button
                     buttonType={ ButtonType.Blank }

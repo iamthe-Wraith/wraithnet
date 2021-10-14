@@ -12,7 +12,7 @@ import './fonts/Rajdhani/Rajdhani-SemiBold.ttf';
 import './fonts/Rajdhani/Rajdhani-Bold.ttf';
 import { IThemeProps } from './themes';
 
-export const GlobalStyles = createGlobalStyle`
+export const GlobalStyles = createGlobalStyle<IThemeProps>`
   @font-face {
     font-family: "Orbitron";
     src: local("Orbitron"), url("./fonts/Orbitron-Regular.ttf") format("truetype");
@@ -90,6 +90,27 @@ export const GlobalStyles = createGlobalStyle`
     font-style: italic;
   }
 
+  * {
+    box-sizing: border-box;
+    color: ${({ theme }) => theme.light};
+    font-family: Rajdhani;
+    letter-spacing: 1px;
+    margin: 0;
+    padding: 0;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    label,
+    .font-1 {
+    font-family: "Orbitron";
+    letter-spacing: .05em;
+    }
+
   body {
     margin: 0;
     padding: 0;
@@ -109,27 +130,6 @@ export const AbsoluteCenter = css`
 export const AppContainer = styled.div<IThemeProps>`
   background: radial-gradient(ellipse at top left, ${({theme}) => `${theme.dark}, ${theme.dark}, ${theme.primaryDark}35`});
   overflow: hidden;
-  
-  * {
-    box-sizing: border-box;
-    color: ${({ theme }) => theme.light};
-    font-family: Rajdhani;
-    letter-spacing: 1px;
-    margin: 0;
-    padding: 0;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  label,
-  .font-1 {
-    font-family: "Orbitron";
-    letter-spacing: .05em;
-  }
 `;
 
 export const PrimaryFont = css`

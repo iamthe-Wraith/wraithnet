@@ -56,6 +56,10 @@ export const DnDDayPickerContainer = styled.div<IThemeProps>`
     .ten-day {
         ${ day }
     }
+
+    .popover {
+        border: 1px solid red;
+    }
 `
 
 export const Day = styled(Button)<IThemeProps>`
