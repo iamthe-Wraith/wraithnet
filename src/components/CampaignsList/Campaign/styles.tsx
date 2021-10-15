@@ -4,12 +4,6 @@ import { Button } from '../../Button';
 export const CampaignContainer = styled(Button)`
     width: 100%;
 
-    &:hover {
-        .indicator {
-            display: block;
-        }
-    }
-
     .angle-corner {
         width: 100%;
         padding: 10px 0 10px 20px;

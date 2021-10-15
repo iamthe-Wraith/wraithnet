@@ -13,6 +13,26 @@ export const HeaderLeftContent = styled.div<IThemeProps>`
     justify-content: space-between;
     min-width: 100%;
 
+    .back-button {
+        ${ FlexHorizontalCenter }
+
+        &:hover:not(:disabled) {
+            svg {
+                fill: ${({theme}) => theme.highlight1};
+            }
+
+            span {
+                color: ${({theme}) => theme.highlight1};
+            }
+        }
+
+        svg {
+            width: 18px;
+            height: 18px;
+            fill: ${({theme}) => theme.light};
+        }
+    }
+
     .campaign-id {
         padding-left: 10px;
         color: ${({theme}) => theme.darkGray};

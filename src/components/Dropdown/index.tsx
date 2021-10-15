@@ -30,7 +30,7 @@ interface IProps<T> {
     onRequestClose?:(config: IDropdownAnchorConfig<T>) => void;
 }
 
-export const Dropdown = <T extends any>({
+export const  Dropdown = <T extends any>({
     isMultiSelect,
     className = '',
     engageOnHover,

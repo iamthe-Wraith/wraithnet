@@ -9,7 +9,7 @@ export const ModalOverlay = styled(animated.div)<IThemeProps>`
     right: 0;
     bottom: 0;
     left: 0;
-    background: ${({theme}) => `${theme.dark}66`};
+    background: ${({theme}) => `${theme.dark}44`};
     z-index: 5;
 
     .modal-container {
@@ -27,7 +27,6 @@ export const ModalOverlay = styled(animated.div)<IThemeProps>`
 
         &.header-text {
             font-size: 18px;
-            color: ${({theme}) => theme.highlight1};
         }
 
         .close {

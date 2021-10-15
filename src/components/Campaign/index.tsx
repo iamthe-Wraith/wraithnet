@@ -4,9 +4,11 @@ import React, { useContext, useEffect } from 'react';
 import { DnDContext } from '../../contexts/DnD';
 import { DnDDate } from '../../lib/dndDate';
 import { DnDIpcRenderer } from '../../models/ipcRenderers/dnd';
+import { Button, ButtonType } from '../Button';
 import { DnDDailyChecklist } from '../DnDDailyChecklist';
 import { DnDDayPicker } from '../DnDDayPicker';
 import { Header } from '../Header';
+import { PrevArrowIcon } from '../svgs/icons/PrevArrowIcon';
 import { CampaignContainer, Footer, HeaderLeftContent, Main } from './styles';
 
 interface IProps {
@@ -16,6 +18,10 @@ interface IProps {
 const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
     const dnd = useContext(DnDContext);
     
+    const onBackClick = () => {
+        dnd.setCampaign(null);
+    }
+
     const onDayClick = (day: DnDDate) => {
         console.log('day change: ', day);
     }
@@ -23,6 +29,14 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
     const renderHeaderLeftContent = () => {
         return (
             <HeaderLeftContent>
+                <Button
+                    className='back-button'
+                    buttonType={ ButtonType.BlankReverse }
+                    onClick={ onBackClick }
+                >
+                    <PrevArrowIcon />
+                    <span>back</span>
+                </Button>
                 <div className='campaign-id'>{ dnd.campaign.id }</div>
                 <div>{ dnd.campaign.currentDate.stringify() }</div>
             </HeaderLeftContent>
@@ -41,7 +55,7 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
                     <DnDDayPicker
                         className='day-picker'
                         onDayClick={ onDayClick }
-                        selectedDay={ dnd.campaign.currentDate }
+                        selectedDay={ dnd.campaign.currentDate.stringify() }
                     />
                     <div>left</div>
                 </div>

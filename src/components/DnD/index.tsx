@@ -11,15 +11,15 @@ import { DnDContainer } from './styles';
 
 export const DnDBase: React.FC = () => {
     const user = useContext(UserContext);
-    const campaigns = useContext(DnDContext);
+    const dnd = useContext(DnDContext);
 
     useEffect(() => {
         IpcRenderer.init();
 
-        campaigns.getCampaigns()
+        dnd.getCampaigns()
             .then(() => {
                 // TODO: this is only for development purposes...needs to be removed...
-                campaigns.forceSelect();
+                // campaigns.forceSelect();
             })
             .catch(err => {
                 console.error(err);
@@ -35,7 +35,7 @@ export const DnDBase: React.FC = () => {
     }
 
     const renderContent = () => {
-        if (!campaigns.campaign) {
+        if (!dnd.campaign) {
             return <CampaignsList className='campaigns-list' />;
         }
 

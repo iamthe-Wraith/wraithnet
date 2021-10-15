@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { IDnDYear, Reckoning } from '../../lib/dndDate';
+import { DnDDate, IDnDYear, Reckoning } from '../../lib/dndDate';
 import { Dropdown, IDropdownOption } from '../Dropdown';
 import { TextInput } from '../TextInput';
 
@@ -7,8 +7,9 @@ import { DnDYearEditorContainer } from './styles';
 
 interface IProps {
     className?: string;
-    defaultYear: IDnDYear;
-    onChange:(year: IDnDYear) => void;
+    defaultYear: number;
+    defaultReckoning: Reckoning;
+    onChange:(year: number, reckoning: Reckoning) => void;
 }
 
 const options: IDropdownOption<Reckoning>[] = [
@@ -51,21 +52,24 @@ const options: IDropdownOption<Reckoning>[] = [
 
 export const DnDYearEditor: React.FC<IProps> = ({
     className = '',
-    defaultYear,
+    defaultYear = 1,
+    defaultReckoning = Reckoning.DR,
     onChange,
 }) => {
-    const [yearValue, setYearValue] = useState(defaultYear.num);
-    const [selectedReckoning, setSelectedReckoning] = useState(defaultYear.reckoning);
+    const [year, setYear] = useState(defaultYear);
+    const [reckoning, setReckoning] = useState(defaultReckoning);
 
     useEffect(() => {
-        onChange({ num: yearValue || 1, reckoning: selectedReckoning || Reckoning.DR });
-    }, [yearValue, selectedReckoning]);
+        if (!!year && !!reckoning) {
+            onChange(year, reckoning);
+        }
+    }, [year, reckoning]);
 
     const onYearChange = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.value.length <= 5) {
+        if (e.target.value.length <= 5) {            
             const value = parseInt(e.target.value);
             if ((isNaN(value) && e.target.value === '') || !!value) {
-                setYearValue(value);
+                setYear(value);
             }
         };
     }
@@ -77,11 +81,11 @@ export const DnDYearEditor: React.FC<IProps> = ({
                 inputId='year-input'
                 onChange={ onYearChange }
                 type='number'
-                value={ yearValue.toString() }
+                value={ year.toString() }
             />
             <Dropdown
                 options={ options }
-                onOptionChange={option => setSelectedReckoning(option.context)}
+                onOptionChange={option => setReckoning(option.context)}
             />
         </DnDYearEditorContainer>
     );

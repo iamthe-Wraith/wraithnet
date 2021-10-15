@@ -1,7 +1,8 @@
 import { observer } from 'mobx-react-lite';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { withTheme } from 'styled-components';
-import { DnDDate, IDnDYear } from '../../lib/dndDate';
+import { DnDContext } from '../../contexts/DnD';
+import { DnDDate, IDnDYear, Reckoning } from '../../lib/dndDate';
 import { dndCalendar, DnDMonthOrder, IDnDCalendarDay } from '../../static/dnd-calendar';
 import { IThemeProps } from '../../styles/themes';
 import { Button, ButtonType } from '../Button';
@@ -19,78 +20,83 @@ interface IProps extends IThemeProps {
     className?: string;
     daysWithEvents?: DnDDate[];
     onDayClick?:(day: DnDDate) => void;
-    selectedDay?: DnDDate;
+    selectedDay?: string;
 }
 
-export const DnDDayPickerBase: React.FC<IProps> = ({
+const DnDDayPickerBase: React.FC<IProps> = ({
     allowYearEdit,
     className = '',
     daysWithEvents = [],
     onDayClick,
-    selectedDay = new DnDDate(),
+    selectedDay,
     theme,
 }) => {
-    const [mSelectedDay, setSelectedDay] = useState(selectedDay);
-    const [month, setMonth] = useState(selectedDay.month);
-    const [year, setYear] = useState(selectedDay.year);
-    const [days, setDays] = useState(dndCalendar.filter(d => d.month === selectedDay.month).map(d => new DnDDate(d, year)));
+    const dnd = useContext(DnDContext)
+    const [mSelectedDay, setSelectedDay] = useState(new DnDDate(selectedDay));
+    const [days, setDays] = useState<DnDDate[]>([]);
     const [specialDays, setSpecialDays] = useState<DnDDate[]>([]);
     const [dayHovered, setDayHovered] = useState<DnDDate>(null);
-    const [showReckonings, setShowReckonings] = useState(false);
 
     useEffect(() => {
-        setSelectedDay(selectedDay);
+        setSelectedDay(new DnDDate(selectedDay));
     }, [selectedDay]);
 
-    useEffect(() => {
-        setMonth(selectedDay.month);
-    }, [selectedDay]);
 
-    useEffect(() => {
+
+    useEffect(() => {        
         let lastIndex = 0;
         setDays(dndCalendar
             .filter((d, i) => {
-                if (d.month === month && !d.special) {
+                if (d.month === mSelectedDay.month && !d.special) {
                     lastIndex = i;
                     return true;
                 }
 
                 return false;
             })
-            .map(d => new DnDDate(d, year)));
+            .map(d => new DnDDate(`${d.date} ${d.month}, ${mSelectedDay.year} ${mSelectedDay.reckoning}`)));
 
         // get special days
         const _specialDays: DnDDate[] = [];
         while (dndCalendar[lastIndex + 1]?.special) {
-            _specialDays.push(new DnDDate(dndCalendar[lastIndex + 1], year));
+            const { month, holiday } = dndCalendar[lastIndex + 1];
+            _specialDays.push(new DnDDate(`${holiday?.name}, ${mSelectedDay.year} ${mSelectedDay.reckoning}`));
             lastIndex += 1;
         }
         setSpecialDays(_specialDays);
-    }, [month]);
+    }, [mSelectedDay]);
 
     const mOnDayClick = (d: DnDDate) => {
-        setSelectedDay(d);
-        onDayClick?.(d);
+        const day = new DnDDate(d.stringify());
+        day.year = mSelectedDay.year;
+        day.reckoning = mSelectedDay.reckoning;
+        
+        setSelectedDay(day);
+        onDayClick?.(day);
     };
 
     const onNextMonthClick = () => {
-        let index = DnDMonthOrder.indexOf(month) + 1;
+        const clone = mSelectedDay.clone();
+        let index = DnDMonthOrder.indexOf(mSelectedDay.month) + 1;
         if (index >= DnDMonthOrder.length) {
             index = 0;
-            setYear({ num: (year.num + 1), reckoning: year.reckoning });
+            clone.year += 1;
         }
-        setMonth(DnDMonthOrder[index]);
+        clone.month = DnDMonthOrder[index];
+        setSelectedDay(clone);
     };
 
     const onPrevMonthClick = () => {
-        let index = DnDMonthOrder.indexOf(month) - 1;
+        const clone = mSelectedDay.clone();
+        let index = DnDMonthOrder.indexOf(mSelectedDay.month) - 1;
         if (index < 0) {
             index = DnDMonthOrder.length - 1;
-            if (year.num > 1) {
-                setYear({ num: (year.num + 1), reckoning: year.reckoning });
+            if (clone.year > 1) {
+                clone.year -= 1;
             }
         }
-        setMonth(DnDMonthOrder[index]);
+        clone.month = DnDMonthOrder[index];
+        setSelectedDay(clone);
     };
 
     const render10Days = () => {
@@ -137,7 +143,7 @@ export const DnDDayPickerBase: React.FC<IProps> = ({
 
         const sDays: JSX.Element[] = [];
         specialDays.forEach((d, i) => {
-            if (year.num % d.holiday.iteration === 0) {
+            if (mSelectedDay.year % d.holiday.iteration === 0) {
                 sDays.push((
                     <Button
                         key={ `special-day-${i}` }
@@ -173,14 +179,22 @@ export const DnDDayPickerBase: React.FC<IProps> = ({
         );
     }
 
+    const onYearChange = (year: number, reckoning: Reckoning) => {
+        const clone = mSelectedDay.clone();
+        clone.year = year;
+        clone.reckoning = reckoning;
+        setSelectedDay(clone);
+    }
+
     return (
         <DnDDayPickerContainer className={ className }>
             {
                 allowYearEdit && (
                     <div className='year-editor-container'>
                         <DnDYearEditor
-                            defaultYear={ selectedDay.year }
-                            onChange={year => setYear(year)}
+                            defaultYear={ mSelectedDay.year }
+                            defaultReckoning={ mSelectedDay.reckoning }
+                            onChange={ onYearChange }
                         />
                     </div>
                 )
@@ -192,7 +206,7 @@ export const DnDDayPickerBase: React.FC<IProps> = ({
                 >
                     <PrevArrowIcon fill={ theme.light } />
                 </Button>
-                <div className='month-display'>{ `${month}, ${year.num} ${year.reckoning}` }</div>
+                <div className='month-display'>{ `${mSelectedDay.month}, ${mSelectedDay.year} ${mSelectedDay.reckoning}` }</div>
                 <Button
                     buttonType={ ButtonType.Blank }
                     onClick={ onNextMonthClick }

@@ -36,8 +36,8 @@ export class CampaignModel extends BaseModel {
 
         this._campaign = campaign;
         this._dailyChecklist = new CampaignDailyChecklistModel(campaign);
-        this._startDate = DnDDate.parseStringToDnDDate(campaign.startDate);
-        this._currentDate = DnDDate.parseStringToDnDDate(campaign.currentDate);
+        this._startDate = new DnDDate(campaign.startDate);
+        this._currentDate = new DnDDate(campaign.currentDate);
     }
 
     get busy() { return this._busy }
