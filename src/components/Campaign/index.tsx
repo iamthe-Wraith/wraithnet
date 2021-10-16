@@ -1,12 +1,12 @@
-import dayjs from 'dayjs';
 import { observer } from 'mobx-react';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { DnDContext } from '../../contexts/DnD';
 import { DnDDate } from '../../lib/dndDate';
 import { DnDIpcRenderer } from '../../models/ipcRenderers/dnd';
 import { Button, ButtonType } from '../Button';
 import { DnDDailyChecklist } from '../DnDDailyChecklist';
 import { DnDDayPicker } from '../DnDDayPicker';
+import { Editor } from '../Editor';
 import { Header } from '../Header';
 import { PrevArrowIcon } from '../svgs/icons/PrevArrowIcon';
 import { CampaignContainer, Footer, HeaderLeftContent, Main } from './styles';
@@ -17,7 +17,7 @@ interface IProps {
 
 const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
     const dnd = useContext(DnDContext);
-    
+
     const onBackClick = () => {
         dnd.setCampaign(null);
     }
@@ -60,7 +60,7 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
                     <div>left</div>
                 </div>
                 <div className='primary-display'>
-                    campaign - { dnd.campaign.name }
+                    <Editor className='editor' />
                 </div>
                 <div className='side-col right-col'>
                     <div>right</div>
