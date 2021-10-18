@@ -140,6 +140,7 @@ export class TinyPopover extends React.Component<IProps, IState> {
 				content={ this.onRenderContent }
 				isOpen={ !disabled && isOpen }
 				positions={ placement || ['bottom', 'top'] }
+                style={ { zIndex: 5 } }
 				transitionDuration={ transitionDuration || 0.01 }
 			>
 				<div

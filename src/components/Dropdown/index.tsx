@@ -1,4 +1,6 @@
+import equal from 'fast-deep-equal';
 import React, { useEffect, useState } from 'react';
+import { CSSProperties } from 'styled-components';
 import { ButtonType } from '../Button';
 import { ChevronIcon, ChevronOrientation } from '../svgs/icons/ChevronIcon';
 import { PopoverType, TinyPopover } from '../TinyPopover';
@@ -28,6 +30,7 @@ interface IProps<T> {
     onOptionsChange?:(option: IDropdownOption<T>[]) => void;
     onRenderAnchor?:(config: IDropdownAnchorConfig<T>) => JSX.Element;
     onRequestClose?:(config: IDropdownAnchorConfig<T>) => void;
+    optionStyles?: CSSProperties;
 }
 
 export const  Dropdown = <T extends any>({
@@ -41,6 +44,7 @@ export const  Dropdown = <T extends any>({
     onOptionsChange,
     onRenderAnchor,
     onRequestClose,
+    optionStyles,
 }: IProps<T>) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState<IDropdownOption<T>>(!isMultiSelect ? (defaultSelectedOption || options[0]) : null);
@@ -51,14 +55,20 @@ export const  Dropdown = <T extends any>({
     }, [isOpen]);
 
     useEffect(() => {
-        if (!isMultiSelect) {
+        if (!equal(selectedOption?.context, defaultSelectedOption?.context)) {
+            setSelectedOption(defaultSelectedOption);
+        }
+    }, [defaultSelectedOption]);
+
+    useEffect(() => {
+        if (!isMultiSelect && selectedOption) {
             if (!onOptionChange) throw new Error('no onOptionChange handler found');
             onOptionChange(selectedOption);
         }
     }, [selectedOption]);
 
     useEffect(() => {
-        if (isMultiSelect) {
+        if (isMultiSelect && selectedOptions) {
             if (!onOptionsChange) throw new Error('no onOptionsChange handler found');
             onOptionsChange(selectedOptions);
         }
@@ -128,8 +138,9 @@ export const  Dropdown = <T extends any>({
                 <Option
                     key={ option.id }
                     buttonType={ ButtonType.Blank }
-                    className={ classes.join(' ') }
+                    className={ `option ${classes.join(' ')}` }
                     onClick={ _onOptionClick(option) }
+                    style={ optionStyles }
                 >
                     { option.text }
                 </Option>

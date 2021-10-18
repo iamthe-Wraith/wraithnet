@@ -2,19 +2,37 @@ import { action, computed, makeObservable, observable, runInAction } from 'mobx'
 import { DnDDate } from '../../lib/dndDate';
 import { BaseModel } from '../base';
 import { CampaignModel } from './campaign';
+import { DnDClassModel, IDnDClass } from './class';
+import { DnDRaceModel } from './race';
 import { ICampaign } from './types';
 
 type PrivateFields = '_busy' |
     '_campaign' |
     '_campaigns' |
-    '_creating';
+    '_classes' |
+    '_creating' |
+    '_levels' |
+    '_loadingClasses' |
+    '_loadingLevels' |
+    '_loadingRaces' |
+    '_races';
+
+export interface IDnDExp {
+    level: number;
+    threshold: number;
+}
 
 export class DnDModel extends BaseModel {
     private _busy = false;
     private _creating = false;
     private _campaign: CampaignModel = null;
     private _campaigns: ICampaign[] = [];
-
+    private _classes: DnDClassModel[] = []
+    private _levels: IDnDExp[] = [];
+    private _loadingRaces = false;
+    private _loadingLevels = false;
+    private _loadingClasses = false;
+    private _races: DnDRaceModel[] = []; 
 
     constructor() {
         super();
@@ -22,12 +40,27 @@ export class DnDModel extends BaseModel {
             _busy: observable,
             _campaign: observable,
             _campaigns: observable,
+            _classes: observable,
             _creating: observable,
+            _levels: observable,
+            _loadingClasses: observable,
+            _loadingLevels: observable,
+            _loadingRaces: observable,
+            _races: observable,
             busy: computed,
             campaign: computed,
             campaigns: computed,
+            classes: computed,
             creating: computed,
+            levels: computed,
+            loadingClasses: computed,
+            loadingLevels: computed,
+            loadingRaces: computed,
+            races: computed,
             getCampaigns: action.bound,
+            getClasses: action.bound,
+            getLevels: action.bound,
+            getRaces: action.bound,
             forceSelect: action.bound,
             setCampaign: action.bound,
         });
@@ -45,8 +78,32 @@ export class DnDModel extends BaseModel {
         return this._campaigns;
     }
 
+    get classes() {
+        return this._classes;
+    }
+
     get creating() {
         return this._creating;
+    }
+
+    get levels() {
+        return this._levels;
+    }
+
+    get loadingClasses() {
+        return this._loadingClasses;
+    }
+
+    get loadingLevels() {
+        return this._loadingLevels;
+    }
+
+    get loadingRaces() {
+        return this._loadingRaces;
+    }
+
+    get races() {
+        return this._races;
     }
 
     public createCampaign = async (name: string, startDate: DnDDate) => {
@@ -91,6 +148,78 @@ export class DnDModel extends BaseModel {
             } else {
                 runInAction(() => {
                     this._busy = false;
+                });
+                
+                throw new Error(result.error);
+            }
+        }
+    }
+
+    public getClasses = async () => {
+        if (!this._loadingClasses && !this.classes?.length) {
+            this._loadingClasses = true;
+
+            const result = await this.webServiceHelper.sendRequest<IDnDClass[]>({
+                path: this.composeUrl('/dnd/static/class'),
+                method: 'GET',
+            });
+    
+            if (result.success) {
+                runInAction(() => {
+                    this._classes = result.value.map(c => new DnDClassModel(c));
+                    this._loadingClasses = false;
+                }); 
+            } else {
+                runInAction(() => {
+                    this._loadingClasses = false;
+                });
+                
+                throw new Error(result.error);
+            }
+        }
+    }
+
+    public getLevels = async () => {
+        if (!this._loadingLevels && !this.levels?.length) {
+            this._loadingLevels = true;
+
+            const result = await this.webServiceHelper.sendRequest<IDnDExp[]>({
+                path: this.composeUrl('/dnd/static/levels'),
+                method: 'GET',
+            });
+    
+            if (result.success) {
+                runInAction(() => {
+                    this._levels = result.value;
+                    this._loadingLevels = false;
+                }); 
+            } else {
+                runInAction(() => {
+                    this._loadingLevels = false;
+                });
+                
+                throw new Error(result.error);
+            }
+        }
+    }
+
+    public getRaces = async () => {
+        if (!this._loadingRaces && !this.races?.length) {
+            this._loadingRaces = true;
+
+            const result = await this.webServiceHelper.sendRequest<ICampaign[]>({
+                path: this.composeUrl('/dnd/static/race'),
+                method: 'GET',
+            });
+    
+            if (result.success) {
+                runInAction(() => {
+                    this._races = result.value.map(race => new DnDRaceModel(race));
+                    this._loadingRaces = false;
+                }); 
+            } else {
+                runInAction(() => {
+                    this._loadingRaces = false;
                 });
                 
                 throw new Error(result.error);

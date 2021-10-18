@@ -18,7 +18,7 @@ export const ModalOverlay = styled(animated.div)<IThemeProps>`
         min-height: 200px;
     }
 
-    .header {
+    .modal-header {
         position: relative;
         display: flex;
         align-items: center;

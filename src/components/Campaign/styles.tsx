@@ -63,6 +63,12 @@ export const Main = styled.div`
 
     .left-col {
         padding: 30px 5px 5px 10px;
+        
+        .pcs {
+            flex-grow: 1;
+            margin-top: 15px;
+            width: 100%;
+        }
     }
 
     .primary-display {
@@ -71,6 +77,10 @@ export const Main = styled.div`
         max-width: calc(100% - 640px);
         min-width: calc(100% - 640px);
         padding: 20px 5px 5px;
+
+        .dots {
+            align-self: flex-end;
+        }
 
         .editor {
             min-width: 100%;

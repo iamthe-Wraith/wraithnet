@@ -1,11 +1,13 @@
 import { observer } from 'mobx-react';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { DnDContext } from '../../contexts/DnD';
 import { DnDDate } from '../../lib/dndDate';
 import { DnDIpcRenderer } from '../../models/ipcRenderers/dnd';
 import { Button, ButtonType } from '../Button';
 import { DnDDailyChecklist } from '../DnDDailyChecklist';
 import { DnDDayPicker } from '../DnDDayPicker';
+import { DnDPCs } from '../DnDPCs';
+import { Dots } from '../Dots';
 import { Editor } from '../Editor';
 import { Header } from '../Header';
 import { PrevArrowIcon } from '../svgs/icons/PrevArrowIcon';
@@ -17,6 +19,7 @@ interface IProps {
 
 const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
     const dnd = useContext(DnDContext);
+    const [editorContent, setEditorContent] = useState('');
 
     const onBackClick = () => {
         dnd.setCampaign(null);
@@ -41,6 +44,14 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
                 <div>{ dnd.campaign.currentDate.stringify() }</div>
             </HeaderLeftContent>
         );
+    };
+
+    const renderPrimaryDisplay = () => {
+        if (!!editorContent) {
+            return <Editor content={ editorContent } />
+        }
+
+        return <Dots className='dots' height='150px' />
     }
 
     return (
@@ -57,10 +68,10 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
                         onDayClick={ onDayClick }
                         selectedDay={ dnd.campaign.currentDate.stringify() }
                     />
-                    <div>left</div>
+                    <DnDPCs className='pcs' />
                 </div>
                 <div className='primary-display'>
-                    <Editor className='editor' />
+                    { renderPrimaryDisplay() }
                 </div>
                 <div className='side-col right-col'>
                     <div>right</div>

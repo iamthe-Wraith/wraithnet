@@ -37,7 +37,7 @@ export const ModalBase: React.FC<IProps> = ({ children, className = '', header, 
 
     const renderHeader = () => {
         return (
-            <div className={ `header ${ typeof header === 'string' && 'header-text font-1'}` }>
+            <div className={ `modal-header ${ typeof header === 'string' && 'header-text font-1'}` }>
                 <Button
                     className='close'
                     buttonType={ ButtonType.Blank }

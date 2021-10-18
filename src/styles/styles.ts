@@ -115,6 +115,10 @@ export const GlobalStyles = createGlobalStyle<IThemeProps>`
     margin: 0;
     padding: 0;
   }
+
+  .tiny-popover {
+      z-index: 5;
+  }
 `;
 
 /**

@@ -2,8 +2,9 @@ import React from 'react';
 import { Button, ButtonType } from '../Button';
 import { CtasContainer } from './styles';
 
-interface ICta {
+export interface ICta {
     className?: string;
+    disabled?: boolean;
     text: string;
     type: ButtonType;
     onClick: () => void;
@@ -21,6 +22,7 @@ export const CTAs: React.FC<IProps> = ({ className = '', ctas }) => {
                 key={ `cta-${i} `}
                 buttonType={ cta.type }
                 className={ cta.className || '' }
+                disabled={ cta.disabled }
                 onClick={ cta.onClick }
             >
                 { cta.text }
