@@ -16,6 +16,13 @@ export const AnchorContainer = styled(Button)<IThemeProps>`
         flex-grow: 1;
     }
 
+    .multi-select-anchor {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
     .chevron {
         ${ FlexCenter}
         min-width: 20px;
@@ -32,6 +39,8 @@ export const DropdownContainer = styled.div<IThemeProps>``;
 
 export const OptionsContainer = styled.div<IThemeProps>`
     min-width: 70px;
+    max-height: 200px;
+    overflow: auto;
 `;
 
 export const Option = styled(Button)<IThemeProps>`

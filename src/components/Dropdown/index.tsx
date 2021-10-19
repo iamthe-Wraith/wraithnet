@@ -98,7 +98,7 @@ export const  Dropdown = <T extends any>({
             ? onRenderAnchor({ isOpen, selectedOption, selectedOptions })
             : isMultiSelect
                 ? (
-                    <div>
+                    <div className='multi-select-anchor'>
                         { selectedOptions.map(o => o.text).join(', ') || '--' }
                     </div>
                 )

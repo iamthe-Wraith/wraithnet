@@ -7,7 +7,7 @@ interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
 	className?: string;
 	inputClassName?: string;
 	inputId: string;
-	inputRef?: (ref: HTMLElement) => void;
+	inputRef?: (ref: HTMLInputElement) => void;
 	leftAccessory?: React.ReactNode;
 	rightAccessory?: React.ReactNode;
 	type?: string;

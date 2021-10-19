@@ -65,7 +65,7 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
             });
 
             setClassOptions(options);
-            const selectedOptions = options.filter(o => !!dnd.classes.find(c => o.context.id === c.id));
+            const selectedOptions = options.filter(o => !!pc?.classes?.find(c => o.context.id === c.id));
             setSelectedClassOption(!!selectedOptions.length ? selectedOptions : [options[0]]);
         }
     }, [dnd?.classes]);
@@ -273,7 +273,7 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
             header={`${!!pc ? 'Edit' : 'Create'} PC`}
             onClose={ onClose }
         >
-            <FieldContainer>
+            <FieldContainer className='full-width'>
                 <div className='label'>character name</div>
                 <TextInput
                     inputId='pc-name-input'

@@ -5,7 +5,6 @@ import { DnDContext } from '../../contexts/DnD';
 import { PCModel } from '../../models/dnd/pc';
 import { IThemeProps } from '../../styles/themes';
 import { Button, ButtonType } from '../Button';
-import { AnglePos, AngleSize } from '../containers/AngleCorner/styles';
 import { DnDPCModal } from '../DnDPCModal';
 import { LoadingSpinner, SpinnerSize, SpinnerType } from '../LoadingSpinner';
 import { DnDPC } from './DnDPC';
@@ -51,6 +50,7 @@ const DnDPCsBase: React.FC<IProps> = ({ className = '', theme }) => {
     const dnd = useContext(DnDContext);
     const [showPCModal, setShowPCModal] = useState(false);
     const [selectedPC, setSelectedPC] = useState<PCModel>(null);
+    const [selectedPCToEdit, setSelectedPCToEdit] = useState<PCModel>(null);
 
     useEffect(() => {
         dnd.campaign.loadPCs()
@@ -59,12 +59,17 @@ const DnDPCsBase: React.FC<IProps> = ({ className = '', theme }) => {
             });
     }, []);
 
-    const onClick = (pc: PCModel) => {
+    const onPCClick = (pc: PCModel) => {
         setSelectedPC(pc);
+        console.log(`opening pc details for ${pc.name}`)
+    }
+
+    const onPCEditClick = (pc: PCModel) => {
+        setSelectedPCToEdit(pc);
     }
     
     const onClose = () => {
-        setSelectedPC(null);
+        setSelectedPCToEdit(null);
         setShowPCModal(false)
     }
 
@@ -83,7 +88,8 @@ const DnDPCsBase: React.FC<IProps> = ({ className = '', theme }) => {
             <DnDPC
                 key={ pc.id }
                 className='pc'
-                onClick={ onClick }
+                onClick={ onPCClick }
+                onEditClick={ onPCEditClick }
                 pc={ pc }
             />
         ))
@@ -104,11 +110,11 @@ const DnDPCsBase: React.FC<IProps> = ({ className = '', theme }) => {
                 </Button>
             </div>
             {
-                (showPCModal || !!selectedPC) && (
+                (showPCModal || !!selectedPCToEdit) && (
                     <DnDPCModal
                         isOpen
                         onClose={ onClose }
-                        pc={ selectedPC }
+                        pc={ selectedPCToEdit }
                     />
                 )
             }

@@ -23,6 +23,7 @@ export const DnDPCsContainer = styled.div<IThemeProps>`
 
         .pc {
             width: 100%;
+            margin-bottom: 10px;
         }
     }
 

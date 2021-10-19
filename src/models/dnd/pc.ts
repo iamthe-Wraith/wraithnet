@@ -6,8 +6,10 @@ import { ICampaign } from "./types";
 
 type PrivateFields = '_busy' |
     '_campaign' |
+    '_leveledUp' |
     '_pc' |
-    '_setPc';
+    '_setPc' |
+    '_updatingExp';
 
 export interface IPCRef {
     id: string;
@@ -29,21 +31,36 @@ export interface IPC extends IPCRef {
     // contacts
 }
 
+export interface IExpResponse {
+    exp: number;
+    expForNextLevel: number;
+    level: number;
+    leveledUp: boolean;
+}
+
 export class PCModel extends BaseModel {
     private _busy = false;
     private _campaign: ICampaign = null;
     private _pc: IPCRef = null;
+    private _updatingExp = false;
+    private _leveledUp = false;
 
     constructor(campaign: ICampaign, pc: IPCRef) {
         super();
         makeObservable<PCModel, PrivateFields>(this, {
             _busy: observable,
             _campaign: observable,
+            _leveledUp: observable,
             _pc: observable,
+            _updatingExp: observable,
             id: computed,
+            leveledUp: computed,
             name: computed,
+            updatingExp: computed,
             _setPc: action.bound,
+            resetLeveledUp: action.bound,
             update: action.bound,
+            updateExp: action.bound,
         });
 
         this._campaign = campaign;
@@ -61,6 +78,12 @@ export class PCModel extends BaseModel {
     get exp() { return this._pc.exp }
     get expForNextLevel() { return this._pc.expForNextLevel }
     get level() { return this._pc.level }
+    get updatingExp() { return this._updatingExp }
+    get leveledUp() { return this._leveledUp }
+
+    public resetLeveledUp = () => {
+        this._leveledUp = false;
+    }
 
     public update = async (name: string, race: string, classes: string[], age: number, exp: number, level: number) => {
         if (!this._busy) {
@@ -89,6 +112,35 @@ export class PCModel extends BaseModel {
             } else {
                 runInAction(() => {
                     this._busy = false;
+                });
+                
+                throw new Error(result.error);
+            }
+        }
+    }
+
+    public updateExp = async (value: string) => {
+        if (!this._updatingExp) {
+            this._updatingExp = true;
+
+            const result = await this.webServiceHelper.sendRequest<IExpResponse>({
+                path: this.composeUrl(`/dnd/${this._campaign.id}/pc/${ this._pc.id }/exp`),
+                method: 'PATCH',
+                data: { exp: value },
+            });
+    
+            if (result.success) {
+                runInAction(() => {
+                    const { exp, expForNextLevel, level, leveledUp } = result.value;
+                    this._pc.exp = exp;
+                    this._pc.level = level;
+                    this._pc.expForNextLevel = expForNextLevel;
+                    this._leveledUp = leveledUp;
+                    this._updatingExp = false;
+                }); 
+            } else {
+                runInAction(() => {
+                    this._updatingExp = false;
                 });
                 
                 throw new Error(result.error);

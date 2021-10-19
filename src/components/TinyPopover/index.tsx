@@ -9,7 +9,7 @@ interface IArrowRenderer {
 	position: PopoverPosition;
 }
 
-interface IProps {
+export interface ITinyPopoverProps {
 	align?: Exclude<PopoverAlign, 'custom'>;
 	anchor: React.ReactNode;
 	arrow?: Partial<ArrowContainerProps>;
@@ -77,14 +77,14 @@ const getStylesByType = (type: PopoverType) => {
 	}
 };
 
-export class TinyPopover extends React.Component<IProps, IState> {
-	public static defaultProps: IProps = {
+export class TinyPopover extends React.Component<ITinyPopoverProps, IState> {
+	public static defaultProps: ITinyPopoverProps = {
 		anchor: null,
 		children: null,
 		type: PopoverType.custom,
 	};
 
-	public static getDerivedStateFromProps(props: IProps, state: IState) {
+	public static getDerivedStateFromProps(props: ITinyPopoverProps, state: IState) {
 		const nextState: IState = {};
 
 		if (state.isOpen !== props.isOpen) {
@@ -94,7 +94,7 @@ export class TinyPopover extends React.Component<IProps, IState> {
 		return Object.keys(nextState).length > 0 ? nextState : null;
 	}
 
-	constructor(props: IProps) {
+	constructor(props: ITinyPopoverProps) {
 		super(props);
 
 		this.state = {

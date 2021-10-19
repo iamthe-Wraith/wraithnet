@@ -11,8 +11,13 @@ export const DnDPCModalContainer = styled(Modal)<IThemeProps>`
 
 export const FieldContainer = styled.div<IThemeProps>`
     flex-grow: 1;
+    max-width: 50%;
     margin-bottom: 10px;
     padding: 0 5px;
+
+    &.full-width {
+        max-width: 100%;
+    }
 
     .dropdown-anchor {
         width: 100%;
