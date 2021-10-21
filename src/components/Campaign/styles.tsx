@@ -58,6 +58,7 @@ export const Main = styled.div`
 
         .daily-checklist {
             max-height: 50%;
+            width: calc(100% - 20px);
         }
     }
 
