@@ -72,8 +72,6 @@ const DnDPCBase: React.FC<IProps> = ({ className = '', onClick, onEditClick, pc,
 
     const onXPKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'Enter') {
-            console.log('expValue: ', xpValue);
-            
             pc.updateExp(xpValue)
                 .then(() => {
                     setXPValue('');

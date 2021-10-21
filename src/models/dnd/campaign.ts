@@ -2,7 +2,7 @@ import { action, computed, makeObservable, observable, runInAction } from "mobx"
 import { DnDDate } from "../../lib/dndDate";
 import { BaseModel } from "../base";
 import { CampaignDailyChecklistModel } from "./daily-checklist";
-import { IPCRef, PCModel } from "./pc";
+import { IExpResponse, IPCRef, PCModel } from "./pc";
 import { ICampaign } from "./types";
 
 type PrivateFields = '_busy' |
@@ -21,6 +21,7 @@ export class CampaignModel extends BaseModel {
     private _startDate: DnDDate = null;
     public loadingPCs = false;
     public creatingPC = false;
+    public updatingPartyXP = false;
     
     constructor (campaign: ICampaign) {
         super();
@@ -33,6 +34,7 @@ export class CampaignModel extends BaseModel {
             _startDate: observable,
             creatingPC: observable,
             loadingPCs: observable,
+            updatingPartyXP: observable,
             busy: computed,
             createdAt: computed,
             currentDate: computed,
@@ -118,6 +120,38 @@ export class CampaignModel extends BaseModel {
             } else {
                 runInAction(() => {
                     this.loadingPCs = false;
+                });
+                
+                throw new Error(result.error);
+            }
+        }
+    }
+
+    public updatePartyXP = async (value: string) => {
+        if (!this.updatingPartyXP) {
+            this.updatingPartyXP = true;
+
+            const result = await this.webServiceHelper.sendRequest<{pc: IPCRef, exp: IExpResponse}[]>({
+                path: this.composeUrl(`/dnd/${this._campaign.id}/party-exp`),
+                method: 'PATCH',
+                data: { exp: value },
+            });
+    
+            if (result.success) {
+                runInAction(() => {
+                    result.value.forEach(x => {
+                        const pc = this._pcs.find(p => p.id === x.pc.id);
+                        if (pc) {
+                            pc.setPc(x.pc);
+                            pc.leveledUp = x.exp.leveledUp;
+                        }
+                    });
+
+                    this.updatingPartyXP = false;
+                }); 
+            } else {
+                runInAction(() => {
+                    this.updatingPartyXP = false;
                 });
                 
                 throw new Error(result.error);

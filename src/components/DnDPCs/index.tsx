@@ -1,13 +1,17 @@
 import { observer } from 'mobx-react-lite';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { KeyboardEvent, useContext, useEffect, useRef, useState } from 'react';
 import { withTheme } from 'styled-components';
 import { DnDContext } from '../../contexts/DnD';
 import { PCModel } from '../../models/dnd/pc';
 import { IThemeProps } from '../../styles/themes';
 import { Button, ButtonType } from '../Button';
+import { AnglePos, AngleSize } from '../containers/AngleCorner/styles';
 import { DnDPCModal } from '../DnDPCModal';
 import { LoadingSpinner, SpinnerSize, SpinnerType } from '../LoadingSpinner';
+import { XIcon } from '../svgs/icons/XIcon';
+import { TextInput } from '../TextInput';
 import { DnDPC } from './DnDPC';
+import { XPInputContainer } from './DnDPC/styles';
 
 import { DnDPCsContainer } from './styles';
 
@@ -49,6 +53,9 @@ interface IProps extends IThemeProps {
 const DnDPCsBase: React.FC<IProps> = ({ className = '', theme }) => {
     const dnd = useContext(DnDContext);
     const [showPCModal, setShowPCModal] = useState(false);
+    const [showXPInput, setShowXPInput] = useState(false);
+    const [xpValue, setXPValue] = useState('');
+    const xpRef = useRef<HTMLInputElement>(null);
     const [selectedPC, setSelectedPC] = useState<PCModel>(null);
     const [selectedPCToEdit, setSelectedPCToEdit] = useState<PCModel>(null);
 
@@ -59,6 +66,15 @@ const DnDPCsBase: React.FC<IProps> = ({ className = '', theme }) => {
             });
     }, []);
 
+    useEffect(() => {
+        xpRef.current?.focus();
+    }, [showXPInput]);
+
+    const onClose = () => {
+        setSelectedPCToEdit(null);
+        setShowPCModal(false)
+    }
+
     const onPCClick = (pc: PCModel) => {
         setSelectedPC(pc);
         console.log(`opening pc details for ${pc.name}`)
@@ -67,10 +83,59 @@ const DnDPCsBase: React.FC<IProps> = ({ className = '', theme }) => {
     const onPCEditClick = (pc: PCModel) => {
         setSelectedPCToEdit(pc);
     }
-    
-    const onClose = () => {
-        setSelectedPCToEdit(null);
-        setShowPCModal(false)
+
+    const onXPChange = (value: string) => {
+        const regex = /\d+/;
+        let minus = '';
+        let v = `${value}`;
+
+        if (!v) {
+            setXPValue('');
+            return;
+        }
+
+        if (v[0] === '-') {
+            minus = '-';
+            v = v.split('-').join('');
+        }
+        if (v[0] === '+') {
+            v = v.split('+').join('');
+        }
+
+        if (!v) {
+            setXPValue(!!minus ? '-' : '+');
+            return;
+        }
+
+        const digits = v.match(regex);
+        const vv = parseInt(digits[0]);
+        if (!isNaN(vv)) {
+            setXPValue(`${!!minus ? '-' : '+'}${vv}`);
+        }
+    }
+
+    const onXPInputClose = () => {
+        setXPValue('');
+        setShowXPInput(false);
+    }
+
+    const onXPKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            dnd.campaign.updatePartyXP(xpValue)
+                .then(() => {
+                    setXPValue('');
+                    setShowXPInput(false);
+                })
+                .catch((err: any) => {
+                    console.error(err);
+                });
+        }
+    }
+
+    const onXPRef = (ref: HTMLInputElement | undefined) => {
+        if (ref) {
+            xpRef.current = ref;
+        }
     }
 
     const renderPCs = () => {
@@ -97,7 +162,47 @@ const DnDPCsBase: React.FC<IProps> = ({ className = '', theme }) => {
 
     return (
         <DnDPCsContainer className={ className }>
-            <div className='header'>PCs</div>
+            <div className='header'>
+                <div className='header-text'>PCs</div>
+                <div>
+                    {
+                        showXPInput
+                            ? (
+                                <XPInputContainer
+                                    backgroundColor={ theme.dark }
+                                    borderColor={ theme.primary }
+                                    borderWidth={ 1 }
+                                    config={[{position: AnglePos.TopRight, size: AngleSize.Tiny}]}
+                                >
+                                    <Button
+                                        buttonType={ ButtonType.Blank }
+                                        className='xp-input-close'
+                                        onClick={ onXPInputClose }
+                                    >
+                                        <XIcon fill={ theme.light } />
+                                    </Button>
+                                    <TextInput
+                                        className='xp-text-input'
+                                        inputId={`pcs-xp-input`}
+                                        onChange={e => onXPChange(e.target.value)}
+                                        onKeyDown={ onXPKeyDown }
+                                        inputRef={ onXPRef }
+                                        value={ xpValue }
+                                    />
+                                </XPInputContainer>
+                            )
+                            : (
+                                <Button
+                                    className='pc-action-button'
+                                    buttonType={ ButtonType.Blank }
+                                    onClick={() => setShowXPInput(true)}
+                                >
+                                    <div className='xp-icon'>party xp</div>
+                                </Button>
+                            )
+                    }
+                </div>
+            </div>
             <div className='pc-list-container'>
                 { renderPCs() }
             </div>

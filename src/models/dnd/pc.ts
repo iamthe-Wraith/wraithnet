@@ -8,7 +8,6 @@ type PrivateFields = '_busy' |
     '_campaign' |
     '_leveledUp' |
     '_pc' |
-    '_setPc' |
     '_updatingExp';
 
 export interface IPCRef {
@@ -57,14 +56,14 @@ export class PCModel extends BaseModel {
             leveledUp: computed,
             name: computed,
             updatingExp: computed,
-            _setPc: action.bound,
+            setPc: action.bound,
             resetLeveledUp: action.bound,
             update: action.bound,
             updateExp: action.bound,
         });
 
         this._campaign = campaign;
-        this._setPc(pc);
+        this.setPc(pc);
     }
 
     get busy() { return this._busy }
@@ -80,9 +79,14 @@ export class PCModel extends BaseModel {
     get level() { return this._pc.level }
     get updatingExp() { return this._updatingExp }
     get leveledUp() { return this._leveledUp }
+    set leveledUp(value: boolean) { this._leveledUp = value } 
 
     public resetLeveledUp = () => {
         this._leveledUp = false;
+    }
+
+    public setPc = (pc: IPCRef) => {
+        this._pc = pc;
     }
 
     public update = async (name: string, race: string, classes: string[], age: number, exp: number, level: number) => {
@@ -146,9 +150,5 @@ export class PCModel extends BaseModel {
                 throw new Error(result.error);
             }
         }
-    }
-
-    private _setPc = (pc: IPCRef) => {
-        this._pc = pc;
     }
 }

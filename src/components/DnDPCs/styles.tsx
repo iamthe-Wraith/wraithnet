@@ -7,10 +7,14 @@ export const DnDPCsContainer = styled.div<IThemeProps>`
     position: relative;
 
     .header {
-        ${ PrimaryFont }
-        height: 20px;
+        ${ FlexHorizontalCenter }
+        justify-content: space-between;
         margin-bottom: 10px;
-        color: ${({theme}) => theme.primary};
+
+        .header-text {
+            ${ PrimaryFont }
+            color: ${({theme}) => theme.primary};
+        }
     }
 
     .pc-list-container {
