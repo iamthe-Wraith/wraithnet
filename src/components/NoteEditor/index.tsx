@@ -1,8 +1,10 @@
 import { observer } from 'mobx-react';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkInlineLinks from 'remark-inline-links';
 import { UserContext } from '../../contexts/User';
-import { INote, INoteRef, NoteModel } from '../../models/notes';
+import { INote, NoteModel } from '../../models/notes';
 import { UserRole } from '../../models/user';
 import { Button, ButtonType } from '../Button';
 import { Checkbox } from '../Checkbox';
@@ -10,6 +12,7 @@ import { EditIcon } from '../svgs/icons/EditIcon';
 import { TextArea } from '../TextArea';
 import { TextInput } from '../TextInput';
 
+import { HeadingsComponent } from './components/headings';
 import { Body, Header, NoteEditorContainer } from './styles';
 
 interface IProps {
@@ -17,6 +20,15 @@ interface IProps {
     note: NoteModel;
     readonly?: boolean;
     onSave?: () => void;
+}
+
+const customComponents = {
+    h1: HeadingsComponent,
+    h2: HeadingsComponent,
+    h3: HeadingsComponent,
+    h4: HeadingsComponent,
+    h5: HeadingsComponent,
+    h6: HeadingsComponent,
 }
 
 const NoteEditorBase: React.FC<IProps> = ({
@@ -140,6 +152,8 @@ const NoteEditorBase: React.FC<IProps> = ({
                                 <div className='markdown-container'>
                                     <ReactMarkdown
                                         children={ content }
+                                        remarkPlugins={[remarkGfm, remarkInlineLinks]}
+                                        components={customComponents}
                                     />
                                 </div>
                             )

@@ -7,8 +7,6 @@ import { NoteModel } from '../../models/notes';
 import { UserRole } from '../../models/user';
 import { Button, ButtonType } from '../Button';
 import { Left1 } from '../decorators/left/Left1';
-import { Top1 } from '../decorators/top/Top1';
-import { Editor } from '../Editor';
 import { LoadingSpinner, SpinnerSize, SpinnerType } from '../LoadingSpinner';
 import { Modal, ModalSize } from '../Modal';
 import { NoteEditor } from '../NoteEditor';

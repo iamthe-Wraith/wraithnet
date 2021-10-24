@@ -92,6 +92,11 @@ export const Body = styled.div<IThemeProps>`
             h6 {
                 padding: 20px 0 10px;
                 color: ${({theme}) => theme.primary};
+
+                & * {
+                    ${ PrimaryFont }
+                    color: ${({theme}) => theme.primary};
+                }
             }
     
             a {

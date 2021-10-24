@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { AbsoluteCenter, FlexCol, FlexHorizontalCenter, PrimaryFont } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
-import { AngleCorner } from '../containers/AngleCorner';
 
 export const DnDMiscResourcesContainer = styled.div<IThemeProps>`
     ${ FlexCol }
