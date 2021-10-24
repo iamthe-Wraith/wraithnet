@@ -9,6 +9,7 @@ const max = css`
 `;
 
 export const EditorContainer = styled.div<IThemeProps>`
+    ${ max }
     display: flex;
     padding: 10px;
 
@@ -29,6 +30,11 @@ export const EditorContainer = styled.div<IThemeProps>`
     .markdown-container {
         ${ max }
         overflow: auto;
+
+        & > :first-child {
+            margin-top: 0;
+            padding-top: 0; 
+        }
 
         h1,
         h2,

@@ -7,6 +7,8 @@ import { EditorContainer } from './styles';
 interface IProps {
     className?: string;
     content?: string;
+    readonly?: boolean;
+    onEditClose?:(content: string) => void;
 }
 
 // TODO: add creating file/content/doc
@@ -29,24 +31,33 @@ interface IProps {
 export const Editor: React.FC<IProps> = ({
     className = '',
     content = '',
+    onEditClose,
+    readonly,
 }) => {
     const [_content, setContent] = useState(content);
     const [editMode, setEditMode] = useState(!content);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        if (editMode) {
-            console.log('setting focus');
-            
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (readonly) return;
+        
+        if (editMode) {            
             window.setTimeout(() => {
                 textareaRef.current.focus();
                 // TODO: set cursor to end of file...
             }, 10);
+        } else {
+            if (mounted) onEditClose?.(_content);
         }
     }, [editMode]);
 
     const setEditorHotkeys = (e: KeyboardEvent) => {
-        if (e.key === 'e' && e.ctrlKey) {
+        if (e.key === 'e' && e.ctrlKey && !readonly) {
             // enter/leave edit mode
 			e.stopPropagation();
 			e.preventDefault();
@@ -57,11 +68,13 @@ export const Editor: React.FC<IProps> = ({
     }
 
     useEffect(() => {
-        window.removeEventListener('keydown', setEditorHotkeys);
-		window.addEventListener('keydown', setEditorHotkeys);
-		return () => {
-			window.removeEventListener('keydown', setEditorHotkeys);
-		};
+        if (!readonly) {
+            window.removeEventListener('keydown', setEditorHotkeys);
+            window.addEventListener('keydown', setEditorHotkeys);
+            return () => {
+                window.removeEventListener('keydown', setEditorHotkeys);
+            };
+        }
     }, [editMode]);
 
     const onContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -95,7 +108,7 @@ export const Editor: React.FC<IProps> = ({
     return (
         <EditorContainer className={ className }>
             {
-                editMode
+                (editMode && !readonly)
                     ? renderEditor()
                     : renderMarkdown()
             }

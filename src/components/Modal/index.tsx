@@ -10,11 +10,19 @@ import { XIcon } from '../svgs/icons/XIcon';
 
 import { ModalOverlay } from './styles';
 
+export enum ModalSize {
+    Small = 'small-modal',
+    Medium = 'medium-modal',
+    Large = 'large-modal',
+    XLarge = 'extra-large-modal',
+}
+
 interface IProps extends IThemeProps {
     className?: string;
     header?: string | JSX.Element;
     isOpen?: boolean;
     onClose:() => void;
+    size?: ModalSize;
 }
 
 const overlayFrom = { opacity: 0 };
@@ -22,7 +30,15 @@ const overlayTo = { opacity: 1 };
 const modalFrom = { ...overlayFrom, transform: 'translate3d(-50%, -80%, 0)' };
 const modalTo = { ...overlayTo, transform: 'translate3d(-50%, -50%, 0)' };
 
-export const ModalBase: React.FC<IProps> = ({ children, className = '', header, isOpen, onClose, theme }) => {
+export const ModalBase: React.FC<IProps> = ({
+    children,
+    className = '',
+    header,
+    isOpen,
+    onClose,
+    size = ModalSize.Medium,
+    theme,
+}) => {
     const overlaySpring = useSpring({
         config: config.gentle,
         from: overlayFrom,
@@ -58,18 +74,18 @@ export const ModalBase: React.FC<IProps> = ({ children, className = '', header, 
         )
     }
 
-    if (!isOpen) {
-        return null;
-    }
+    if (!isOpen) return null;
 
     return (
         <ModalOverlay className={ className } style={ overlaySpring }>
-            <animated.div className='modal-container' style={ modalSpring }>
+            <animated.div className={`modal-container ${size}`} style={ modalSpring }>
                 <AngleCorner
+                    childrenContainerClassName='angle-corner-children-container'
+                    className='modal-angle-corner'
                     backgroundColor={ theme.dark }
                     borderColor={ theme.primary }
                     borderWidth={ 1 }
-                    config={ [{ position: AnglePos.TopLeft, size: AngleSize.Medium }] }
+                    config={ [{ position: AnglePos.TopLeft, size: size === ModalSize.Small ? AngleSize.Small : AngleSize.Medium }] }
                 >
                     { renderHeader() }
                     { renderBody() }

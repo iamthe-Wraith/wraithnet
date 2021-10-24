@@ -1,6 +1,8 @@
 import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 import { DnDDate } from '../../lib/dndDate';
 import { BaseModel } from '../base';
+import { CollectionModel } from '../collection';
+import { INoteRef, NoteModel } from '../notes';
 import { CampaignModel } from './campaign';
 import { DnDClassModel, IDnDClass } from './class';
 import { DnDRaceModel } from './race';
@@ -11,10 +13,12 @@ type PrivateFields = '_busy' |
     '_campaigns' |
     '_classes' |
     '_creating' |
+    '_init' |
     '_levels' |
     '_loadingClasses' |
     '_loadingLevels' |
     '_loadingRaces' |
+    '_misc' |
     '_races';
 
 export interface IDnDExp {
@@ -32,6 +36,7 @@ export class DnDModel extends BaseModel {
     private _loadingRaces = false;
     private _loadingLevels = false;
     private _loadingClasses = false;
+    private _misc: CollectionModel<INoteRef, NoteModel> = null;
     private _races: DnDRaceModel[] = []; 
 
     constructor() {
@@ -46,6 +51,7 @@ export class DnDModel extends BaseModel {
             _loadingClasses: observable,
             _loadingLevels: observable,
             _loadingRaces: observable,
+            _misc: observable,
             _races: observable,
             busy: computed,
             campaign: computed,
@@ -56,7 +62,9 @@ export class DnDModel extends BaseModel {
             loadingClasses: computed,
             loadingLevels: computed,
             loadingRaces: computed,
+            misc: computed,
             races: computed,
+            _init: action.bound,
             getCampaigns: action.bound,
             getClasses: action.bound,
             getLevels: action.bound,
@@ -64,47 +72,20 @@ export class DnDModel extends BaseModel {
             forceSelect: action.bound,
             setCampaign: action.bound,
         });
+        this._init();
     }
 
-    get busy () {
-        return this._busy;
-    }
-
-    get campaign() {
-        return this._campaign;
-    }
-
-    get campaigns() {
-        return this._campaigns;
-    }
-
-    get classes() {
-        return this._classes;
-    }
-
-    get creating() {
-        return this._creating;
-    }
-
-    get levels() {
-        return this._levels;
-    }
-
-    get loadingClasses() {
-        return this._loadingClasses;
-    }
-
-    get loadingLevels() {
-        return this._loadingLevels;
-    }
-
-    get loadingRaces() {
-        return this._loadingRaces;
-    }
-
-    get races() {
-        return this._races;
-    }
+    get busy () { return this._busy }
+    get campaign() { return this._campaign }
+    get campaigns() { return this._campaigns }
+    get classes() { return this._classes }
+    get creating() { return this._creating }
+    get levels() { return this._levels }
+    get loadingClasses() { return this._loadingClasses }
+    get loadingLevels() { return this._loadingLevels }
+    get loadingRaces() { return this._loadingRaces }
+    get misc() { return this._misc }
+    get races() { return this._races }
 
     public createCampaign = async (name: string, startDate: DnDDate) => {
         if (!this._busy) {
@@ -238,5 +219,12 @@ export class DnDModel extends BaseModel {
 
     public forceSelect = () => {
         this._campaign = new CampaignModel(this.campaigns[0]);
+    }
+
+    private _init = () => {
+        this._misc = new CollectionModel<INoteRef, NoteModel>(
+            this.composeUrl('/dnd/notes/misc'),
+            (note: INoteRef) => new NoteModel(note)
+        );
     }
 }

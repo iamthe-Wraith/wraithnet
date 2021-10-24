@@ -1,6 +1,6 @@
 import { animated } from '@react-spring/web';
 import styled from 'styled-components';
-import { AbsoluteCenter } from '../../styles/styles';
+import { AbsoluteCenter, FlexCol } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 
 export const ModalOverlay = styled(animated.div)<IThemeProps>`
@@ -14,15 +14,54 @@ export const ModalOverlay = styled(animated.div)<IThemeProps>`
 
     .modal-container {
         ${ AbsoluteCenter }
-        min-width: 400px;
-        min-height: 200px;
+        display: flex;
+
+        .modal-angle-corner {
+            min-width: 100%;
+            min-height: 100%;
+        }
+
+        .angle-corner-children-container {
+            ${ FlexCol }
+            max-height: 100%;
+            overflow: hidden;
+        }
+
+        &.small-modal {
+            min-width: 250px;
+            min-height: 100px;
+            max-height: 30vh;
+
+            .modal-header {
+                padding-left: 25px;
+            }
+        }
+
+        &.medium-modal {
+            min-width: 400px;
+            min-height: 200px;
+            max-height: 50vh;
+        }
+
+        &.large-modal {
+            min-width: 60vw;
+            min-height: 90vh;
+            max-height: 90vh;
+        }
+
+        &.extra-large-modal {
+            min-width: 80vw;
+            min-height: 90vh;
+            max-height: 90vh;
+        }
     }
 
     .modal-header {
         position: relative;
         display: flex;
         align-items: center;
-        height: 45px;
+        min-height: 45px;
+        max-height: 45px;
         padding-left: 45px;
 
         &.header-text {
@@ -38,6 +77,10 @@ export const ModalOverlay = styled(animated.div)<IThemeProps>`
     }
 
     .body {
+        ${ FlexCol }
+        flex-grow: 1;
+        max-height: 100%;
         padding: 10px 20px 20px;
+        overflow: auto;
     }
 `;

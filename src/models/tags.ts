@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import timezone from 'dayjs/plugin/timezone';
-import { action, computed, makeObservable, observable, runInAction } from "mobx";
+import { action, computed, makeObservable, observable, runInAction, _allowStateChangesInsideComputed } from "mobx";
 import { WraithnetApiWebServiceHelper } from "../lib/webServiceHelpers/wraithnetApiWebServiceHelper";
 import { BaseModel } from "./base";
 
@@ -107,22 +107,6 @@ export class TagsModel extends BaseModel {
         return this._tags;
     }
 
-    private constructQuery = () => {
-        const query: string[] = [];
-
-        Object.entries(this._criteria).forEach(([key, value]) => {
-            if (value) {
-                query.push(`${key}=${value}`);
-            }
-        });
-
-        query.push(`page=${this._page}&pageSize=${this._pageSize}`);
-
-        return query.length > 0
-            ? `?${query.join('&')}`
-            : '';
-    }
-
     public getTags = async (forcePaginationReset?: boolean) => {
         if (forcePaginationReset) {
             this._loaded = false;
@@ -133,8 +117,9 @@ export class TagsModel extends BaseModel {
         this._busy = true;
 
         const result = await this.webServiceHelper.sendRequest<ITagsResponse>({
-            path: `${this.composeUrl('/tags')}${this.constructQuery()}`,
+            path: `${this.composeUrl('/tags')}`,
             method: 'GET',
+            queryParams: { ...this._criteria, page: this._page, pageSize: this._pageSize }
         });
 
         if (result.success) {

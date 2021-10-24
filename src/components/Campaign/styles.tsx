@@ -56,6 +56,13 @@ export const Main = styled.div`
         align-items: flex-end;
         padding: 10px 10px 5px 5px;
 
+        .misc-resources {
+            flex-grow: 1;
+            width: 100%;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
         .daily-checklist {
             max-height: 50%;
             width: calc(100% - 20px);

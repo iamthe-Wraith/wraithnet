@@ -6,6 +6,7 @@ import { DnDIpcRenderer } from '../../models/ipcRenderers/dnd';
 import { Button, ButtonType } from '../Button';
 import { DnDDailyChecklist } from '../DnDDailyChecklist';
 import { DnDDayPicker } from '../DnDDayPicker';
+import { DnDMiscResources } from '../DnDMiscResources';
 import { DnDPCs } from '../DnDPCs';
 import { Dots } from '../Dots';
 import { Editor } from '../Editor';
@@ -74,7 +75,7 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
                     { renderPrimaryDisplay() }
                 </div>
                 <div className='side-col right-col'>
-                    <div>right</div>
+                    <DnDMiscResources className='misc-resources' />
                     <DnDDailyChecklist className='daily-checklist' />
                 </div>
             </Main>
