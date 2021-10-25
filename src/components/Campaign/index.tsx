@@ -9,7 +9,6 @@ import { DnDDayPicker } from '../DnDDayPicker';
 import { DnDMiscResources } from '../DnDMiscResources';
 import { DnDPCs } from '../DnDPCs';
 import { Dots } from '../Dots';
-import { Editor } from '../Editor';
 import { Header } from '../Header';
 import { PrevArrowIcon } from '../svgs/icons/PrevArrowIcon';
 import { CampaignContainer, Footer, HeaderLeftContent, Main } from './styles';
@@ -20,7 +19,6 @@ interface IProps {
 
 const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
     const dnd = useContext(DnDContext);
-    const [editorContent, setEditorContent] = useState('');
 
     const onBackClick = () => {
         dnd.setCampaign(null);
@@ -48,10 +46,6 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
     };
 
     const renderPrimaryDisplay = () => {
-        if (!!editorContent) {
-            return <Editor content={ editorContent } />
-        }
-
         return <Dots className='dots' height='150px' />
     }
 
