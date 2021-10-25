@@ -116,7 +116,7 @@ const DnDMiscResourcesBase: React.FC<IProps> = ({ className = '' }) => {
         <DnDMiscResourcesContainer className={ className }>
             <div className='misc-resources-wrapper'>
                 <Left1 />
-                <div className='header'>resources</div>
+                <div className='header'>Resources</div>
                 <div className='dnd-misc-resources'>
                     { renderMiscResources() }
                 </div>

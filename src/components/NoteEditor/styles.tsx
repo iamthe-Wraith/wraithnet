@@ -14,6 +14,7 @@ export const Header = styled.div<IThemeProps>`
     ${ FlexHorizontalCenter }
     justify-content: space-between;
     min-height: ${headerHeight}px;
+    padding: 10px 0;
 
     .name {
         min-width: 50%;

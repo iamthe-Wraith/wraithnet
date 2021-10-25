@@ -28,6 +28,7 @@ export const DnDMiscResourcesContainer = styled.div<IThemeProps>`
         flex-grow: 1;
         width: 100%;
         max-height: calc(100% - 54px);
+        padding-left: 5px;
         overflow: auto;
     }
 

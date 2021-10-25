@@ -22,7 +22,7 @@ interface IProps {
     onSave?: () => void;
 }
 
-const customComponents = {
+const customComponents: any = {
     h1: HeadingsComponent,
     h2: HeadingsComponent,
     h3: HeadingsComponent,
