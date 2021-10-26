@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { AbsoluteCenter, FlexHorizontalCenter } from '../../styles/styles';
+import { AbsoluteCenter, FlexHorizontalCenter, NoScrollBar } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 
 export const CampaignsListContainer = styled.div<IThemeProps>`
@@ -16,11 +16,8 @@ export const CampaignsListContainer = styled.div<IThemeProps>`
 `;
 
 export const CampaignsContainer = styled.div`
+    ${ NoScrollBar }
     width: 100%;
     height: calc(100% - 20px);
     overflow-y: auto;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
 `;

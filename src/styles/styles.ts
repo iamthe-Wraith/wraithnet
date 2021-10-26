@@ -164,6 +164,12 @@ export const FlexHorizontalCenter = css`
   align-items: center;
 `;
 
+export const NoScrollBar = css`
+    &::-webkit-scrollbar {
+        display: none;
+    }
+`;
+
 /**
  * ANIMATIONS
  */

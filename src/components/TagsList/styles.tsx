@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FlexCenter, FlexHorizontalCenter } from '../../styles/styles';
+import { FlexCenter, FlexHorizontalCenter, NoScrollBar } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 
 export const LoadingSpinnerContainer = styled.div`
@@ -22,6 +22,7 @@ export const TagContainer = styled.div`
 `;
 
 export const TagsListContainer = styled.div`
+    ${ NoScrollBar }
     align-items: flex-start;    
     display: flex;
     flex-direction: column;
@@ -29,10 +30,6 @@ export const TagsListContainer = styled.div`
     max-height: 100%;
     overflow: auto;
     position: relative;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
 
     .loading-spinner {
         left: 60px;

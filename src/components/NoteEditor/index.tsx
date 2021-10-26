@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 import remarkInlineLinks from 'remark-inline-links';
 import { UserContext } from '../../contexts/User';
 import { INote, NoteModel } from '../../models/notes';
@@ -12,8 +12,11 @@ import { EditIcon } from '../svgs/icons/EditIcon';
 import { TextArea } from '../TextArea';
 import { TextInput } from '../TextInput';
 
-import { HeadingsComponent } from './components/headings';
+import { HeadingsComponent } from './components/HeadingsComponent';
 import { Body, Header, NoteEditorContainer } from './styles';
+import { RefComponent } from './components/RefComponent';
+import { ParagraphComponent } from './components/ParagraphComponent';
+import { Markdown } from '../Markdown';
 
 interface IProps {
     className?: string;
@@ -23,12 +26,14 @@ interface IProps {
 }
 
 const customComponents: any = {
+    p: ParagraphComponent,
     h1: HeadingsComponent,
     h2: HeadingsComponent,
     h3: HeadingsComponent,
     h4: HeadingsComponent,
     h5: HeadingsComponent,
     h6: HeadingsComponent,
+    ref: RefComponent,
 }
 
 const NoteEditorBase: React.FC<IProps> = ({
@@ -46,13 +51,18 @@ const NoteEditorBase: React.FC<IProps> = ({
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
-        if (readonly) return;
+        if (readonly) {
+            return;
+        };
         
         if (editMode) {            
             window.setTimeout(() => {
                 textareaRef.current.focus();
                 // TODO: set cursor to end of file...
             }, 10);
+        } else {
+            const refs = document.querySelectorAll('.markdown-container ref');
+            console.log(refs);
         }
     }, [editMode]);
 
@@ -149,13 +159,12 @@ const NoteEditorBase: React.FC<IProps> = ({
                                 />
                             )
                             : (
-                                <div className='markdown-container'>
-                                    <ReactMarkdown
-                                        children={ content }
-                                        remarkPlugins={[remarkGfm, remarkInlineLinks]}
-                                        components={customComponents}
-                                    />
-                                </div>
+                                <Markdown
+                                    content={ content }
+                                    rehypePlugins={[rehypeRaw]}
+                                    remarkPlugins={[remarkGfm, remarkInlineLinks]}
+                                    components={customComponents}
+                                />
                             )
                     }
                 </div>

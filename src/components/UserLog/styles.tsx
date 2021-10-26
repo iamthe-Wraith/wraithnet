@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { NoScrollBar } from '../../styles/styles';
 import { ITheme, IThemeProps } from '../../styles/themes';
 
 export const DateContainer = styled.div`
@@ -118,14 +119,12 @@ export const UserLogMain = styled.div`
     }
 
     & > :first-child {
+        ${ NoScrollBar }
         max-width: calc(100% - 300px);
         min-width: calc(100% - 300px);
         overflow: auto;
         position: relative;
-        
-        &::-webkit-scrollbar {
-            display: none;
-        }
+    
 
         .loading-spinner {
             top: 20%;

@@ -1,18 +1,15 @@
 import styled from 'styled-components';
-import { FlexHorizontalCenter, PrimaryFont } from '../../styles/styles';
+import { FlexHorizontalCenter, NoScrollBar, PrimaryFont } from '../../styles/styles';
 
 export const DnDDailyChecklistContainer = styled.div`
     position: relative;
     padding: 20px 10px 10px;
 
     .list-container {
+        ${ NoScrollBar }
         min-height: 200px;
         max-height: calc(100% - 25px);
         overflow: auto;
-
-        &::-webkit-scrollbar {
-            display: none;
-        }
     }
 
     .checklist-item {

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FlexCol, FlexHorizontalCenter, PrimaryFont } from '../../styles/styles';
+import { FlexCol, FlexHorizontalCenter, NoScrollBar, PrimaryFont } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 
 const headerHeight = 50;
@@ -61,6 +61,7 @@ export const Body = styled.div<IThemeProps>`
 
     .main-col {
         ${ FlexCol }
+        ${ NoScrollBar }
         flex-grow: 1;
         overflow: scroll;
 
@@ -73,41 +74,6 @@ export const Body = styled.div<IThemeProps>`
     
         .note-editor-textarea textarea {
             padding: 5px;
-        }
-    
-        .markdown-container {
-            &::-webkit-scrollbar {
-                display: none;
-            }
-
-            & > :first-child {
-                margin-top: 0;
-                padding-top: 0; 
-            }
-    
-            h1,
-            h2,
-            h3,
-            h4,
-            h5,
-            h6 {
-                padding: 20px 0 10px;
-                color: ${({theme}) => theme.primary};
-
-                & * {
-                    ${ PrimaryFont }
-                    color: ${({theme}) => theme.primary};
-                }
-            }
-    
-            a {
-                color: ${({theme}) => theme.primary};
-                text-decoration: none;
-            }
-    
-            p {
-                padding: 5px 0;
-            }
         }
     }
 

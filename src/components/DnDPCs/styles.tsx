@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { AbsoluteCenter, FlexHorizontalCenter, PrimaryFont } from '../../styles/styles';
+import { AbsoluteCenter, FlexHorizontalCenter, NoScrollBar, PrimaryFont } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 
 export const DnDPCsContainer = styled.div<IThemeProps>`
@@ -18,12 +18,9 @@ export const DnDPCsContainer = styled.div<IThemeProps>`
     }
 
     .pc-list-container {
+        ${ NoScrollBar }
         height: calc(100% - 60px);
         overflow: auto;
-
-        &::-webkit-scrollbar {
-            display: none;
-        }
 
         .pc {
             width: 100%;
