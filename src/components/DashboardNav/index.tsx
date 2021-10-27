@@ -4,17 +4,17 @@ import { DashboardIpcRenderer } from '../../models/ipcRenderers/dashboard';
 import { Button, ButtonType } from '../Button';
 import { Hex } from '../containers/Hex';
 import { HexSize } from '../containers/Hex/styles';
+import { Nav } from '../Nav';
 import { CrossedSwordsIcon } from '../svgs/icons/CrossedSwordsIcon';
 import { LogIcon } from '../svgs/icons/LogIcon';
 import { LogoutIcon } from '../svgs/icons/LogoutIcon';
-import { DashboardNavContainer } from './styles';
 
 export const DashboardNav: React.FC = () => {
     const location = useLocation();
     const onOpenDnDClick = () => DashboardIpcRenderer.open('dnd');
 
     return (
-        <DashboardNavContainer>
+        <Nav>
             <Link to='/' className={`icon-link ${location.pathname === '/' ? 'selected' : ''}`}>
                 <Hex size={ HexSize.Tiny } color={ 'none' }>
                     <span className='icon'>W</span>
@@ -43,6 +43,6 @@ export const DashboardNav: React.FC = () => {
                     <LogoutIcon className='icon' />
                 </Hex>
             </Button>
-        </DashboardNavContainer>
+        </Nav>
     )
 }

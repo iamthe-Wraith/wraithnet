@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { AbsoluteCenter, FlexCol, FlexHorizontalCenter, PrimaryFont } from '../../styles/styles';
+import { AbsoluteCenter, FlexCol, FlexHorizontalCenter, NoScrollBar, PrimaryFont } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 
 export const DnDMiscResourcesContainer = styled.div<IThemeProps>`
@@ -24,6 +24,7 @@ export const DnDMiscResourcesContainer = styled.div<IThemeProps>`
 
     .dnd-misc-resources {
         ${ FlexCol }
+        ${ NoScrollBar }
         align-items: flex-end;
         flex-grow: 1;
         width: 100%;

@@ -86,15 +86,12 @@ export const Main = styled.div`
         min-width: calc(100% - 640px);
         padding: 20px 5px 5px;
 
-        .dots {
-            align-self: flex-end;
-        }
-
-        .editor {
+        & > * {
             min-width: 100%;
             max-width: 100%;
             min-height: 100%;
             max-height: 100%;
+            overflow: hidden;
         }
     }
 `;

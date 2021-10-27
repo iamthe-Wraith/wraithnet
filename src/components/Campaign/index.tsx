@@ -4,9 +4,11 @@ import { DnDContext } from '../../contexts/DnD';
 import { DnDDate } from '../../lib/dndDate';
 import { DnDIpcRenderer } from '../../models/ipcRenderers/dnd';
 import { Button, ButtonType } from '../Button';
+import { DnDCampaignRouter } from '../DnDCampaignRouter';
 import { DnDDailyChecklist } from '../DnDDailyChecklist';
 import { DnDDayPicker } from '../DnDDayPicker';
 import { DnDMiscResources } from '../DnDMiscResources';
+import { DnDNav } from '../DnDNav';
 import { DnDPCs } from '../DnDPCs';
 import { Dots } from '../Dots';
 import { Header } from '../Header';
@@ -55,6 +57,7 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
                 centerContent={ dnd.campaign.name }
                 leftContent={ renderHeaderLeftContent() }
                 onClose={ DnDIpcRenderer.close }
+                rightContent={ <DnDNav /> }
             />
             <Main>
                 <div className='side-col left-col'>
@@ -66,7 +69,7 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
                     <DnDPCs className='pcs' />
                 </div>
                 <div className='primary-display'>
-                    { renderPrimaryDisplay() }
+                    <DnDCampaignRouter />
                 </div>
                 <div className='side-col right-col'>
                     <DnDMiscResources className='misc-resources' />

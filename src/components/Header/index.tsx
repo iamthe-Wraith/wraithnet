@@ -1,19 +1,9 @@
-import dayjs from 'dayjs';
 import { observer } from 'mobx-react';
-import React, { useContext, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { UserContext } from '../../contexts/User';
-import { DashboardIpcRenderer } from '../../models/ipcRenderers/dashboard';
+import React from 'react';
 import { IThemeProps } from '../../styles/themes';
 import { Button, ButtonType } from '../Button';
-import { Hex } from '../containers/Hex';
-import { HexSize } from '../containers/Hex/styles';
-import { LogIcon } from '../svgs/icons/LogIcon';
 import { XIcon } from '../svgs/icons/XIcon';
-import { LogoutIcon } from '../svgs/icons/LogoutIcon';
 import { Center, CenterContent, HeaderContainer, Side } from './styles';
-import { CrossedSwordsIcon } from '../svgs/icons/CrossedSwordsIcon';
-import { DashboardNav } from '../DashboardNav';
 
 interface IProps extends IThemeProps {
     centerContent: string;

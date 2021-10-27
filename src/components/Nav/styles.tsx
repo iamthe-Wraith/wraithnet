@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { FlexHorizontalCenter } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 
-export const DashboardNavContainer = styled.div<IThemeProps>`
+export const NavContainer = styled.div<IThemeProps>`
     ${ FlexHorizontalCenter }
 
     .icon-link {
