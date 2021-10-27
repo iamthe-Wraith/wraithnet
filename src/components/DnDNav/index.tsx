@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { DashboardIpcRenderer } from '../../models/ipcRenderers/dashboard';
 import { Hex } from '../containers/Hex';
 import { HexSize } from '../containers/Hex/styles';
 import { Nav } from '../Nav';
 import { CrossedSwordsIcon } from '../svgs/icons/CrossedSwordsIcon';
+import { LogIcon } from '../svgs/icons/LogIcon';
 import { PeopleIcon } from '../svgs/icons/PeopleIcon';
 
 export const DnDNav: React.FC = () => {
@@ -13,8 +13,13 @@ export const DnDNav: React.FC = () => {
     return (
         <Nav>
             <Link to='/' className={`icon-link ${location.pathname === '/' ? 'selected' : ''}`}>
-            <Hex size={ HexSize.Tiny } color={ 'none' }>
+                <Hex size={ HexSize.Tiny } color={ 'none' }>
                     <CrossedSwordsIcon className='icon' />
+                </Hex>
+            </Link>
+            <Link to='/sessions' className={`icon-link ${location.pathname === '/sessions' ? 'selected' : ''}`}>
+                <Hex size={ HexSize.Tiny } color={ 'none' }>
+                    <LogIcon className='icon' />
                 </Hex>
             </Link>
             <Link to='/npcs' className={`icon-link ${location.pathname === '/npcs' ? 'selected' : ''}`}>

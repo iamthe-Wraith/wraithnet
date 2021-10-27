@@ -47,10 +47,6 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
         );
     };
 
-    const renderPrimaryDisplay = () => {
-        return <Dots className='dots' height='150px' />
-    }
-
     return (
         <CampaignContainer className={ className }>
             <Header

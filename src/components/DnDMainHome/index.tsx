@@ -11,6 +11,9 @@ interface IProps {
 const DnDMainHomeBase: React.FC<IProps> = ({ className = '' }) => {
     return (
         <DnDMainHomeContainer className={ className }>
+            <div className='data-container'>
+                data goes here....
+            </div>
             <Dots className='dots' height='150px' />
         </DnDMainHomeContainer>
     );
