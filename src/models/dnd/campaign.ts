@@ -1,6 +1,8 @@
 import { action, computed, makeObservable, observable, runInAction } from "mobx";
 import { DnDDate } from "../../lib/dndDate";
 import { BaseModel } from "../base";
+import { CollectionModel } from "../collection";
+import { INoteRef, NoteModel } from "../notes";
 import { CampaignDailyChecklistModel } from "./daily-checklist";
 import { IExpResponse, IPCRef, PCModel } from "./pc";
 import { ICampaign } from "./types";
@@ -10,6 +12,7 @@ type PrivateFields = '_busy' |
     '_currentDate' |
     '_dailyChecklist' |
     '_pcs' |
+    '_sessions' |
     '_startDate';
 
 export class CampaignModel extends BaseModel {
@@ -18,6 +21,7 @@ export class CampaignModel extends BaseModel {
     private _dailyChecklist: CampaignDailyChecklistModel = null;
     private _currentDate: DnDDate = null;
     private _pcs: PCModel[] = [];
+    private _sessions: CollectionModel<INoteRef, NoteModel> = null;
     private _startDate: DnDDate = null;
     public loadingPCs = false;
     public creatingPC = false;
@@ -31,6 +35,7 @@ export class CampaignModel extends BaseModel {
             _currentDate: observable,
             _dailyChecklist: observable,
             _pcs: observable,
+            _sessions: observable,
             _startDate: observable,
             creatingPC: observable,
             loadingPCs: observable,
@@ -40,6 +45,7 @@ export class CampaignModel extends BaseModel {
             currentDate: computed,
             dailyChecklist: computed,
             pcs: computed,
+            sessions: computed,
             startDate: computed,
             id: computed,
             name: computed,
@@ -50,6 +56,10 @@ export class CampaignModel extends BaseModel {
         this._dailyChecklist = new CampaignDailyChecklistModel(campaign);
         this._startDate = new DnDDate(campaign.startDate);
         this._currentDate = new DnDDate(campaign.currentDate);
+        this._sessions = new CollectionModel<INoteRef, NoteModel>(
+            this.composeUrl(`/dnd/${this.id}/session`),
+            (note: INoteRef) => new NoteModel(note)
+        )
     }
 
     get busy() { return this._busy }
@@ -60,6 +70,7 @@ export class CampaignModel extends BaseModel {
     get startDate() { return this._startDate }
     get currentDate() { return this._currentDate }
     get pcs() { return this._pcs }
+    get sessions() { return this._sessions }
 
     public createPC = async (
         name: string,

@@ -8,6 +8,12 @@ export const NoteEditorContainer = styled.div<IThemeProps>`
     ${ FlexCol }
     max-height: 100%;
     overflow: hidden;
+
+    .confirmation-modal {
+        ${ FlexCol }
+        justify-content: space-between;
+        flex-grow: 1;
+    }
 `;
 
 export const Header = styled.div<IThemeProps>`
@@ -88,7 +94,9 @@ export const Body = styled.div<IThemeProps>`
             padding: 0 5px;
 
             .header {
+                ${ PrimaryFont }
                 margin-bottom: 5px;
+                color: ${({theme}) => theme.primary};
             }
         }
     }

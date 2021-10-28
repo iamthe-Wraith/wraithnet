@@ -29,6 +29,7 @@ export const ModalOverlay = styled(animated.div)<IThemeProps>`
 
         &.small-modal {
             min-width: 250px;
+            max-width: 250px;
             min-height: 100px;
             max-height: 30vh;
 
@@ -39,18 +40,21 @@ export const ModalOverlay = styled(animated.div)<IThemeProps>`
 
         &.medium-modal {
             min-width: 400px;
+            max-width: 400px;
             min-height: 200px;
             max-height: 50vh;
         }
 
         &.large-modal {
             min-width: 60vw;
+            max-width: 60vw;
             min-height: 90vh;
             max-height: 90vh;
         }
 
         &.extra-large-modal {
             min-width: 80vw;
+            max-width: 80vw;
             min-height: 90vh;
             max-height: 90vh;
         }

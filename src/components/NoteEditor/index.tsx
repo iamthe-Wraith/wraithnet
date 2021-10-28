@@ -17,12 +17,16 @@ import { Body, Header, NoteEditorContainer } from './styles';
 import { RefComponent } from './components/RefComponent';
 import { ParagraphComponent } from './components/ParagraphComponent';
 import { Markdown } from '../Markdown';
+import { Modal, ModalSize } from '../Modal';
+import { CtasContainer } from '../CtasContainer/styles';
+import { CTAs, ICta } from '../CtasContainer';
 
 interface IProps {
     className?: string;
     note: NoteModel;
     readonly?: boolean;
     onSave?: () => void;
+    onCancelNoteChange?:(originalNote: NoteModel, newNote: NoteModel) => void;
 }
 
 const customComponents: any = {
@@ -41,14 +45,38 @@ const NoteEditorBase: React.FC<IProps> = ({
     note,
     readonly,
     onSave,
+    onCancelNoteChange
 }) => {
     const user = useContext(UserContext);
-    const [editMode, setEditMode] = useState(!note?.id);
-    const [name, setName] = useState(note?.name || 'Untitled Note');
-    const [content, setContent] = useState(note?.text || '');
-    const [category, setCategory] = useState(note?.category || 'no_category');
-    const [shareWithAllUsers, setShareWithAllUsers] = useState(!!note?.access?.find(a => a === 'all'));
+    const [_note, setNote] = useState(note);
+    const [editMode, setEditMode] = useState(!_note?.id);
+    const [name, setName] = useState('');
+    const [content, setContent] = useState('');
+    const [category, setCategory] = useState('');
+    const [shareWithAllUsers, setShareWithAllUsers] = useState(false);
+    const [showConfirmation, setShowConfirmation] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    useEffect(() => {
+        setName(_note?.name || 'Untitled Note');
+        setContent(_note?.text || '');
+        setCategory(_note?.category || 'no_category');
+        setShareWithAllUsers(!!_note?.access?.find(a => a === 'all'));
+    }, [_note]);
+
+    useEffect(() => {
+        setContent(note?.text || '');
+    }, [note?.text]);
+
+    useEffect(() => {        
+        if (note.id !== _note.id) {
+            if (editMode) {
+                setShowConfirmation(true);
+            } else {
+               setNote(note); 
+            }
+        }
+    }, [note]);
 
     useEffect(() => {
         if (readonly) {
@@ -62,15 +90,27 @@ const NoteEditorBase: React.FC<IProps> = ({
             }, 10);
         } else {
             const refs = document.querySelectorAll('.markdown-container ref');
-            console.log(refs);
         }
     }, [editMode]);
 
     const onCancelClick = () => {
-        setName(note?.name || '');
-        setContent(note?.text || '');
-        setCategory(note?.category || '')
+        setName(_note?.name || '');
+        setContent(_note?.text || '');
+        setCategory(_note?.category || '')
         setEditMode(false);
+    }
+
+    const onCancelConfirmation = () =>  {
+        setShowConfirmation(false);
+        onCancelNoteChange?.(_note, note);
+    }
+
+    const onContinueWithoutSavingClick = () => {
+        console.log('continuing without saving...');
+    }
+
+    const onSaveAndContinueClick = () => {
+        console.log('saving and continuing...');
     }
 
     const onSaveClick = () => {
@@ -84,10 +124,17 @@ const NoteEditorBase: React.FC<IProps> = ({
             data.access = shareWithAllUsers ? ['all'] : [];
         }
 
-        note.save(data)
+        _note.save(data)
             .then(() => {
                 setEditMode(false);
                 onSave?.();
+
+                if (note.id !== _note.id) {
+                    // a new note has been selected and these saved changes
+                    // were a final save before opening that new note...now
+                    // need to switch to the new note.
+                    setNote(note);
+                }
             })
             .catch(err => {
                 console.error(err);
@@ -215,6 +262,35 @@ const NoteEditorBase: React.FC<IProps> = ({
                     }
                 </div>
             </Body>
+            <Modal
+                isOpen={ showConfirmation }
+                header='Hang on...'
+                onClose={ onCancelConfirmation }
+                size={ ModalSize.Medium }
+            >
+                <div className='confirmation-modal'>
+                    <div>you're currently in edit mode...if you continue, any unsaved changes may be lost...</div>
+                    <CTAs
+                        ctas={ [
+                            {
+                                text: 'save and continue',
+                                type: ButtonType.Primary,
+                                onClick: onSaveAndContinueClick,
+                            },
+                            {
+                                text: 'continue without saving',
+                                type: ButtonType.PrimaryReverse,
+                                onClick: onContinueWithoutSavingClick,
+                            },
+                            {
+                                text: 'cancel',
+                                type: ButtonType.PrimaryReverse,
+                                onClick: onCancelConfirmation,
+                            }
+                        ] }
+                    />
+                </div>
+            </Modal>
         </NoteEditorContainer>
     );
 }
