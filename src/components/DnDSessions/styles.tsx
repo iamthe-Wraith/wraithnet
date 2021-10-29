@@ -26,6 +26,12 @@ export const DnDSessionsListContainer = styled.div`
         ${ NoScrollBar }
         height: calc(100% - 60px);
         overflow: auto;
+
+        .no-sessions {
+            padding-top: 20px;
+            color: ${({theme}) => theme.gray};
+            text-align: center;
+        }
     }
 
     .sessions-spinner-container {

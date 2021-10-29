@@ -25,7 +25,6 @@ export class CampaignModel extends BaseModel {
     private _startDate: DnDDate = null;
     public loadingPCs = false;
     public creatingPC = false;
-    public creatingSession = false;
     public updatingPartyXP = false;
     
     constructor (campaign: ICampaign) {
@@ -39,7 +38,6 @@ export class CampaignModel extends BaseModel {
             _sessions: observable,
             _startDate: observable,
             creatingPC: observable,
-            creatingSession: observable,
             loadingPCs: observable,
             updatingPartyXP: observable,
             busy: computed,
@@ -118,8 +116,8 @@ export class CampaignModel extends BaseModel {
     }
 
     public createSession = async () => {
-        if (!this.creatingSession) {
-            this.creatingSession = true;
+        if (!this._busy) {
+            this._busy = true;
 
             const result = await this.webServiceHelper.sendRequest<INote>({
                 path: this.composeUrl(`/dnd/${this._campaign.id}/session`),
@@ -129,11 +127,11 @@ export class CampaignModel extends BaseModel {
             if (result.success) {
                 await this._sessions.refresh();
                 runInAction(() => {    
-                    this.creatingSession = false;
+                    this._busy = false;
                 }); 
             } else {
                 runInAction(() => {
-                    this.creatingSession = false;
+                    this._busy = false;
                 });
                 
                 throw new Error(result.error);

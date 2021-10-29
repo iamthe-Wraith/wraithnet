@@ -59,38 +59,40 @@ const DnDSessionsBase: React.FC<IProps> = ({ className = '' }) => {
     }
 
     const renderSessionsList = () => {
-        const loadingSpinner = (
-            <div key='sessions-spinner' className='sessions-spinner-container'>
-                <LoadingSpinner
-                    className='sessions-spinner'
-                    type={SpinnerType.Random}
-                    size={ SpinnerSize.Tiny }
-                />
-            </div>
-        );
-
         let list: JSX.Element[] = [];
-        
-        if (dnd.campaign.creatingSession) list.push(loadingSpinner);
 
-        const sessions = dnd.campaign.sessions.results.map(session => (
-            <SessionListItem
-                key={ session.id }
-                onClick={ onSessionClick(session) }
-                selected={ selectedSession?.id === session.id }
-                session={ session }
-            />
-        ));
+        if (dnd.campaign.sessions.results.length > 0) {
+            const sessions = dnd.campaign.sessions.results.map(session => (
+                <SessionListItem
+                    key={ session.id }
+                    onClick={ onSessionClick(session) }
+                    selected={ selectedSession?.id === session.id }
+                    session={ session }
+                />
+            ));
+    
+            list = [...list, ...sessions];
+        } else {
+            list.push(<div key='no-sessions' className='no-sessions'>no sessions</div>)
+        }
 
-        list = [...list, ...sessions];
-
-        if (dnd.campaign.sessions.busy) list.push(loadingSpinner)
+        if (dnd.campaign.sessions.busy) {
+            list.push((
+                <div key='sessions-spinner' className='sessions-spinner-container'>
+                    <LoadingSpinner
+                        className='sessions-spinner'
+                        type={SpinnerType.Random}
+                        size={ SpinnerSize.Tiny }
+                    />
+                </div>
+            ));
+        }
 
         if (!dnd.campaign.sessions.allResultsFetched && !dnd.campaign.sessions.busy) {
             return [...list, <Waypoint key='waypoint' onEnter={ loadMore } topOffset={ 200 } />];
         }
 
-        return sessions;
+        return list;
     }
 
     return (
