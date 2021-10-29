@@ -115,13 +115,14 @@ export class CampaignModel extends BaseModel {
         }
     }
 
-    public createSession = async () => {
+    public createSession = async (name: string) => {
         if (!this._busy) {
             this._busy = true;
 
             const result = await this.webServiceHelper.sendRequest<INote>({
                 path: this.composeUrl(`/dnd/${this._campaign.id}/session`),
                 method: 'POST',
+                data: { name },
             });
 
             if (result.success) {

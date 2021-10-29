@@ -57,3 +57,10 @@ export const DnDSessionNoteContainer = styled.div`
         min-width: 100%;
     }
 `;
+
+export const NewSessionModal = styled.div<IThemeProps>`
+    .label {
+        font-size: 12px;
+        color: ${({theme}) => theme.gray};
+    }
+`;
