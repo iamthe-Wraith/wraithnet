@@ -39,7 +39,9 @@ export class CollectionModel<T, U> extends BaseModel {
             totalCount: computed,
             _init: action.bound,
             loadMore: action.bound,
+            push: action.bound,
             refresh: action.bound,
+            unshift: action.bound,
         });
         this._init(baseApiUrl, transformer);
     }
@@ -78,6 +80,10 @@ export class CollectionModel<T, U> extends BaseModel {
         }
     }
 
+    public push = (item: U) => {
+        this._results.push(item);
+    }
+
     public refresh = async (queryParams: { [key: string]: any } = {}) => {
         this._firstPageLoaded = false;
         this._totalCount = 0
@@ -86,6 +92,10 @@ export class CollectionModel<T, U> extends BaseModel {
         this._pageSize = 25;
 
         return this.loadMore(queryParams);
+    }
+
+    public unshift = (item: U) => {
+        this._results.unshift(item);
     }
 
     private _init = (baseApiUrl: string, transformer: (result: T) => U) => {

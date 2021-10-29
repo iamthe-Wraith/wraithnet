@@ -32,6 +32,18 @@ const DnDSessionsBase: React.FC<IProps> = ({ className = '' }) => {
         if (!dnd.campaign.sessions.firstPageLoaded) loadMore();
     }, []);
     
+    const onAddSessionClick = () => {
+        dnd.campaign.createSession()
+            .then(() => {
+                // automatically select new session
+                setSelectedSession(dnd.campaign.sessions.results[0]);
+            })
+            .catch(err => {
+                console.log('error creating session');
+                console.error(err);
+            });
+    }
+
     const onCancelNoteChange = (origNote: NoteModel, _: NoteModel) => {
         setSelectedSession(origNote);
     }
@@ -47,6 +59,20 @@ const DnDSessionsBase: React.FC<IProps> = ({ className = '' }) => {
     }
 
     const renderSessionsList = () => {
+        const loadingSpinner = (
+            <div key='sessions-spinner' className='sessions-spinner-container'>
+                <LoadingSpinner
+                    className='sessions-spinner'
+                    type={SpinnerType.Random}
+                    size={ SpinnerSize.Tiny }
+                />
+            </div>
+        );
+
+        let list: JSX.Element[] = [];
+        
+        if (dnd.campaign.creatingSession) list.push(loadingSpinner);
+
         const sessions = dnd.campaign.sessions.results.map(session => (
             <SessionListItem
                 key={ session.id }
@@ -56,20 +82,12 @@ const DnDSessionsBase: React.FC<IProps> = ({ className = '' }) => {
             />
         ));
 
-        if (dnd.campaign.sessions.busy) {
-            sessions.push((
-                <div key='sessions-spinner' className='sessions-spinner-container'>
-                    <LoadingSpinner
-                        className='sessions-spinner'
-                        type={SpinnerType.Random}
-                        size={ SpinnerSize.Tiny }
-                    />
-                </div>
-            ))
-        }
+        list = [...list, ...sessions];
+
+        if (dnd.campaign.sessions.busy) list.push(loadingSpinner)
 
         if (!dnd.campaign.sessions.allResultsFetched && !dnd.campaign.sessions.busy) {
-            return [...sessions, <Waypoint key='waypoint' onEnter={ loadMore } topOffset={ 200 } />];
+            return [...list, <Waypoint key='waypoint' onEnter={ loadMore } topOffset={ 200 } />];
         }
 
         return sessions;
@@ -81,6 +99,14 @@ const DnDSessionsBase: React.FC<IProps> = ({ className = '' }) => {
                 <div className='header'>Sessions</div>
                 <div className='sessions-list'>
                     { renderSessionsList() }
+                </div>
+                <div className='footer'>
+                    <Button
+                        buttonType={ ButtonType.Blank }
+                        onClick={ onAddSessionClick }
+                    >
+                        + add session
+                    </Button>
                 </div>
                 <Right2 />
             </DnDSessionsListContainer>

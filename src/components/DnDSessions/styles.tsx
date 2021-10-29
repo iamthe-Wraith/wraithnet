@@ -24,7 +24,7 @@ export const DnDSessionsListContainer = styled.div`
 
     .sessions-list {
         ${ NoScrollBar }
-        height: calc(100% - 25px);
+        height: calc(100% - 60px);
         overflow: auto;
     }
 
@@ -32,6 +32,13 @@ export const DnDSessionsListContainer = styled.div`
         position: relative;
         width: 100%;
         height: 40px;
+    }
+
+    .footer {
+        ${ FlexHorizontalCenter }
+        justify-content: flex-end;
+        min-height: 35px;
+        max-height: 35px;
     }
 `;
 

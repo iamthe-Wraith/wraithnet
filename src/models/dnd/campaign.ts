@@ -2,7 +2,7 @@ import { action, computed, makeObservable, observable, runInAction } from "mobx"
 import { DnDDate } from "../../lib/dndDate";
 import { BaseModel } from "../base";
 import { CollectionModel } from "../collection";
-import { INoteRef, NoteModel } from "../notes";
+import { INote, INoteRef, NoteModel } from "../notes";
 import { CampaignDailyChecklistModel } from "./daily-checklist";
 import { IExpResponse, IPCRef, PCModel } from "./pc";
 import { ICampaign } from "./types";
@@ -25,6 +25,7 @@ export class CampaignModel extends BaseModel {
     private _startDate: DnDDate = null;
     public loadingPCs = false;
     public creatingPC = false;
+    public creatingSession = false;
     public updatingPartyXP = false;
     
     constructor (campaign: ICampaign) {
@@ -38,6 +39,7 @@ export class CampaignModel extends BaseModel {
             _sessions: observable,
             _startDate: observable,
             creatingPC: observable,
+            creatingSession: observable,
             loadingPCs: observable,
             updatingPartyXP: observable,
             busy: computed,
@@ -49,6 +51,7 @@ export class CampaignModel extends BaseModel {
             startDate: computed,
             id: computed,
             name: computed,
+            createSession: action.bound,
             loadPCs: action.bound,
         });
 
@@ -107,6 +110,30 @@ export class CampaignModel extends BaseModel {
             } else {
                 runInAction(() => {
                     this.creatingPC = false;
+                });
+                
+                throw new Error(result.error);
+            }
+        }
+    }
+
+    public createSession = async () => {
+        if (!this.creatingSession) {
+            this.creatingSession = true;
+
+            const result = await this.webServiceHelper.sendRequest<INote>({
+                path: this.composeUrl(`/dnd/${this._campaign.id}/session`),
+                method: 'POST',
+            });
+
+            if (result.success) {
+                await this._sessions.refresh();
+                runInAction(() => {    
+                    this.creatingSession = false;
+                }); 
+            } else {
+                runInAction(() => {
+                    this.creatingSession = false;
                 });
                 
                 throw new Error(result.error);
