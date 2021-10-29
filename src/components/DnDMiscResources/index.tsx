@@ -20,7 +20,7 @@ interface IProps {
 
 const defaultMiscNote = {
     name: 'Untitled Misc Note',
-    category: '__dnd_misc_resource',
+    category: 'dnd_misc_resource',
     access: ['all']
 }
 
@@ -43,14 +43,21 @@ const DnDMiscResourcesBase: React.FC<IProps> = ({ className = '' }) => {
 
     useEffect(() => {
         if (selectedResource) {
-            selectedResource.load()
-                .then(() => {
-                    setShowResourceModal(true);
-                })
-                .catch(err => {
-                    console.log('error loading misc resource');
-                    console.log(err);
-                });
+            // only try to load if selectedResource has an id
+            // if it doesnt is a new note, and will not have
+            // anything to load
+            if (!!selectedResource?.id) {
+                selectedResource.load()
+                    .then(() => {
+                        setShowResourceModal(true);
+                    })
+                    .catch(err => {
+                        console.log('error loading misc resource');
+                        console.log(err);
+                    });
+            } else {
+                setShowResourceModal(true);
+            }
         }
     }, [selectedResource]);
 

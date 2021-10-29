@@ -18,12 +18,11 @@ import { RefComponent } from './components/RefComponent';
 import { ParagraphComponent } from './components/ParagraphComponent';
 import { Markdown } from '../Markdown';
 import { Modal, ModalSize } from '../Modal';
-import { CtasContainer } from '../CtasContainer/styles';
-import { CTAs, ICta } from '../CtasContainer';
+import { CTAs } from '../CtasContainer';
 
 interface IProps {
     className?: string;
-    note: NoteModel;
+    note?: NoteModel;
     readonly?: boolean;
     onSave?: () => void;
     onCancelNoteChange?:(originalNote: NoteModel, newNote: NoteModel) => void;
@@ -69,7 +68,7 @@ const NoteEditorBase: React.FC<IProps> = ({
     }, [note?.text]);
 
     useEffect(() => {        
-        if (note.id !== _note.id) {
+        if (note?.id !== _note?.id) {
             if (editMode) {
                 setShowConfirmation(true);
             } else {
