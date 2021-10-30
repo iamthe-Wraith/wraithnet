@@ -8,6 +8,7 @@ export const DnDMiscResourcesContainer = styled.div<IThemeProps>`
     overflow: hidden;
 
     .misc-resources-wrapper {
+        ${ FlexCol }
         width: calc(100% - 20px);
         min-height: 100%;
         max-height: 100%;

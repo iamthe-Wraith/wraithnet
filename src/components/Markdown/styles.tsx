@@ -49,4 +49,54 @@ export const MarkdownContainer = styled.div<IThemeProps>`
             color: ${({theme}) => theme.highlight1};
         }
     }
+
+    ul {
+        padding: 5px 0 5px 18px;
+
+        li {
+            position: relative;
+            list-style: none;  
+
+            &:before {
+                content: ' ';
+                position: absolute;
+                top: 50%;
+                right: calc(100% + 8px);
+                width: 5px;
+                height: 5px;
+                transform: translate3d(0, -50%, 0);
+                border-radius: 50%;
+                background: ${({theme}) => theme.primary};
+            }
+        }
+    }
+
+    table {
+        width: 80%;
+        margin: 5px 0;
+        border-spacing: 0;
+
+        th {
+            ${ PrimaryFont }
+            padding: 3px 10px 3px 5px;
+            color: ${({theme}) => theme.primary};
+            border-bottom: ${({theme}) => `2px solid ${theme.gray}`} ;
+        }
+
+        tr {
+            &:not(:last-child) {
+                td {
+                    border-bottom: ${({theme}) => `1px solid ${theme.darkGray}`};
+                }
+            }
+
+            td {
+                padding: 3px 10px 3px 5px;
+
+                &:last-child {
+                    width: 100%;
+                }
+            }
+        }
+    }
 `

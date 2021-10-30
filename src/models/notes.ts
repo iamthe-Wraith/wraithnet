@@ -77,10 +77,6 @@ export class NoteModel extends BaseModel {
                 ? `/notes/s/${this.category}/${this.slug}`
                 : null;
 
-        console.log('id: ', this.id);
-        console.log('category: ', this.category);
-        console.log('slug: ', this.slug);
-
         if (!url) throw new Error('unable to load note. a url could not be constructed');
 
         const result = await this.webServiceHelper.sendRequest<INote>({
