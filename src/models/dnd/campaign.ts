@@ -11,6 +11,7 @@ type PrivateFields = '_busy' |
     '_campaign' |
     '_currentDate' |
     '_dailyChecklist' |
+    '_locations' |
     '_npcs' |
     '_pcs' |
     '_sessions' |
@@ -21,6 +22,7 @@ export class CampaignModel extends BaseModel {
     private _campaign: ICampaign = null;
     private _dailyChecklist: CampaignDailyChecklistModel = null;
     private _currentDate: DnDDate = null;
+    private _locations: CollectionModel<INoteRef, NoteModel> = null;
     private _npcs: CollectionModel<INoteRef, NoteModel> = null;
     private _pcs: PCModel[] = [];
     private _sessions: CollectionModel<INoteRef, NoteModel> = null;
@@ -36,6 +38,7 @@ export class CampaignModel extends BaseModel {
             _campaign: observable,
             _currentDate: observable,
             _dailyChecklist: observable,
+            _locations: observable,
             _npcs: observable,
             _pcs: observable,
             _sessions: observable,
@@ -47,12 +50,14 @@ export class CampaignModel extends BaseModel {
             createdAt: computed,
             currentDate: computed,
             dailyChecklist: computed,
+            locations: computed,
             npcs: computed,
             pcs: computed,
             sessions: computed,
             startDate: computed,
             id: computed,
             name: computed,
+            createLocation: action.bound,
             createNPC: action.bound,
             createSession: action.bound,
             loadPCs: action.bound,
@@ -62,14 +67,18 @@ export class CampaignModel extends BaseModel {
         this._dailyChecklist = new CampaignDailyChecklistModel(campaign);
         this._startDate = new DnDDate(campaign.startDate);
         this._currentDate = new DnDDate(campaign.currentDate);
+        this._locations = new CollectionModel<INoteRef, NoteModel>(
+            this.composeUrl(`/dnd/${this.id}/location`),
+            (note: INoteRef) => new NoteModel(note)
+        );
         this._npcs = new CollectionModel<INoteRef, NoteModel>(
             this.composeUrl(`/dnd/${this.id}/npc`),
             (note: INoteRef) => new NoteModel(note)
-        )
+        );
         this._sessions = new CollectionModel<INoteRef, NoteModel>(
             this.composeUrl(`/dnd/${this.id}/session`),
             (note: INoteRef) => new NoteModel(note)
-        )
+        );
     }
 
     get busy() { return this._busy }
@@ -79,9 +88,37 @@ export class CampaignModel extends BaseModel {
     get name() { return this._campaign.name }
     get startDate() { return this._startDate }
     get currentDate() { return this._currentDate }
+    get locations() { return this._locations }
     get npcs() { return this._npcs }
     get pcs() { return this._pcs }
     get sessions() { return this._sessions }
+
+    public createLocation = async (name: string) => {
+        if (!this._busy) {
+            this._busy = true;
+
+            const result = await this.webServiceHelper.sendRequest<INote>({
+                path: this.composeUrl(`/dnd/${this._campaign.id}/location`),
+                method: 'POST',
+                data: { name },
+            });
+
+            if (result.success) {
+                const newLocation = new NoteModel(result.value);
+                runInAction(() => {
+                    this.locations.push(newLocation);
+                    this._busy = false;
+                });
+                return newLocation;
+            } else {
+                runInAction(() => {
+                    this._busy = false;
+                });
+                
+                throw new Error(result.error);
+            }
+        }
+    }
 
     public createNPC = async (name: string) => {
         if (!this._busy) {

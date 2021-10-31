@@ -5,6 +5,7 @@ import { HexSize } from '../containers/Hex/styles';
 import { Nav } from '../Nav';
 import { CrossedSwordsIcon } from '../svgs/icons/CrossedSwordsIcon';
 import { LogIcon } from '../svgs/icons/LogIcon';
+import { MapIcon } from '../svgs/icons/MapIcon';
 import { PeopleIcon } from '../svgs/icons/PeopleIcon';
 
 export const DnDNav: React.FC = () => {
@@ -25,6 +26,11 @@ export const DnDNav: React.FC = () => {
             <Link to='/npcs' className={`icon-link ${location.pathname === '/npcs' ? 'selected' : ''}`}>
                 <Hex size={ HexSize.Tiny } color={ 'none' }>
                     <PeopleIcon className='icon' />
+                </Hex>
+            </Link>
+            <Link to='/locations' className={`icon-link ${location.pathname === '/locations' ? 'selected' : ''}`}>
+                <Hex size={ HexSize.Tiny } color={ 'none' }>
+                    <MapIcon className='icon' />
                 </Hex>
             </Link>
         </Nav>
