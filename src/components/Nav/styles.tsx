@@ -18,7 +18,13 @@ export const NavContainer = styled.div<IThemeProps>`
             }
 
             svg.icon {
-                fill: ${({theme}) => theme.highlight1};
+                &:not(.with-stroke) {
+                    fill: ${({theme}) => theme.highlight1};
+                }
+                
+                &.with-stroke {
+                    stroke: ${({theme}) => theme.highlight1};
+                }
             }
         }
 
@@ -28,10 +34,12 @@ export const NavContainer = styled.div<IThemeProps>`
             }
 
             svg {
-                fill: ${({theme}) => theme.light};
-
-                &.icon {
+                &.icon:not(.with-stroke) {
                     fill: ${({theme}) => theme.primary};
+                }
+
+                &.icon.with-stroke {
+                    stroke: ${({theme}) => theme.primary};
                 }
             }
         }
@@ -43,14 +51,20 @@ export const NavContainer = styled.div<IThemeProps>`
         }
 
         svg {
-            fill: ${({theme}) => theme.darkGray};
-            
             transition: .15s ease-in-out;
             
             &.icon {
                 height: 15px;
                 width: 15px;
             }
+        }
+
+        svg:not(.with-stroke) {
+            fill: ${({theme}) => theme.darkGray};
+        }
+
+        svg.with-stroke {
+            stroke: ${({theme}) => theme.darkGray};
         }
     }
 `;

@@ -12,6 +12,7 @@ type PrivateFields = '_busy' |
     '_currentDate' |
     '_dailyChecklist' |
     '_locations' |
+    '_misc' |
     '_npcs' |
     '_pcs' |
     '_quests' |
@@ -24,6 +25,7 @@ export class CampaignModel extends BaseModel {
     private _dailyChecklist: CampaignDailyChecklistModel = null;
     private _currentDate: DnDDate = null;
     private _locations: CollectionModel<INoteRef, NoteModel> = null;
+    private _misc: CollectionModel<INoteRef, NoteModel> = null;
     private _npcs: CollectionModel<INoteRef, NoteModel> = null;
     private _pcs: PCModel[] = [];
     private _quests: CollectionModel<INoteRef, NoteModel> = null;
@@ -41,6 +43,7 @@ export class CampaignModel extends BaseModel {
             _currentDate: observable,
             _dailyChecklist: observable,
             _locations: observable,
+            _misc: observable,
             _npcs: observable,
             _pcs: observable,
             _quests: observable,
@@ -54,6 +57,7 @@ export class CampaignModel extends BaseModel {
             currentDate: computed,
             dailyChecklist: computed,
             locations: computed,
+            misc: computed,
             npcs: computed,
             pcs: computed,
             quests: computed,
@@ -73,6 +77,10 @@ export class CampaignModel extends BaseModel {
         this._currentDate = new DnDDate(campaign.currentDate);
         this._locations = new CollectionModel<INoteRef, NoteModel>(
             this.composeUrl(`/dnd/${this.id}/location`),
+            (note: INoteRef) => new NoteModel(note)
+        );
+        this._misc = new CollectionModel<INoteRef, NoteModel>(
+            this.composeUrl(`/dnd/${this.id}/misc`),
             (note: INoteRef) => new NoteModel(note)
         );
         this._npcs = new CollectionModel<INoteRef, NoteModel>(
@@ -97,6 +105,7 @@ export class CampaignModel extends BaseModel {
     get startDate() { return this._startDate }
     get currentDate() { return this._currentDate }
     get locations() { return this._locations }
+    get misc() { return this._misc }
     get npcs() { return this._npcs }
     get pcs() { return this._pcs }
     get quests() { return this._quests }
@@ -119,6 +128,33 @@ export class CampaignModel extends BaseModel {
                     this._busy = false;
                 });
                 return newLocation;
+            } else {
+                runInAction(() => {
+                    this._busy = false;
+                });
+                
+                throw new Error(result.error);
+            }
+        }
+    }
+
+    public createMiscNote = async (name: string) => {
+        if (!this._busy) {
+            this._busy = true;
+
+            const result = await this.webServiceHelper.sendRequest<INote>({
+                path: this.composeUrl(`/dnd/${this._campaign.id}/misc`),
+                method: 'POST',
+                data: { name },
+            });
+
+            if (result.success) {
+                const newMiscNote = new NoteModel(result.value);
+                runInAction(() => {
+                    this.misc.push(newMiscNote);
+                    this._busy = false;
+                });
+                return newMiscNote;
             } else {
                 runInAction(() => {
                     this._busy = false;

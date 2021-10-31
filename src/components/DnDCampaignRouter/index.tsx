@@ -3,6 +3,7 @@ import { HashRouter, Route, Switch } from 'react-router-dom';
 import { ThemeStore } from '../../contexts/Theme';
 import { DnDLocations } from '../DnDLocations';
 import { DnDMainHome } from '../DnDMainHome';
+import { DnDMiscCampaignNotes } from '../DnDMiscCampaignNotes';
 import { DnDNPCs } from '../DnDNPCs';
 import { DnDQuests } from '../DnDQuests';
 import { DnDSessions } from '../DnDSessions';
@@ -18,6 +19,7 @@ export const DnDCampaignRouter = () => (
                     <Route path='/npcs' component={ DnDNPCs } />
                     <Route path='/locations' component={ DnDLocations } />
                     <Route path='/quests' component={ DnDQuests } />
+                    <Route path='/misc' component={ DnDMiscCampaignNotes } />
                 </Switch>
             </HashRouter>
         </Theme>

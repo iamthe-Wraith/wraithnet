@@ -111,7 +111,7 @@ const CollectionNoteEditorBase: React.FC<IProps> = ({ busy, className = '', coll
     return (
         <CollectionNoteEditorContainer className={ className }>
             <ListContainer>
-                <div className='header'>{ `${type}s` }</div>
+                <div className='header'>{ `${type}${lowerType === 'misc' ? '' : 's'}` }</div>
                 <div className='list'>
                     { renderList() }
                 </div>
