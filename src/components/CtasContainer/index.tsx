@@ -7,7 +7,7 @@ export interface ICta {
     disabled?: boolean;
     text: string;
     type: ButtonType;
-    onClick: () => void;
+    onClick(): (any | Promise<any>);
 }
 
 interface IProps {

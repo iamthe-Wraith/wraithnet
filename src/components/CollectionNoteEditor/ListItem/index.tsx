@@ -7,20 +7,20 @@ import { ButtonType } from '../../Button';
 import { AngleCorner } from '../../containers/AngleCorner';
 import { AnglePos, AngleSize } from '../../containers/AngleCorner/styles';
 
-import { SessionListItemContainer } from './styles';
+import { ListItemContainer } from './styles';
 
 interface IProps extends IThemeProps {
     className?: string;
     onClick:() => void;
     selected?: boolean;
-    session: NoteModel;
+    note: NoteModel;
 }
 
-const SessionListItemBase: React.FC<IProps> = ({ className = '', onClick, selected, session, theme }) => {
+const ListItemBase: React.FC<IProps> = ({ className = '', note, onClick, selected, theme }) => {
     const [isHovered, setIsHovered] = useState(false);
 
     return (
-        <SessionListItemContainer
+        <ListItemContainer
             className={ className }
             buttonType={ ButtonType.Blank }
             onClick={ onClick }
@@ -32,11 +32,11 @@ const SessionListItemBase: React.FC<IProps> = ({ className = '', onClick, select
                 borderWidth={ 1 }
                 config={[{size: AngleSize.Tiny, position: AnglePos.BottomRight}]}
             >
-                { session.name }
+                { note.name }
             </AngleCorner>
-        </SessionListItemContainer>
+        </ListItemContainer>
     );
 }
 
-const SessionListItemAsObserver = observer(SessionListItemBase);
-export const SessionListItem = withTheme(SessionListItemAsObserver);
+const ListItemAsObserver = observer(ListItemBase);
+export const ListItem = withTheme(ListItemAsObserver);

@@ -2,7 +2,8 @@ import { Method } from "axios";
 import { action, computed, makeObservable, observable, runInAction } from "mobx";
 import { BaseModel } from "./base";
 
-type PrivateFields = '_busy' |
+type PrivateFields = '_addItems' |
+    '_busy' |
     '_firstPageLoaded' |
     '_init' |
     '_page' |
@@ -21,6 +22,7 @@ export class CollectionModel<T, U> extends BaseModel {
     private _totalCount = 0;
     private _results: U[] = [];
     private _baseApiUrl = '';
+    private _index: Set<string> = new Set();
     private _transformer: (result: T) => U = null;
     private _page = 0;
     private _pageSize = 25;
@@ -37,6 +39,7 @@ export class CollectionModel<T, U> extends BaseModel {
             firstPageLoaded: computed,
             results: computed,
             totalCount: computed,
+            _addItems: action.bound,
             _init: action.bound,
             loadMore: action.bound,
             push: action.bound,
@@ -66,7 +69,7 @@ export class CollectionModel<T, U> extends BaseModel {
         if (result.success) {
             runInAction(() => {
                 this._totalCount = result.value.count;
-                this._results = [...this._results, ...result.value.results.map(r => this._transformer(r))];
+                this._addItems(result.value.results.map(r => this._transformer(r)), 'push');
                 this._firstPageLoaded = true;
                 this._busy = false;
                 if (!this.allResultsFetched) this._page += 1;
@@ -81,12 +84,13 @@ export class CollectionModel<T, U> extends BaseModel {
     }
 
     public push = (item: U) => {
-        this._results.push(item);
+        this._addItems([item], 'push');
     }
 
     public refresh = async (queryParams: { [key: string]: any } = {}) => {
         this._firstPageLoaded = false;
         this._totalCount = 0
+        this._index = new Set();
         this._results = [];
         this._page = 0;
         this._pageSize = 25;
@@ -95,7 +99,26 @@ export class CollectionModel<T, U> extends BaseModel {
     }
 
     public unshift = (item: U) => {
-        this._results.unshift(item);
+        this._addItems([item], 'unshift');
+    }
+
+    private _addItems = (items: U[], method: 'push' | 'unshift') => {
+        const itemsToAdd: U[] = [];
+        items.forEach(i => {
+            // use Set to prevent duplicates
+            if (!this._index.has((i as any).id)) {
+                this._index.add((i as any).id);
+                itemsToAdd.push(i);
+            }
+        });
+
+        if (itemsToAdd.length) {
+            if (method === 'push') {
+                this._results = [...this._results, ...itemsToAdd];
+            } else if (method === 'unshift') {
+                this._results = [...itemsToAdd, ...this._results];
+            }
+        }
     }
 
     private _init = (baseApiUrl: string, transformer: (result: T) => U) => {
