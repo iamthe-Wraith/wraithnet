@@ -4,6 +4,7 @@ import { ThemeStore } from '../../contexts/Theme';
 import { DnDLocations } from '../DnDLocations';
 import { DnDMainHome } from '../DnDMainHome';
 import { DnDNPCs } from '../DnDNPCs';
+import { DnDQuests } from '../DnDQuests';
 import { DnDSessions } from '../DnDSessions';
 import { Theme } from '../Theme';
 
@@ -16,6 +17,7 @@ export const DnDCampaignRouter = () => (
                     <Route exact path='/sessions' component={ DnDSessions } />
                     <Route path='/npcs' component={ DnDNPCs } />
                     <Route path='/locations' component={ DnDLocations } />
+                    <Route path='/quests' component={ DnDQuests } />
                 </Switch>
             </HashRouter>
         </Theme>

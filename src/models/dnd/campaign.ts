@@ -14,6 +14,7 @@ type PrivateFields = '_busy' |
     '_locations' |
     '_npcs' |
     '_pcs' |
+    '_quests' |
     '_sessions' |
     '_startDate';
 
@@ -25,6 +26,7 @@ export class CampaignModel extends BaseModel {
     private _locations: CollectionModel<INoteRef, NoteModel> = null;
     private _npcs: CollectionModel<INoteRef, NoteModel> = null;
     private _pcs: PCModel[] = [];
+    private _quests: CollectionModel<INoteRef, NoteModel> = null;
     private _sessions: CollectionModel<INoteRef, NoteModel> = null;
     private _startDate: DnDDate = null;
     public loadingPCs = false;
@@ -41,6 +43,7 @@ export class CampaignModel extends BaseModel {
             _locations: observable,
             _npcs: observable,
             _pcs: observable,
+            _quests: observable,
             _sessions: observable,
             _startDate: observable,
             creatingPC: observable,
@@ -53,6 +56,7 @@ export class CampaignModel extends BaseModel {
             locations: computed,
             npcs: computed,
             pcs: computed,
+            quests: computed,
             sessions: computed,
             startDate: computed,
             id: computed,
@@ -75,6 +79,10 @@ export class CampaignModel extends BaseModel {
             this.composeUrl(`/dnd/${this.id}/npc`),
             (note: INoteRef) => new NoteModel(note)
         );
+        this._quests = new CollectionModel<INoteRef, NoteModel>(
+            this.composeUrl(`/dnd/${this.id}/quest`),
+            (note: INoteRef) => new NoteModel(note)
+        );
         this._sessions = new CollectionModel<INoteRef, NoteModel>(
             this.composeUrl(`/dnd/${this.id}/session`),
             (note: INoteRef) => new NoteModel(note)
@@ -91,6 +99,7 @@ export class CampaignModel extends BaseModel {
     get locations() { return this._locations }
     get npcs() { return this._npcs }
     get pcs() { return this._pcs }
+    get quests() { return this._quests }
     get sessions() { return this._sessions }
 
     public createLocation = async (name: string) => {
@@ -182,6 +191,33 @@ export class CampaignModel extends BaseModel {
             } else {
                 runInAction(() => {
                     this.creatingPC = false;
+                });
+                
+                throw new Error(result.error);
+            }
+        }
+    }
+
+    public createQuest = async (name: string) => {
+        if (!this._busy) {
+            this._busy = true;
+
+            const result = await this.webServiceHelper.sendRequest<INote>({
+                path: this.composeUrl(`/dnd/${this._campaign.id}/quest`),
+                method: 'POST',
+                data: { name },
+            });
+
+            if (result.success) {
+                const newQuest = new NoteModel(result.value);
+                runInAction(() => {
+                    this.quests.push(newQuest);
+                    this._busy = false;
+                });
+                return newQuest;
+            } else {
+                runInAction(() => {
+                    this._busy = false;
                 });
                 
                 throw new Error(result.error);

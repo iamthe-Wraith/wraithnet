@@ -7,6 +7,7 @@ import { CrossedSwordsIcon } from '../svgs/icons/CrossedSwordsIcon';
 import { LogIcon } from '../svgs/icons/LogIcon';
 import { MapIcon } from '../svgs/icons/MapIcon';
 import { PeopleIcon } from '../svgs/icons/PeopleIcon';
+import { QuestionMarkIcon } from '../svgs/icons/QuestionMarkIcon';
 
 export const DnDNav: React.FC = () => {
     const location = useLocation();
@@ -31,6 +32,11 @@ export const DnDNav: React.FC = () => {
             <Link to='/locations' className={`icon-link ${location.pathname === '/locations' ? 'selected' : ''}`}>
                 <Hex size={ HexSize.Tiny } color={ 'none' }>
                     <MapIcon className='icon' />
+                </Hex>
+            </Link>
+            <Link to='/quests' className={`icon-link ${location.pathname === '/quests' ? 'selected' : ''}`}>
+                <Hex size={ HexSize.Tiny } color={ 'none' }>
+                    <QuestionMarkIcon className='icon' />
                 </Hex>
             </Link>
         </Nav>

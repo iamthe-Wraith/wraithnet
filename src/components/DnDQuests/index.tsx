@@ -7,14 +7,14 @@ interface IProps {
     className?: string;
 }
 
-const DnDLocationsBase: React.FC<IProps> = ({ className = '' }) => {
+const DnDQuestsBase: React.FC<IProps> = ({ className = '' }) => {
     const dnd = useContext(DnDContext);
 
-    const onCreateNewLocationClick = async (name: string) => {
+    const onCreateNewQuestClick = async (name: string) => {
         try {
-            return await dnd.campaign.createLocation(name);
+            return await dnd.campaign.createQuest(name);
         } catch (err) {
-            console.log('error creating location');
+            console.log('error creating quest');
             console.log(err);
         }
     }
@@ -23,11 +23,11 @@ const DnDLocationsBase: React.FC<IProps> = ({ className = '' }) => {
         <CollectionNoteEditor
             busy={ dnd.campaign.busy }
             className={ className }
-            collection={ dnd.campaign.locations }
-            onCreateNewClick={ onCreateNewLocationClick }
-            type='Location'
+            collection={ dnd.campaign.quests }
+            onCreateNewClick={ onCreateNewQuestClick }
+            type='Quest'
         />
     );
 };
 
-export const DnDLocations = observer(DnDLocationsBase);
+export const DnDQuests = observer(DnDQuestsBase);
