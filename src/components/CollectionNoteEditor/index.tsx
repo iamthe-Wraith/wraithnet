@@ -1,18 +1,21 @@
 import { observer } from 'mobx-react';
-import React, { useEffect, useRef, useState } from 'react';
+import { setReactionScheduler } from 'mobx/dist/internal';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { Waypoint } from 'react-waypoint';
 import { CollectionModel } from '../../models/collection';
 import { INoteRef, NoteModel } from '../../models/notes';
+import { TagModel } from '../../models/tags';
 import { Button, ButtonType } from '../Button';
 import { CTAs } from '../CtasContainer';
 import { Right2 } from '../decorators/right/Right2';
 import { LoadingSpinner, SpinnerSize, SpinnerType } from '../LoadingSpinner';
 import { Modal, ModalSize } from '../Modal';
 import { NoteEditor } from '../NoteEditor';
+import { TagsList } from '../TagsList';
 import { TextInput } from '../TextInput';
 import { ListItem } from './ListItem';
 
-import { NoteEditorContainer, ListContainer, CollectionNoteEditorContainer, NewNoteModal } from './styles';
+import { NoteEditorContainer, ListContainer, CollectionNoteEditorContainer, NewNoteModal, FilterContainer, SearchContainer } from './styles';
 
 interface IProps {
     busy?: boolean;
@@ -22,14 +25,31 @@ interface IProps {
     type: string;
 }
 
+interface INotesSearchParams {
+    tags?: string[];
+    name?: string;
+}
+
 const CollectionNoteEditorBase: React.FC<IProps> = ({ busy, className = '', collection, onCreateNewClick, type }) => {
     const [selectedNote, setSelectedNote] = useState<NoteModel>(null);
     const [showNewNoteModal, setShowNewNoteModal] = useState(false);
     const [newNoteName, setNewNoteName] = useState('');
+    const [search, setSearch] = useState('');
+    const [searchTimeout, setSearchTimeout] = useState<number>(null);
+    const [selectedTags, setSelectedTags] = useState<TagModel[]>([]);
+    const searchEngaged = useRef(false);
+    const tagsEngaged = useRef(false);
     const lowerType = useRef(type.toLowerCase()).current;
 
+    const getQueryParams = () => {
+        const queryParams: INotesSearchParams = {};
+        if (search) queryParams.name = search;
+        if (selectedTags.length) queryParams.tags = selectedTags.map(t => t.id);  
+        return queryParams;
+    }
+
     const loadMore = () => {
-        collection.loadMore()
+        collection.loadMore(getQueryParams())
             .catch(err => {
                 console.error(err);
             });
@@ -42,6 +62,18 @@ const CollectionNoteEditorBase: React.FC<IProps> = ({ busy, className = '', coll
     useEffect(() => {
         if (!showNewNoteModal) setNewNoteName('');
     }, [showNewNoteModal]);
+
+    useEffect(() => {
+        if (searchEngaged.current || tagsEngaged.current) {
+            window.clearTimeout(searchTimeout);
+            setSearchTimeout(window.setTimeout(() => {         
+                collection.refresh(getQueryParams())
+                    .catch(err => {
+                        console.error(err);
+                    });
+            }, 300));
+        }
+    }, [search, selectedTags]);
 
     const onCancelNoteChange = (origNote: NoteModel, _: NoteModel) => {
         setSelectedNote(origNote);
@@ -69,6 +101,49 @@ const CollectionNoteEditorBase: React.FC<IProps> = ({ busy, className = '', coll
             });
 
         setSelectedNote(note);
+    };
+
+    const onSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+        searchEngaged.current = true;
+        setSearch(e.target.value);
+    };
+
+    const onSelectedTagsChange = (selectedTags: TagModel[]) => {
+        tagsEngaged.current = true;
+        setSelectedTags(selectedTags);
+    }
+
+    const renderEditor = () => {
+        return (
+            <NoteEditorContainer>
+                <div>
+                    <Button
+                        buttonType={ ButtonType.Blank }
+                        className='back-button'
+                        onClick={() => setSelectedNote(null)}
+                    >
+                        back
+                    </Button>
+                </div>
+                {
+                    selectedNote?.busy && (
+                        <LoadingSpinner
+                            type={SpinnerType.Random}
+                            size={ SpinnerSize.Large }
+                        />
+                    )
+                }
+                {
+                    !!selectedNote && (
+                        <NoteEditor
+                            className={ `editor ${lowerType}-editor` }
+                            note={ selectedNote }
+                            onCancelNoteChange={ onCancelNoteChange }
+                        />
+                    ) 
+                }
+            </NoteEditorContainer>
+        )
     }
 
     const renderList = () => {
@@ -95,7 +170,7 @@ const CollectionNoteEditorBase: React.FC<IProps> = ({ busy, className = '', coll
                     <LoadingSpinner
                         className='spinner'
                         type={SpinnerType.Random}
-                        size={ SpinnerSize.Tiny }
+                        size={ SpinnerSize.Medium }
                     />
                 </div>
             ));
@@ -108,42 +183,61 @@ const CollectionNoteEditorBase: React.FC<IProps> = ({ busy, className = '', coll
         return list;
     }
 
+    const renderSearch = () => {
+        return (
+            <>
+                <FilterContainer>
+                    <SearchContainer>
+                        <TextInput
+                            inputId={ `${lowerType}-search-input` }
+                            onChange={ onSearchChange }
+                            placeholder={ `Search ${type}${lowerType === 'misc' ? '' : 's'}`  }
+                            value={ search }
+                        />
+                        <div className='clear-search-container'>
+                            {
+                                !!search && (
+                                    <Button
+                                        buttonType={ ButtonType.Blank }
+                                        onClick={() => setSearch('')}
+                                    >
+                                        clear search
+                                    </Button>
+                                )
+                            }
+                        </div>
+                        <Right2 />
+                    </SearchContainer>
+                    <TagsList
+                        className='tags-list'
+                        onSelectedTagsChange={ onSelectedTagsChange }
+                    />
+                </FilterContainer>
+                <ListContainer>
+                    <div className='header'>{ `${type}${lowerType === 'misc' ? '' : 's'}` }</div>
+                    <div className='list'>
+                        { renderList() }
+                    </div>
+                    <div className='footer'>
+                        <Button
+                            buttonType={ ButtonType.Blank }
+                            onClick={() => setShowNewNoteModal(true)}
+                        >
+                            { `+ add ${lowerType}` }
+                        </Button>
+                    </div>
+                </ListContainer>
+            </>
+        );
+    }
+
     return (
         <CollectionNoteEditorContainer className={ className }>
-            <ListContainer>
-                <div className='header'>{ `${type}${lowerType === 'misc' ? '' : 's'}` }</div>
-                <div className='list'>
-                    { renderList() }
-                </div>
-                <div className='footer'>
-                    <Button
-                        buttonType={ ButtonType.Blank }
-                        onClick={() => setShowNewNoteModal(true)}
-                    >
-                        { `+ add ${lowerType}` }
-                    </Button>
-                </div>
-                <Right2 />
-            </ListContainer>
-            <NoteEditorContainer>
-                {
-                    selectedNote?.busy && (
-                        <LoadingSpinner
-                            type={SpinnerType.Random}
-                            size={ SpinnerSize.Small }
-                        />
-                    )
-                }
-                {
-                    !!selectedNote && (
-                        <NoteEditor
-                            className={ `editor ${lowerType}-editor` }
-                            note={ selectedNote }
-                            onCancelNoteChange={ onCancelNoteChange }
-                        />
-                    ) 
-                }
-            </NoteEditorContainer>
+            {
+                selectedNote
+                    ? renderEditor()
+                    : renderSearch()
+            }
             <Modal
                 header={ `New ${type}` }
                 onClose={() => setShowNewNoteModal(false)}

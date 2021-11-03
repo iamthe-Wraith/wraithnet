@@ -16,6 +16,7 @@ interface IProps {
 const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelectedTagsChange }) => {
     const tagsModel = useRef(new TagsModel()).current;
     const [selectedTags, setSelectedTags] = useState<TagModel[]>([]);
+    const tagsEngaged = useRef(false);
 
     const onUserLogUpdate = () => {
         tagsModel.getTags(true);
@@ -35,7 +36,9 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
     }, [forceClearSelectedList]);
 
     useEffect(() => {
-        onSelectedTagsChange?.(selectedTags);
+        if (tagsEngaged.current) {
+            onSelectedTagsChange?.(selectedTags);
+        }
     }, [selectedTags]);
 
     const loadMore = () => {
@@ -43,6 +46,7 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
     };
 
     const onTagChange = (tag: TagModel) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        tagsEngaged.current = true;
         const isSelected = selectedTags.find(selectedTag => selectedTag.id === tag.id);
 
         if (isSelected) {

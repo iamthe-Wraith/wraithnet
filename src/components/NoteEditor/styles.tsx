@@ -73,6 +73,7 @@ export const Body = styled.div<IThemeProps>`
 
         .note-editor-textarea,
         .note-editor-textarea textarea {
+            ${ NoScrollBar }
             display: flex;
             flex-grow: 1;
             min-width: 100%;

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FlexHorizontalCenter, NoScrollBar, PrimaryFont } from '../../styles/styles';
+import { FlexCol, FlexHorizontalCenter, NoScrollBar, PrimaryFont } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 
 export const CollectionNoteEditorContainer = styled.div<IThemeProps>`
@@ -7,11 +7,17 @@ export const CollectionNoteEditorContainer = styled.div<IThemeProps>`
     align-items: stretch;
 `
 
-export const ListContainer = styled.div`
+export const FilterContainer = styled.div<IThemeProps>`
     position: relative;
-    min-width: 200px;
-    max-width: 200px;
+    ${ FlexCol }
+    min-width: 220px;
+    max-width: 220px;
     margin-right: 30px;
+    padding: 10px 0;
+`;
+
+export const ListContainer = styled.div`
+    flex-grow: 1;
     padding-bottom: 10px;
 
     .header {
@@ -49,12 +55,17 @@ export const ListContainer = styled.div`
 `;
 
 export const NoteEditorContainer = styled.div`
+    ${ FlexCol }
     position: relative;
-    display: flex;
     flex-grow: 1;
+
+    .back-button {
+        padding: 0;
+    }
 
     .editor {
         min-width: 100%;
+        min-height: calc(100% - 20px);
     }
 `;
 
@@ -62,5 +73,17 @@ export const NewNoteModal = styled.div<IThemeProps>`
     .label {
         font-size: 12px;
         color: ${({theme}) => theme.gray};
+    }
+`;
+
+export const SearchContainer = styled.div`
+    .clear-search-container {
+        ${ FlexHorizontalCenter }
+        justify-content: flex-end;
+        padding-bottom: 10px;
+
+        button {
+            padding-top: 4px;
+        }
     }
 `;
