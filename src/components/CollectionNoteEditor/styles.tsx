@@ -14,6 +14,10 @@ export const FilterContainer = styled.div<IThemeProps>`
     max-width: 220px;
     margin-right: 30px;
     padding: 10px 0;
+
+    .tags-list {
+        flex-grow: 1;
+    }
 `;
 
 export const ListContainer = styled.div`

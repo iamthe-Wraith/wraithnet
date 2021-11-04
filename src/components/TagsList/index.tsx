@@ -1,11 +1,16 @@
 import { observer } from 'mobx-react';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Waypoint } from 'react-waypoint';
-import { TagModel, TagsModel } from '../../models/tags';
+import { CollectionModel } from '../../models/collection';
+import { ITag, TagModel, TagsModel } from '../../models/tags';
+import { Button, ButtonType } from '../Button';
 import { Checkbox } from '../Checkbox';
+import { CTAs } from '../CtasContainer';
 import { LoadingSpinner, SpinnerSize, SpinnerType } from '../LoadingSpinner';
+import { Modal, ModalSize } from '../Modal';
 import { Tag, TagType } from '../Tag';
-import { LoadingSpinnerContainer, NoTagsContainer, TagContainer, TagsListContainer } from './styles';
+import { TextInput } from '../TextInput';
+import { LoadingSpinnerContainer, NewTagModal, NoTagsContainer, TagContainer, TagsListContainer, TagsListItems } from './styles';
 
 interface IProps {
     className?: string;
@@ -16,18 +21,29 @@ interface IProps {
 const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelectedTagsChange }) => {
     const tagsModel = useRef(new TagsModel()).current;
     const [selectedTags, setSelectedTags] = useState<TagModel[]>([]);
+    const [showTagModal, setShowTagModal] = useState(false);
+    const [newTagName, setNewTagName] = useState('');
     const tagsEngaged = useRef(false);
 
-    const onUserLogUpdate = () => {
-        tagsModel.getTags(true);
+    const loadMore = () => {
+        // tagsModel.getTags(true);
+        tagsModel.tags.loadMore()
+            .catch(err => {
+                console.log('error loading tags');
+                console.error(err);
+            });
     };
 
     useEffect(() => {
-        tagsModel.getTags();
-        window.removeEventListener('userlog-update', onUserLogUpdate);
-        window.addEventListener('userlog-update', onUserLogUpdate);
-        return () => window.removeEventListener('userlog-update', onUserLogUpdate);
-    }, [tagsModel]);
+        loadMore();
+    }, []);
+
+    // useEffect(() => {
+    //     tagsModel.getTags();
+    //     window.removeEventListener('userlog-update', onUserLogUpdate);
+    //     window.addEventListener('userlog-update', onUserLogUpdate);
+    //     return () => window.removeEventListener('userlog-update', onUserLogUpdate);
+    // }, [tagsModel]);
 
     useEffect(() => {
         if (forceClearSelectedList) {
@@ -41,9 +57,28 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
         }
     }, [selectedTags]);
 
-    const loadMore = () => {
-        tagsModel.getTags();
-    };
+    const onCreateClick = (name: string) => () => {
+        // onCreateNewClick?.(newTagName)
+        //     .then((n: NoteModel) => {
+        //         // automatically select newly created 
+        //         setShowTagModal(false);
+        //         setSelectedTags(n)
+        //         setNewNoteName('');
+        //     })
+        //     .catch(err => {
+        //         console.log(`error creating ${type}`);
+        //         console.error(err);
+        //     });
+        tagsModel.createTag(name)
+            .then(tag => {
+                setSelectedTags([...selectedTags, tag]);
+                setShowTagModal(false);
+            })
+            .catch(err => {
+                console.log('error creating tag');
+                console.log(err);
+            });
+    }
 
     const onTagChange = (tag: TagModel) => (e: React.ChangeEvent<HTMLInputElement>) => {
         tagsEngaged.current = true;
@@ -57,7 +92,7 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
     }
 
     const renderTags = () => {
-        if (tagsModel.isLoaded && tagsModel.tags.length === 0) {
+        if (tagsModel.tags.allResultsFetched && tagsModel.tags.results.length === 0) {
             return (
                 <NoTagsContainer>
                     No tags found
@@ -65,7 +100,7 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
             )
         }
 
-        const tags = tagsModel.tags.map(t => {
+        const tags = tagsModel.tags.results.map(t => {
             const isChecked = !!selectedTags.find(selectedTag => selectedTag.id === t.id);
             const tag = (
                 <Tag
@@ -94,17 +129,17 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
             )
         });
 
-        if (tagsModel.isBusy) {
+        if (tagsModel.tags.busy) {
             const spinner = (
                 <LoadingSpinner
-                    className={ tagsModel.isLoaded ? '' : 'loading-spinner' }
+                    className={ tagsModel.tags.firstPageLoaded ? '' : 'loading-spinner' }
                     key='loading-spinner'
                     size={ SpinnerSize.Small }
                     type={ SpinnerType.Two }
                 />
             );
 
-            if (tagsModel.isLoaded) {
+            if (tagsModel.tags.firstPageLoaded) {
                 tags.push((
                     <LoadingSpinnerContainer key='loading-spinner-container'>
                         { spinner }
@@ -115,8 +150,8 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
             }
         }
 
-        if (!tagsModel.allTagsLoaded && !tagsModel.isBusy && tagsModel.isLoaded) {
-            return [...tags, <Waypoint key='waypoint' onEnter={ loadMore } topOffset={ 700 } />];
+        if (!tagsModel.tags.allResultsFetched && !tagsModel.tags.busy) {            
+            return [...tags, <Waypoint key='waypoint' onEnter={ loadMore } topOffset={ 300 } />];
         }
 
         return tags
@@ -124,7 +159,50 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
 
     return (
         <TagsListContainer className={ className }>
-            { renderTags() }
+            <TagsListItems>
+                { renderTags() }
+            </TagsListItems>
+            <CTAs
+                className='ctas'
+                ctas={[
+                    {
+                        text: '+ add tag',
+                        type: ButtonType.Blank,
+                        onClick: () => setShowTagModal(true)
+                    }
+                ]}
+            />
+            <Modal
+                header='New Tag'
+                onClose={() => setShowTagModal(false)}
+                isOpen={ showTagModal }
+                size={ ModalSize.Small }
+            >
+                <NewTagModal>
+                    <div className='label'>tag name</div>
+                    <TextInput
+                        inputId={ `new-tag-input` }
+                        onChange={e => setNewTagName(e.target.value)}
+                        value={ newTagName }
+                    />
+                    <CTAs
+                        ctas={[
+                            {
+                                disabled: !newTagName,
+                                text: 'create',
+                                type: ButtonType.Primary,
+                                onClick: onCreateClick(newTagName),
+                            },
+                            {
+                                text: 'cancel',
+                                type: ButtonType.Blank,
+                                onClick: () => setShowTagModal(false),
+                            }
+                        ]}
+                    />
+                    { tagsModel.creatingTag && <LoadingSpinner size={ SpinnerSize.Tiny } />}
+                </NewTagModal>
+            </Modal>
         </TagsListContainer>
     )
 };
