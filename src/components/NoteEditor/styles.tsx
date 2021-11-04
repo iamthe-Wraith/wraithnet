@@ -84,7 +84,9 @@ export const Body = styled.div<IThemeProps>`
         }
     }
 
-    .right-col {
+    .note-right-col {
+        ${ FlexCol }
+        align-items: flex-start;
         min-width: 200px;
         max-width: 200px;
         border-left: ${({theme}) => `1px solid ${theme.darkestGray}`};
@@ -94,11 +96,36 @@ export const Body = styled.div<IThemeProps>`
             margin-bottom: 10px;
             padding: 0 5px;
 
+            &.tags-container {
+                ${ FlexCol }
+                flex-grow: 1;
+                max-height: calc(100% - 115px);
+
+                .selected-tags-container {
+                    ${ FlexCol }
+                    align-items: flex-start;
+                    padding-bottom: 10px;
+                }
+
+                .selected-tag {
+                    margin-bottom: 4px;
+                }
+            }
+
             .header {
                 ${ PrimaryFont }
                 margin-bottom: 5px;
                 color: ${({theme}) => theme.primary};
             }
+        }
+
+        .no-tags {
+            color: ${({theme}) => theme.gray};
+            font-
+        }
+
+        .tags-list {
+            flex-grow: 1;
         }
     }
 `;

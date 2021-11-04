@@ -3,11 +3,13 @@ import { action, computed, makeObservable, observable, runInAction } from 'mobx'
 import { ThemeStore } from '../contexts/Theme';
 import { BaseModel } from './base';
 import { CollectionModel } from './collection';
+import { ITag, TagModel } from './tags';
 
 type NotePrivateFields = '_busy' |
     '_loaded' |
     '_note' |
-    '_setNote';
+    '_setNote' |
+    '_tags';
 
 export interface INoteRef {
     id: string;
@@ -17,6 +19,7 @@ export interface INoteRef {
     name: string;
     category: string;
     slug: string;
+    tags?: ITag[];
 }
 
 export interface INote extends INoteRef {
@@ -32,6 +35,7 @@ export class NoteModel extends BaseModel {
     private _busy = false;
     private _loaded = false;
     private _note: Partial<INoteRef | INote> = null;
+    private _tags: TagModel[] = [];
     
     constructor(note?: Partial<INoteRef>) {
         super();
@@ -39,6 +43,7 @@ export class NoteModel extends BaseModel {
             _busy: observable,
             _loaded: observable,
             _note: observable,
+            _tags: observable,
             busy: computed,
             category: computed,
             createdAt: computed,
@@ -46,6 +51,7 @@ export class NoteModel extends BaseModel {
             access: computed,
             name: computed,
             slug: computed,
+            tags: computed,
             text: computed,
             _setNote: action.bound,
             load: action.bound,
@@ -62,6 +68,7 @@ export class NoteModel extends BaseModel {
     get loaded() { return this._loaded }
     get name() { return this._note?.name ?? '' }
     get slug() { return this._note?.slug ?? '' }
+    get tags() { return this._tags }
     get text() { return (this._note as INote)?.text || '' }
 
     public load = async () => {
@@ -86,7 +93,7 @@ export class NoteModel extends BaseModel {
 
         if (result.success) {
             runInAction(() => {
-                this._note = result.value;
+                this._setNote(result.value);
                 this._busy = false;
                 this._loaded = true;
             });
@@ -104,15 +111,20 @@ export class NoteModel extends BaseModel {
 
         this._busy = true;
 
+        const parsedData = {
+            ...data,
+            tags: (data.tags || []).map(tag => tag.id),
+        }
+
         const result = await this.webServiceHelper.sendRequest<INote>({
             path: this.composeUrl(`/notes${!!this.id ? `/${this.id}` : ''}`),
             method: !!this.id ? 'PATCH' : 'POST',
-            data,
+            data: parsedData,
         });
 
         if (result.success) {
             runInAction(() => {
-                this._note = result.value;
+                this._setNote(result.value);
                 this._busy = false;
             });
         } else {
@@ -126,5 +138,6 @@ export class NoteModel extends BaseModel {
 
     private _setNote = (note: Partial<INoteRef>) => {
         this._note = note;
+        this._tags = note.tags?.map(tag => new TagModel(tag));
     }
 }

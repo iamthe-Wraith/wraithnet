@@ -14,13 +14,14 @@ import { LoadingSpinnerContainer, NewTagModal, NoTagsContainer, TagContainer, Ta
 
 interface IProps {
     className?: string;
+    defaultSelectedTags?: TagModel[];
     forceClearSelectedList?: boolean;
     onSelectedTagsChange?: (selectedTags: TagModel[]) => void;
 }
 
-const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelectedTagsChange }) => {
+const TagsListBase: FC<IProps> = ({ className, defaultSelectedTags = [], forceClearSelectedList, onSelectedTagsChange }) => {
     const tagsModel = useRef(new TagsModel()).current;
-    const [selectedTags, setSelectedTags] = useState<TagModel[]>([]);
+    const [selectedTags, setSelectedTags] = useState<TagModel[]>(defaultSelectedTags);
     const [showTagModal, setShowTagModal] = useState(false);
     const [newTagName, setNewTagName] = useState('');
     const tagsEngaged = useRef(false);
@@ -35,15 +36,9 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
     };
 
     useEffect(() => {
+        selectedTags.map(tag => tagsModel.tags.unshift(tag));
         loadMore();
     }, []);
-
-    // useEffect(() => {
-    //     tagsModel.getTags();
-    //     window.removeEventListener('userlog-update', onUserLogUpdate);
-    //     window.addEventListener('userlog-update', onUserLogUpdate);
-    //     return () => window.removeEventListener('userlog-update', onUserLogUpdate);
-    // }, [tagsModel]);
 
     useEffect(() => {
         if (forceClearSelectedList) {
@@ -58,17 +53,6 @@ const TagsListBase: FC<IProps> = ({ className, forceClearSelectedList, onSelecte
     }, [selectedTags]);
 
     const onCreateClick = (name: string) => () => {
-        // onCreateNewClick?.(newTagName)
-        //     .then((n: NoteModel) => {
-        //         // automatically select newly created 
-        //         setShowTagModal(false);
-        //         setSelectedTags(n)
-        //         setNewNoteName('');
-        //     })
-        //     .catch(err => {
-        //         console.log(`error creating ${type}`);
-        //         console.error(err);
-        //     });
         tagsModel.createTag(name)
             .then(tag => {
                 setSelectedTags([...selectedTags, tag]);

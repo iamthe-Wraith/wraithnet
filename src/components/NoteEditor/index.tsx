@@ -19,6 +19,9 @@ import { ParagraphComponent } from './components/ParagraphComponent';
 import { Markdown } from '../Markdown';
 import { Modal, ModalSize } from '../Modal';
 import { CTAs } from '../CtasContainer';
+import { TagsList } from '../TagsList';
+import { Tag, TagType } from '../Tag';
+import { TagModel } from '../../models/tags';
 
 interface IProps {
     className?: string;
@@ -54,6 +57,7 @@ const NoteEditorBase: React.FC<IProps> = ({
     const [category, setCategory] = useState('');
     const [shareWithAllUsers, setShareWithAllUsers] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [selectedTags, setSelectedTags] = useState<TagModel[]>([]);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
@@ -108,6 +112,10 @@ const NoteEditorBase: React.FC<IProps> = ({
         console.log('continuing without saving...');
     }
 
+    const onSelectedTagsChange = (selectedTags: TagModel[]) => {
+        setSelectedTags(selectedTags);
+    }
+
     const onSaveAndContinueClick = () => {
         console.log('saving and continuing...');
     }
@@ -117,6 +125,7 @@ const NoteEditorBase: React.FC<IProps> = ({
             name,
             category,
             text: content,
+            tags: selectedTags,
         };
 
         if (user.role !== UserRole.MEMBER) {
@@ -138,6 +147,21 @@ const NoteEditorBase: React.FC<IProps> = ({
             .catch(err => {
                 console.error(err);
             })
+    }
+
+    const renderSelectedTags = (tags: TagModel[]) => {
+        if (tags.length === 0) return <div className='no-tags'>no selected tags</div>;
+
+        return tags.map(tag => (
+            <Tag
+                key={ tag.id }
+                allowHoverHighlight={ false }
+                className='selected-tag'
+                isHighlighted={ true }
+                text={ tag.text }
+                type={ TagType.Secondary }
+            />
+        ));
     }
 
     return (
@@ -214,7 +238,7 @@ const NoteEditorBase: React.FC<IProps> = ({
                             )
                     }
                 </div>
-                <div className='right-col'>
+                <div className='note-right-col'>
                     <div className='property-container'>
                         <div className='header'>category</div>
                         {
@@ -259,6 +283,25 @@ const NoteEditorBase: React.FC<IProps> = ({
                             </div>
                         )
                     }
+                    <div className='property-container tags-container'>
+                        <div className='header'>tags</div>
+                        {
+                            editMode
+                                ? (
+                                    <>
+                                        <div className='selected-tags-container'>
+                                            { renderSelectedTags(selectedTags) }
+                                        </div>
+                                        <TagsList
+                                            className='tags-list'
+                                            defaultSelectedTags={ note.tags }
+                                            onSelectedTagsChange={ onSelectedTagsChange }
+                                        />
+                                    </>
+                                )
+                                : renderSelectedTags(note.tags)
+                        }
+                    </div>
                 </div>
             </Body>
             <Modal
