@@ -22,6 +22,7 @@ import { CTAs } from '../CtasContainer';
 import { TagsList } from '../TagsList';
 import { Tag, TagType } from '../Tag';
 import { TagModel } from '../../models/tags';
+import { BaseNoteEditor } from '../BaseNoteEditor';
 
 interface IProps {
     className?: string;
@@ -29,17 +30,6 @@ interface IProps {
     readonly?: boolean;
     onSave?: () => void;
     onCancelNoteChange?:(originalNote: NoteModel, newNote: NoteModel) => void;
-}
-
-const customComponents: any = {
-    p: ParagraphComponent,
-    h1: HeadingsComponent,
-    h2: HeadingsComponent,
-    h3: HeadingsComponent,
-    h4: HeadingsComponent,
-    h5: HeadingsComponent,
-    h6: HeadingsComponent,
-    ref: RefComponent,
 }
 
 const NoteEditorBase: React.FC<IProps> = ({
@@ -216,28 +206,13 @@ const NoteEditorBase: React.FC<IProps> = ({
                 </div>
             </Header>
             <Body>
-                <div className='main-col'>
-                    {
-                        editMode && !readonly
-                            ? (
-                                <TextArea
-                                    className='note-editor-textarea'
-                                    textareaId='note-editor-textarea'
-                                    textareaRef={ref => textareaRef.current = ref}
-                                    onChange={e => setContent(e.target.value)}
-                                    value={ content }
-                                />
-                            )
-                            : (
-                                <Markdown
-                                    content={ content }
-                                    rehypePlugins={[rehypeRaw]}
-                                    remarkPlugins={[remarkGfm, remarkInlineLinks]}
-                                    components={customComponents}
-                                />
-                            )
-                    }
-                </div>
+                <BaseNoteEditor
+                    className='main-col'
+                    content={ content }
+                    editMode={ editMode && !readonly }
+                    id='note-editor-textarea'
+                    onChange={c => setContent(c)}
+                />
                 <div className='note-right-col'>
                     <div className='property-container'>
                         <div className='header'>category</div>

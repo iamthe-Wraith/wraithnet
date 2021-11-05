@@ -65,25 +65,6 @@ export const Body = styled.div<IThemeProps>`
     min-height: calc(100% - ${headerHeight}px);
     overflow: hidden;
 
-    .main-col {
-        ${ FlexCol }
-        ${ NoScrollBar }
-        flex-grow: 1;
-        overflow: scroll;
-
-        .note-editor-textarea,
-        .note-editor-textarea textarea {
-            ${ NoScrollBar }
-            display: flex;
-            flex-grow: 1;
-            min-width: 100%;
-        }
-    
-        .note-editor-textarea textarea {
-            padding: 5px;
-        }
-    }
-
     .note-right-col {
         ${ FlexCol }
         align-items: flex-start;

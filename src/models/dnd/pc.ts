@@ -1,5 +1,6 @@
 import { action, computed, makeObservable, observable, runInAction } from "mobx";
 import { BaseModel } from "../base";
+import { INote, NoteModel } from "../notes";
 import { IDnDClass } from "./class";
 import { IDnDRace } from "./race";
 import { ICampaign } from "./types";
@@ -7,6 +8,7 @@ import { ICampaign } from "./types";
 type PrivateFields = '_busy' |
     '_campaign' |
     '_leveledUp' |
+    '_note' |
     '_pc' |
     '_updatingExp';
 
@@ -15,6 +17,7 @@ export interface IPCRef {
     owner: string;
     campaignId: string;
     name: string;
+    note: INote;
     race: IDnDRace;
     classes: IDnDClass[];
     age: number;
@@ -24,7 +27,6 @@ export interface IPCRef {
 }
 
 export interface IPC extends IPCRef {
-    note?: string;
     // events
     // inventory
     // contacts
@@ -40,6 +42,7 @@ export interface IExpResponse {
 export class PCModel extends BaseModel {
     private _busy = false;
     private _campaign: ICampaign = null;
+    private _note: NoteModel = null;
     private _pc: IPCRef = null;
     private _updatingExp = false;
     private _leveledUp = false;
@@ -50,11 +53,13 @@ export class PCModel extends BaseModel {
             _busy: observable,
             _campaign: observable,
             _leveledUp: observable,
+            _note: observable,
             _pc: observable,
             _updatingExp: observable,
             id: computed,
             leveledUp: computed,
             name: computed,
+            note: computed,
             updatingExp: computed,
             setPc: action.bound,
             resetLeveledUp: action.bound,
@@ -77,6 +82,7 @@ export class PCModel extends BaseModel {
     get exp() { return this._pc.exp }
     get expForNextLevel() { return this._pc.expForNextLevel }
     get level() { return this._pc.level }
+    get note() { return this._note }
     get updatingExp() { return this._updatingExp }
     get leveledUp() { return this._leveledUp }
     set leveledUp(value: boolean) { this._leveledUp = value } 
@@ -87,6 +93,7 @@ export class PCModel extends BaseModel {
 
     public setPc = (pc: IPCRef) => {
         this._pc = pc;
+        this._note = new NoteModel(pc.note);
     }
 
     public update = async (name: string, race: string, classes: string[], age: number, exp: number, level: number) => {

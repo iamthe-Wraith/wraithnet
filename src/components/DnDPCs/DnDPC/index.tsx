@@ -7,7 +7,6 @@ import { Button, ButtonType } from '../../Button';
 import { AnglePos, AngleSize, IAngleProps } from '../../containers/AngleCorner/styles';
 import { DnDPCLevel } from '../../DnDPCLevel';
 import { Modal } from '../../Modal';
-import { EditIcon } from '../../svgs/icons/EditIcon';
 import { XIcon } from '../../svgs/icons/XIcon';
 import { TextInput } from '../../TextInput';
 
@@ -112,13 +111,6 @@ const DnDPCBase: React.FC<IProps> = ({ className = '', onClick, onEditClick, pc,
             </div>
             <DnDPCLevel pc={ pc } />
             <div className='actions-container'>
-                <Button
-                    className='pc-action-button'
-                    buttonType={ ButtonType.Blank }
-                    onClick={() => onEditClick(pc)}
-                >
-                    <EditIcon />
-                </Button>
                 {
                     showXPInput
                         ? (

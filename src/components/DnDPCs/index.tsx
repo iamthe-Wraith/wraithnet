@@ -57,7 +57,6 @@ const DnDPCsBase: React.FC<IProps> = ({ className = '', theme }) => {
     const [xpValue, setXPValue] = useState('');
     const xpRef = useRef<HTMLInputElement>(null);
     const [selectedPC, setSelectedPC] = useState<PCModel>(null);
-    const [selectedPCToEdit, setSelectedPCToEdit] = useState<PCModel>(null);
 
     useEffect(() => {
         dnd.campaign.loadPCs()
@@ -71,17 +70,17 @@ const DnDPCsBase: React.FC<IProps> = ({ className = '', theme }) => {
     }, [showXPInput]);
 
     const onClose = () => {
-        setSelectedPCToEdit(null);
+        setSelectedPC(null);
         setShowPCModal(false)
+    }
+
+    const onSave = (pc: PCModel) => {
+        if (!selectedPC) setSelectedPC(pc);
     }
 
     const onPCClick = (pc: PCModel) => {
         setSelectedPC(pc);
         console.log(`opening pc details for ${pc.name}`)
-    }
-
-    const onPCEditClick = (pc: PCModel) => {
-        setSelectedPCToEdit(pc);
     }
 
     const onXPChange = (value: string) => {
@@ -154,7 +153,7 @@ const DnDPCsBase: React.FC<IProps> = ({ className = '', theme }) => {
                 key={ pc.id }
                 className='pc'
                 onClick={ onPCClick }
-                onEditClick={ onPCEditClick }
+                onEditClick={() => setSelectedPC(pc)}
                 pc={ pc }
             />
         ))
@@ -215,11 +214,12 @@ const DnDPCsBase: React.FC<IProps> = ({ className = '', theme }) => {
                 </Button>
             </div>
             {
-                (showPCModal || !!selectedPCToEdit) && (
+                (showPCModal || !!selectedPC) && (
                     <DnDPCModal
                         isOpen
                         onClose={ onClose }
-                        pc={ selectedPCToEdit }
+                        onSave={ onSave }
+                        pc={ selectedPC }
                     />
                 )
             }

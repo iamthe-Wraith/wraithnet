@@ -1,27 +1,28 @@
 import { observer } from 'mobx-react';
-import { resetGlobalState } from 'mobx/dist/internal';
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react';
 import { DnDContext } from '../../contexts/DnD';
 import { IDnDExp } from '../../models/dnd';
 import { IDnDClass } from '../../models/dnd/class';
 import { PCModel } from '../../models/dnd/pc';
 import { IDnDRace } from '../../models/dnd/race';
-import { ButtonType } from '../Button';
-import { CTAs, ICta } from '../CtasContainer';
+import { Button, ButtonType } from '../Button';
+import { CTAs } from '../CtasContainer';
 import { Dropdown, IDropdownOption } from '../Dropdown';
 import { LoadingSpinner, SpinnerSize, SpinnerType } from '../LoadingSpinner';
+import { ModalSize } from '../Modal';
 import { TextInput } from '../TextInput';
 
-import { DnDPCModalContainer, FieldContainer } from './styles';
+import { DnDPCModalContainer, FieldContainer, LeftCol, NameContainer, NoteEditor } from './styles';
 
 interface IProps {
     className?: string;
     isOpen?: boolean;
     onClose:() => void;
+    onSave(pc?: PCModel): void;
     pc?: PCModel;
 }
 
-export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClose, pc }) => {
+export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClose, onSave, pc }) => {
     const dnd = useContext(DnDContext);
     const [name, setName] = useState(pc?.name || '');
     const [nameError, setNameError] = useState('');
@@ -30,27 +31,39 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
     const [exp, setExp] = useState(pc?.exp || 0);
     const [expError, setExpError] = useState('');
     const [error, setError] = useState('');
+    const [editMode, setEditMode] = useState(!pc);
     const [selectedClassOptions, setSelectedClassOption] = useState<IDropdownOption<IDnDClass>[]>([]);
     const [selectedLevelOption, setSelectedLevelOption] = useState<IDropdownOption<IDnDExp>>(null);
     const [selectedRaceOption, setSelectedRaceOption] = useState<IDropdownOption<IDnDRace>>(null);
     const [classOptions, setClassOptions] = useState<IDropdownOption<IDnDClass>[]>([]);
     const [levelOptions, setLevelOptions] = useState<IDropdownOption<IDnDExp>[]>([]);
     const [raceOptions, setRaceOptions] = useState<IDropdownOption<IDnDRace>[]>([]);
+    const [noteContent, setNoteContent] = useState('');
 
     useEffect(() => {        
         dnd.getClasses()
             .catch((err: any) => {
-                console.error('error getting classes', err);
+                console.error('error getting classes');
+                console.log(err);
             });
 
         dnd.getRaces()
             .catch((err: any) => {
-                console.error('error getting races', err);
+                console.error('error getting races');
+                console.log(err);
             });
 
         dnd.getLevels()
             .catch((err: any) => {
-                console.error('error getting races', err);
+                console.error('error getting races');
+                console.log(err);
+            });
+        
+        pc?.note?.load()
+            .then(() => setNoteContent(pc.note.text))
+            .catch((err: any) => {
+                console.error('error loading PC note');
+                console.log(err);
             });
     }, []);
 
@@ -101,15 +114,30 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
     }, [dnd?.races]);
 
     const reset = () => {
-        setName('');
+        setName(pc?.name || '');
         setNameError('');
-        setAge(30);
+        setAge(pc?.age || 30);
         setAgeError('');
-        setExp(0);
+        setExp(pc?.exp || 0);
         setExpError('');
-        setSelectedClassOption([classOptions[0]]);
-        setSelectedLevelOption(levelOptions[0]);
-        setSelectedRaceOption(raceOptions[0]);
+        setNoteContent(pc?.note?.text || '');
+
+        const defaultClasses = !!pc?.classes?.length
+            ? classOptions.filter(opt =>  {
+                return pc.classes.find(c => c.id === opt.context.id);
+            })
+            : [classOptions[0]];
+        setSelectedClassOption(defaultClasses);
+
+        const defaultLevel = !!pc?.level
+            ? levelOptions.find(opt => opt.context.level === pc.level)
+            : levelOptions[0];
+        setSelectedLevelOption(defaultLevel);
+
+        const defaultRace = !!pc?.race
+            ? raceOptions.find(opt => opt.context.id === pc.race.id)
+            : raceOptions[0];
+        setSelectedRaceOption(defaultRace);
     }
 
     const onAgeChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -130,26 +158,40 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
 
     const onCancelClick = () => {
         reset();
-        onClose();
+        setEditMode(false);
     }
 
-    const onActionClick = () => {
-        (!!pc ? pc.update : dnd.campaign.createPC)(
-            name,
-            selectedRaceOption.context.id,
-            selectedClassOptions.map(o => o.context.id),
-            age,
-            exp,
-            selectedLevelOption.context.level
-        )
-            .then(() => {
-                reset();
-                // TODO: show confirmation
-                onClose();
-            })
-            .catch((err: any) => {
-                setError(err.message);
-            });
+    const onPCSaveClick = async () => {
+        try {
+            await pc.update(name,
+                selectedRaceOption.context.id,
+                selectedClassOptions.map(o => o.context.id),
+                age,
+                exp,
+                selectedLevelOption.context.level);
+            await pc.note.save({ text: noteContent });
+            reset();
+            setEditMode(false);
+        } catch (err: any) {
+            setError(err.message);
+        }
+    }
+
+    const onPCCreateClick = async () => {
+        try {
+            const newPC = await dnd.campaign.createPC(name,
+                selectedRaceOption.context.id,
+                selectedClassOptions.map(o => o.context.id),
+                age,
+                exp,
+                selectedLevelOption.context.level);
+            
+            await newPC.note.save({ text: noteContent });
+            onSave(newPC);
+            setEditMode(false);
+        } catch (err: any) {
+            setError(err.message);
+        }
     }
 
     const onExpBlur = () => {
@@ -270,71 +312,131 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
         <DnDPCModalContainer
             className={ className }
             isOpen={ isOpen }
-            header={`${!!pc ? 'Edit' : 'Create'} PC`}
+            header={
+                editMode
+                    ? (
+                        <NameContainer>
+                            <TextInput
+                                className='name-input'
+                                inputId='pc-name-input'
+                                onChange={ onNameChange }
+                                value={ name }
+                            />
+                            { nameError && <div className='error'>{ nameError }</div>}
+                        </NameContainer>
+                    )
+                    : pc?.name
+            }
             onClose={ onClose }
+            size={ ModalSize.Large }
         >
-            <FieldContainer className='full-width'>
-                <div className='label'>character name</div>
-                <TextInput
-                    inputId='pc-name-input'
-                    onChange={ onNameChange }
-                    value={ name }
+            <div className='pc-upper-ctas-container'>
+                {
+                    !editMode && (
+                        <CTAs
+                            ctas={[
+                                {
+                                    text: 'edit',
+                                    type: ButtonType.Blank,
+                                    onClick: () => setEditMode(true)
+                                }
+                            ]}
+                        />
+                    )
+                }
+            </div>
+            <div className='main'>
+                <LeftCol>
+                    <FieldContainer>
+                        <div className='label'>race</div>
+                        {
+                            editMode
+                                ? renderRacesDropdown()
+                                : <div>{ pc?.race?.name }</div>
+                        }
+                    </FieldContainer>
+                    <FieldContainer>
+                        <div className='label'>classes</div>
+                        {
+                            editMode
+                                ? renderClassesDropdown()
+                                : <div>{ pc?.classes?.map(c => c.name).join(', ') }</div>
+                        }
+                    </FieldContainer>
+                    <FieldContainer>
+                        <div className='label'>age</div>
+                        {
+                            editMode
+                                ? (
+                                    <>
+                                        <TextInput
+                                            inputId='pc-age-input'
+                                            onChange={ onAgeChange }
+                                            type='number'
+                                            value={ age ?? '' }
+                                        />
+                                        { !!ageError && <div className='error'>{ ageError }</div>}
+                                    </>
+                                )
+                                : <div>{ pc?.age }</div>
+                        }
+                    </FieldContainer>
+                    <FieldContainer>
+                        <div className='label'>exp</div>
+                        {
+                            editMode
+                                ? (
+                                    <>
+                                        <TextInput
+                                            inputId='pc-exp-input'
+                                            onBlur={ onExpBlur }
+                                            onChange={ onExpChange }
+                                            type='number'
+                                            value={ exp ?? '' }
+                                        />
+                                        { !!expError && <div className='error'>{ expError }</div>}
+                                    </>
+                                )
+                                : <div>{ pc?.exp }</div>
+                        }
+                    </FieldContainer>
+                    <FieldContainer>
+                        <div className='label'>level</div>
+                        {
+                            editMode
+                                ? renderLevelsDropdown()
+                                : <div>{ pc?.level }</div>
+                        }
+                    </FieldContainer>
+                    { !!error && <div className='error'>{ error }</div>}
+                </LeftCol>
+                <NoteEditor
+                    className='pc-note-editor'
+                    content={ noteContent }
+                    editMode={ editMode }
+                    id='pc-note-editor'
+                    onChange={c => setNoteContent(c)}
                 />
-                { !!nameError && <div className='error'>{ nameError }</div>}
-            </FieldContainer>
-            <div className='flex-row'>
-                <FieldContainer>
-                    <div className='label'>race</div>
-                    { renderRacesDropdown() }
-                </FieldContainer>
-                <FieldContainer>
-                    <div className='label'>classes</div>
-                    { renderClassesDropdown() }
-                </FieldContainer>
             </div>
-            <div className='flex-row'>
-                <FieldContainer>
-                    <div className='label'>age</div>
-                    <TextInput
-                        inputId='pc-age-input'
-                        onChange={ onAgeChange }
-                        type='number'
-                        value={ age ?? '' }
+            {
+                editMode && (
+                    <CTAs
+                        ctas={ [
+                            {
+                                disabled: !name || !selectedRaceOption || !selectedClassOptions?.length || !age || !(typeof exp === 'number') || !selectedLevelOption,
+                                text: !!pc ? 'save' : 'create',
+                                type: ButtonType.Primary,
+                                onClick: !!pc ? onPCSaveClick : onPCCreateClick
+                            },
+                            {
+                                text: 'cancel',
+                                type: ButtonType.BlankReverse,
+                                onClick: onCancelClick
+                            }
+                        ] }
                     />
-                    { !!ageError && <div className='error'>{ ageError }</div>}
-                </FieldContainer>
-                <FieldContainer>
-                    <div className='label'>exp</div>
-                    <TextInput
-                        inputId='pc-exp-input'
-                        onBlur={ onExpBlur }
-                        onChange={ onExpChange }
-                        type='number'
-                        value={ exp ?? '' }
-                    />
-                    { !!expError && <div className='error'>{ expError }</div>}
-                </FieldContainer>
-                <FieldContainer>
-                    <div className='label'>level</div>
-                    { renderLevelsDropdown() }
-                </FieldContainer>
-            </div>
-            { !!error && <div className='error'>{ error }</div>}
-            <CTAs
-                ctas={ [
-                    {
-                        disabled: !name || !selectedRaceOption || !selectedClassOptions?.length || !age || !(typeof exp === 'number') || !selectedLevelOption,
-                        text: !!pc ? 'save' : 'create',
-                        type: ButtonType.Primary,
-                        onClick: onActionClick
-                    },
-                    {
-                        text: 'cancel',
-                        type: ButtonType.BlankReverse,
-                        onClick: onCancelClick
-                    }
-                ] }
-            />
+                )
+            }
         </DnDPCModalContainer>
     );
 }

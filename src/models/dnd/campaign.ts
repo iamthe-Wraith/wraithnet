@@ -219,11 +219,12 @@ export class CampaignModel extends BaseModel {
             });
     
             if (result.success) {
+                const newPC = new PCModel(this._campaign, result.value);
                 runInAction(() => {
-                    const newPC = new PCModel(this._campaign, result.value);
                     this._pcs = [newPC, ...this._pcs];
                     this.creatingPC = false;
                 }); 
+                return newPC;
             } else {
                 runInAction(() => {
                     this.creatingPC = false;
