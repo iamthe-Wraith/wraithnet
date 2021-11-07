@@ -1,6 +1,7 @@
 import React from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import { ThemeStore } from '../../contexts/Theme';
+import { DnDItems } from '../DnDItems';
 import { DnDLocations } from '../DnDLocations';
 import { DnDMainHome } from '../DnDMainHome';
 import { DnDMiscCampaignNotes } from '../DnDMiscCampaignNotes';
@@ -19,6 +20,7 @@ export const DnDCampaignRouter = () => (
                     <Route path='/npcs' component={ DnDNPCs } />
                     <Route path='/locations' component={ DnDLocations } />
                     <Route path='/quests' component={ DnDQuests } />
+                    <Route path='/items' component={ DnDItems} />
                     <Route path='/misc' component={ DnDMiscCampaignNotes } />
                 </Switch>
             </HashRouter>

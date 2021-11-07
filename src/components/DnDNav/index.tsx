@@ -4,6 +4,7 @@ import { Hex } from '../containers/Hex';
 import { HexSize } from '../containers/Hex/styles';
 import { Nav } from '../Nav';
 import { CrossedSwordsIcon } from '../svgs/icons/CrossedSwordsIcon';
+import { HomeIcon } from '../svgs/icons/HomeIcon';
 import { LogIcon } from '../svgs/icons/LogIcon';
 import { MapIcon } from '../svgs/icons/MapIcon';
 import { MinusIcon } from '../svgs/icons/MinusIcon';
@@ -17,7 +18,7 @@ export const DnDNav: React.FC = () => {
         <Nav>
             <Link to='/' className={`icon-link ${location.pathname === '/' ? 'selected' : ''}`}>
                 <Hex size={ HexSize.Tiny } color={ 'none' }>
-                    <CrossedSwordsIcon className='icon' />
+                    <HomeIcon className='icon' />
                 </Hex>
             </Link>
             <Link to='/sessions' className={`icon-link ${location.pathname === '/sessions' ? 'selected' : ''}`}>
@@ -38,6 +39,11 @@ export const DnDNav: React.FC = () => {
             <Link to='/quests' className={`icon-link ${location.pathname === '/quests' ? 'selected' : ''}`}>
                 <Hex size={ HexSize.Tiny } color={ 'none' }>
                     <QuestionMarkIcon className='icon' />
+                </Hex>
+            </Link>
+            <Link to='/items' className={`icon-link ${location.pathname === '/items' ? 'selected' : ''}`}>
+                <Hex size={ HexSize.Tiny } color={ 'none' }>
+                    <CrossedSwordsIcon className='icon' />
                 </Hex>
             </Link>
             <Link to='/misc' className={`icon-link ${location.pathname === '/misc' ? 'selected' : ''}`}>
