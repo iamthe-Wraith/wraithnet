@@ -47,3 +47,8 @@ export interface IWindowSize {
   width:number;
   height:number;
 }
+
+export interface IBase {
+    createdAt: string;
+    id: string;
+}

@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { SvgIcon } from '../../svgs/SvgIcon';
+import { SvgIcon } from '../../SvgIcon';
 import { v4 as uuid } from 'uuid';
 
 interface IProps {

@@ -12,6 +12,7 @@ import { Dashboard } from './dashboard';
 import { Login } from './login';
 import { getKeyTarService, noop } from '../lib/utils';
 import { Base } from './base';
+import { DnD } from './dnd';
 
 updateElectronApp({ repo: 'iamthe-Wraith/wraithnet' });
 
@@ -26,12 +27,14 @@ const dev = process.env.NODE_ENV === 'development';
 
 interface IWindows {
     dashboard: Base;
+    dnd: Base;
     login: Base;
     terminal: Base;
 }
 
 let windows: IWindows = {
     dashboard: null,
+    dnd: null,
     login: null,
     terminal: null
 };
@@ -108,6 +111,7 @@ const setToken = (e: IpcMainEvent, token: string) => {
 app.on('ready', () => {
     windows = {
         dashboard: new Dashboard({ isDev: dev }),
+        dnd: new DnD({ isDev: dev }),
         login: new Login({
             isDev: dev,
             onLoad: onLoginLoad,
@@ -133,6 +137,15 @@ ipcMain.on('user-profile-updated', () => {
 ipcMain.on('close-app', quitApp);
 ipcMain.on('delete-token', deleteToken);
 ipcMain.on('get-token', getToken);
+ipcMain.on('open', (e: IpcMainEvent, window: string) => {
+    switch (window) {
+        case 'dnd':
+            windows.dnd.init();
+            break;
+        default: 
+            break;
+    }
+});
 ipcMain.on('set-token', setToken);
 
 ipcMain.on('test', (e: IpcMainEvent, msg: string) => {

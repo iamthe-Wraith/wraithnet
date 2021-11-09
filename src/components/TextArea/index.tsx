@@ -6,7 +6,7 @@ interface IProps extends React.InputHTMLAttributes<HTMLTextAreaElement> {
 	className?: string;
 	textareaClassName?: string;
 	textareaId: string;
-	textareaRef?: (ref: HTMLElement) => void;
+	textareaRef?: (ref: HTMLTextAreaElement) => void;
 };
 
 export const TextArea: React.FC<IProps> = ({

@@ -10,6 +10,8 @@ module.exports =   {
         loginPreloader: ['./src/preloaders/login.ts'],
         dashboard: ['./src/apps/dashboard.tsx'],
         dashboardPreloader: ['./src/preloaders/dashboard.ts'],
+        dnd: ['./src/apps/dnd.tsx'],
+        dndPreloader: ['./src/preloaders/dnd.ts'],
         terminal: ['./src/apps/terminal.tsx'],
         terminalPreloader: ['./src/preloaders/terminal.ts'],
     },
@@ -94,36 +96,43 @@ module.exports =   {
     },
     plugins: [
         new MiniCssExtractPlugin({
-        filename: '[name].css',
-        chunkFilename: '[id].css',
+            filename: '[name].css',
+            chunkFilename: '[id].css',
         }),
         new HtmlWebpackPlugin({
-        title: 'Wraithnet - Login',
-        filename: 'login.html',
-        template: './src/templates/index.hbs',
-        chunks: ['login'],
-        inject: true,
+            title: 'Wraithnet - Login',
+            filename: 'login.html',
+            template: './src/templates/index.hbs',
+            chunks: ['login'],
+            inject: true,
         }),
         new HtmlWebpackPlugin({
-        title: 'Wraithnet',
-        filename: 'dashboard.html',
-        template: './src/templates/index.hbs',
-        chunks: ['dashboard'],
-        inject: true,
+            title: 'Wraithnet',
+            filename: 'dashboard.html',
+            template: './src/templates/index.hbs',
+            chunks: ['dashboard'],
+            inject: true,
         }),
         new HtmlWebpackPlugin({
-        title: 'Wraithnet',
-        filename: 'terminal.html',
-        template: './src/templates/index.hbs',
-        chunks: ['terminal'],
-        inject: true,
+            title: 'Wraithnet',
+            filename: 'dnd.html',
+            template: './src/templates/index.hbs',
+            chunks: ['dnd'],
+            inject: true,
+        }),
+        new HtmlWebpackPlugin({
+            title: 'Wraithnet',
+            filename: 'terminal.html',
+            template: './src/templates/index.hbs',
+            chunks: ['terminal'],
+            inject: true,
         }),
         new WebpackShellPluginNext({
-        onBuildEnd: {
-            scripts: ['npm run start:electron'],
-            blocking: false,
-            parallel: true,
-        }
+            onBuildEnd: {
+                scripts: ['npm run start:electron'],
+                blocking: false,
+                parallel: true,
+            }
         })
     ],
 };

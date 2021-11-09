@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { FlexCol } from '../../../styles/styles';
 import { IThemeProps } from '../../../styles/themes';
 
 export enum AngleSize {
@@ -98,6 +99,7 @@ export const Border = styled.div<IAngleProps>`
 `;
 
 export const ChildrenContainer = styled.div`
+    min-height: 100%;
     position: relative;
     z-index: 1;
 `;

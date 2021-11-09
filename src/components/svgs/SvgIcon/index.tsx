@@ -3,7 +3,7 @@ import React, { SVGProps } from 'react';
 interface IProps extends SVGProps<SVGSVGElement> {
     className?: string;
     height?: number;
-    id: string;
+    id?: string;
     viewBox: string;
     width?: number;
     x?: number;

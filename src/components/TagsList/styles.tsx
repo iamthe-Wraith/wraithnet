@@ -1,11 +1,18 @@
 import styled from 'styled-components';
-import { FlexCenter, FlexHorizontalCenter } from '../../styles/styles';
+import { FlexCenter, FlexCol, FlexHorizontalCenter, NoScrollBar } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 
 export const LoadingSpinnerContainer = styled.div`
     min-height: 50px;
     margin: 10px 0;
     position: relative;
+`;
+
+export const NewTagModal = styled.div<IThemeProps>`
+    .label {
+        font-size: 12px;
+        color: ${({theme}) => theme.gray};
+    }
 `;
 
 export const NoTagsContainer = styled.div`
@@ -21,20 +28,25 @@ export const TagContainer = styled.div`
     }
 `;
 
-export const TagsListContainer = styled.div`
-    align-items: flex-start;    
-    display: flex;
-    flex-direction: column;
-    min-height: 100px;
+export const TagsListItems = styled.div`
+    ${ NoScrollBar }
+    flex-grow: 1;
     max-height: 100%;
     overflow: auto;
-    position: relative;
+`;
 
-    &::-webkit-scrollbar {
-        display: none;
-    }
-
+export const TagsListContainer = styled.div`
+    ${ FlexCol }
+    position: relative;    
+    align-items: flex-start;    
+    min-height: 100px;
+    max-height: 100%;
+    
     .loading-spinner {
         left: 60px;
+    }
+
+    .ctas {
+        min-width: 100%;
     }
 `;

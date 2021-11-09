@@ -10,6 +10,8 @@ module.exports = {
         loginPreloader: ['./src/preloaders/login.ts'],
         dashboard: ['./src/apps/dashboard.tsx'],
         dashboardPreloader: ['./src/preloaders/dashboard.ts'],
+        dnd: ['./src/apps/dnd.tsx'],
+        dndPreloader: ['./src/preloaders/dnd.ts'],
         terminal: ['./src/apps/terminal.tsx'],
         terminalPreloader: ['./src/preloaders/terminal.ts'],
     },
@@ -122,6 +124,13 @@ module.exports = {
             filename: 'dashboard.html',
             template: './src/templates/index.hbs',
             chunks: ['dashboard'],
+            inject: true,
+        }),
+        new HtmlWebpackPlugin({
+            title: 'Wraithnet',
+            filename: 'dnd.html',
+            template: './src/templates/index.hbs',
+            chunks: ['dnd'],
             inject: true,
         }),
         new HtmlWebpackPlugin({

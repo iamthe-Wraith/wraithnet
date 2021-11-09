@@ -6,6 +6,7 @@ type PrivateFields = '_apiBaseUrl' | '_authToken' | '_client' | '_headers';
 interface IRequestConfig {
   data?: any;
   method: Method;
+  queryParams?: { [key: string]: any };
   path: string;
 }
 
@@ -40,6 +41,20 @@ export class WraithnetApiWebServiceHelper {
     this.initClient();
   }
 
+  private _constructQuery = (params: { [key: string]: any }) => {
+    const query: string[] = [];
+
+    Object.entries(params).forEach(([key, value]) => {
+        if (value) {
+            query.push(`${key}=${value}`);
+        }
+    });
+
+    return query.length > 0
+        ? `?${query.join('&')}`
+        : '';
+}
+
   initClient = () => {
     this._client = axios.create({
       headers: this._headers,
@@ -67,7 +82,7 @@ export class WraithnetApiWebServiceHelper {
     }, err => Promise.reject(err));
   }
 
-  sendRequest = async <T>({ data, method, path }: IRequestConfig, tokenOptional?: boolean): Promise<IResponse<T>> => {
+  sendRequest = async <T>({ data, method, queryParams, path }: IRequestConfig, tokenOptional?: boolean): Promise<IResponse<T>> => {
     if (!this._client) {
       return {
         success: false,
@@ -87,8 +102,10 @@ export class WraithnetApiWebServiceHelper {
       }
     }
 
+    let query = !!queryParams ? this._constructQuery(queryParams) : '';
+
     try {      
-      const response = await this._client({ data, method, url: `${this._apiBaseUrl}${path}` });
+      const response = await this._client({ data, method, url: `${this._apiBaseUrl}${path}${query}` });
 
       return {
         success: response?.status >= 200 && response?.status < 300,

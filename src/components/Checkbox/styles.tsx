@@ -8,6 +8,10 @@ export const Box = styled.div`
     margin-right: 10px;
     width: 16px;
 
+    &.disabled {
+        opacity: .5;
+    }
+
     &.light {
         border: 1px solid ${({theme}: IThemeProps) => theme.light};
 

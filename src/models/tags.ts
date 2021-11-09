@@ -1,20 +1,10 @@
 import dayjs from "dayjs";
 import timezone from 'dayjs/plugin/timezone';
-import { action, computed, makeObservable, observable, runInAction } from "mobx";
-import { WraithnetApiWebServiceHelper } from "../lib/webServiceHelpers/wraithnetApiWebServiceHelper";
+import { action, computed, makeObservable, observable, runInAction, _allowStateChangesInsideComputed } from "mobx";
 import { BaseModel } from "./base";
+import { CollectionModel } from "./collection";
 
 dayjs.extend(timezone);
-
-export interface ITagsResponse {
-    count: number;
-    tags: ITag[];
-}
-
-export interface ITagQueryOptions {
-    page?: number;
-    text?: string;
-}
 
 export interface ITag {
     createdAt: string;
@@ -24,7 +14,9 @@ export interface ITag {
 }
 
 type PrivateTagFields = '_tag';
-type PrivateTagsFields = '_busy' | '_count' | '_criteria' | '_loaded' | '_page' | '_tags';
+type PrivateTagsFields = '_busy' |
+    '_tags' |
+    '_creatingTag';
 
 export class TagModel {
     private _tag: ITag = null;
@@ -58,111 +50,53 @@ export class TagModel {
 }
 
 export class TagsModel extends BaseModel {
-    private _tags: TagModel[] = [];
-    private _count: number = 0;
-    private _criteria: ITagQueryOptions = {};
-    private _page: number = 0;
+    private _tags: CollectionModel<ITag, TagModel> = null;
     private _busy = false;
-    private _loaded = false;
-    private _pageSize = 50;
+    private _creatingTag = false;
 
     constructor() {
         super();
-
         makeObservable<TagsModel, PrivateTagsFields>(this, {
             _busy: observable,
-            _count: observable,
-            _criteria: observable,
-            _loaded: observable,
-            _page: observable,
+            _creatingTag: observable,
             _tags: observable,
-            allTagsLoaded: computed,
-            count: computed,
-            isBusy: computed,
-            isLoaded: computed,
-            webServiceHelper: computed,
-            getTags: action.bound,
-            setCriteria: action.bound,
-            tags: computed,
+            creatingTag: computed,
+            createTag: action.bound,
         });
+        this._tags = new CollectionModel<ITag, TagModel>(
+            this.composeUrl(`/tags`),
+            (tag: ITag) => new TagModel(tag)
+        );
     }
 
-    get allTagsLoaded() {
-        return this._tags.length === this._count;
-    }
+    get busy() { return this._busy }
+    get creatingTag() { return this._creatingTag }
+    get tags() { return this._tags }
 
-    get count() {
-        return this._count;
-    }
+    public createTag = async (text: string) => {
+        if (!this._creatingTag) {
+            this._creatingTag = true;
 
-    get isBusy() {
-        return this._busy;
-    }
-
-    get isLoaded() {
-        return this._loaded;
-    }
-
-    get tags() {
-        return this._tags;
-    }
-
-    private constructQuery = () => {
-        const query: string[] = [];
-
-        Object.entries(this._criteria).forEach(([key, value]) => {
-            if (value) {
-                query.push(`${key}=${value}`);
-            }
-        });
-
-        query.push(`page=${this._page}&pageSize=${this._pageSize}`);
-
-        return query.length > 0
-            ? `?${query.join('&')}`
-            : '';
-    }
-
-    public getTags = async (forcePaginationReset?: boolean) => {
-        if (forcePaginationReset) {
-            this._loaded = false;
-            this._page = 0;
-            this._tags = [];
-        }
-
-        this._busy = true;
-
-        const result = await this.webServiceHelper.sendRequest<ITagsResponse>({
-            path: `${this.composeUrl('/tags')}${this.constructQuery()}`,
-            method: 'GET',
-        });
-
-        if (result.success) {
-            runInAction(() => {
-                this._busy = false;
-                this._loaded = true;
-                this._tags = [...this._tags, ...result.value.tags.map(t => new TagModel(t))];
-                this._count = result.value.count;
-                if (!this.allTagsLoaded) {
-                    this._page += 1;
-                }
-            }); 
-        } else {
-            runInAction(() => {
-                this._busy = false;
+            const result = await this.webServiceHelper.sendRequest<ITag>({
+                path: this.composeUrl('/tags'),
+                method: 'POST',
+                data: { text }
             });
 
-            throw new Error(result.error);
+            if (result.success) {
+                const newTag = new TagModel(result.value);
+                runInAction(() => {
+                    this._creatingTag = false;
+                    this._tags.push(newTag);
+                });
+                return newTag;
+            } else {
+                runInAction(() => {
+                    this._creatingTag = false;
+                });
+
+                throw new Error(result.error);
+            }
         }
-    }
-
-    public setCriteria = (opts: ITagQueryOptions) => {
-        this._page = 0;
-        this._loaded = false;
-        this._tags = [];
-        this._count = 0;
-        this._criteria = { ...opts };
-
-        return this.getTags();
     }
 }

@@ -1,12 +1,20 @@
 import styled from 'styled-components';
 import { headerHeight } from '../Header/styles';
 import { footerHeight } from '../Footer/styles';
+import { FlexHorizontalCenter, PrimaryFont } from '../../styles/styles';
+import { IThemeProps } from '../../styles/themes';
 
 export const Container = styled.div`
     display: flex;
     flex-direction: column;
     height: 100vh;
     width: 100vw;
+
+    .header-left-content {
+        ${ FlexHorizontalCenter }
+        justify-content: space-between;
+        min-width: 100%;
+    }
 `;
 
 export const Col = styled.div`
@@ -17,6 +25,11 @@ export const Col = styled.div`
     max-width: 200px;
     min-width: 200px;
     padding: 10px;
+`;
+
+export const DateContainer = styled.div<IThemeProps>`
+    ${ PrimaryFont }
+    color: ${({theme}) => theme.primaryDark};
 `;
 
 export const LeftCol = styled(Col)``;
@@ -42,4 +55,10 @@ export const MainContainer = styled.div`
     display: flex;
     height: calc(100% - ${headerHeight + footerHeight}px);
     overflow: hidden;
+`;
+
+export const UserId = styled.div<IThemeProps>`
+    color: ${({theme}) => theme.darkGray};
+    font-size: 12px;
+    padding-left: 20px;
 `;
