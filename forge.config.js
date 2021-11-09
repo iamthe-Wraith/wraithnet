@@ -12,6 +12,8 @@ const config = {
             'hardened-runtime': true,
             entitlements: 'static/entitlements.plist',
             'entitlements-inherit': 'static/entitlements.plist',
+            // Temporary: https://github.com/electron/electron-osx-sign/issues/196
+            "gatekeeper-assess": false
         },
     },
     makers: [
