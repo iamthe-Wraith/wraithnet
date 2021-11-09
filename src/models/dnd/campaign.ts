@@ -18,7 +18,20 @@ type PrivateFields = '_busy' |
     '_pcs' |
     '_quests' |
     '_sessions' |
-    '_startDate';
+    '_startDate' |
+    '_stats';
+
+export interface ICampaignStats {
+    sessions?: number;
+    npcs?: number;
+    locations?: number;
+    quests?: number;
+    items?: number;
+    pcs?: number;
+    daysElapsed?: number;
+    inGameDaysElapsed?: number;
+    lastSession?: string;
+}
 
 export class CampaignModel extends BaseModel {
     private _busy = false;
@@ -33,7 +46,9 @@ export class CampaignModel extends BaseModel {
     private _quests: CollectionModel<INoteRef, NoteModel> = null;
     private _sessions: CollectionModel<INoteRef, NoteModel> = null;
     private _startDate: DnDDate = null;
+    private _stats: ICampaignStats = null;
     public loadingPCs = false;
+    public gettingStats = false;
     public creatingPC = false;
     public updatingPartyXP = false;
     
@@ -52,7 +67,9 @@ export class CampaignModel extends BaseModel {
             _quests: observable,
             _sessions: observable,
             _startDate: observable,
+            _stats: observable,
             creatingPC: observable,
+            gettingStats: observable,
             loadingPCs: observable,
             updatingPartyXP: observable,
             busy: computed,
@@ -67,11 +84,13 @@ export class CampaignModel extends BaseModel {
             quests: computed,
             sessions: computed,
             startDate: computed,
+            stats: computed,
             id: computed,
             name: computed,
             createLocation: action.bound,
             createNPC: action.bound,
             createSession: action.bound,
+            getStats: action.bound,
             loadPCs: action.bound,
         });
 
@@ -119,6 +138,7 @@ export class CampaignModel extends BaseModel {
     get pcs() { return this._pcs }
     get quests() { return this._quests }
     get sessions() { return this._sessions }
+    get stats() { return this._stats }
 
     public createItem = async (name: string) => {
         if (!this._busy) {
@@ -323,6 +343,30 @@ export class CampaignModel extends BaseModel {
                 throw new Error(result.error);
             }
         }
+    }
+
+    public getStats = async () => {
+        if (!this.gettingStats) {
+            this.gettingStats = true;
+
+            const result = await this.webServiceHelper.sendRequest<ICampaignStats>({
+                path: this.composeUrl(`/dnd/${this._campaign.id}/stats`),
+                method: 'GET',
+            });
+    
+            if (result.success) {
+                runInAction(() => {
+                    this._stats = result.value;
+                    this.gettingStats = false;
+                }); 
+            } else {
+                runInAction(() => {
+                    this.gettingStats = false;
+                });
+                
+                throw new Error(result.error);
+            }
+        } 
     }
 
     public loadPCs = async () => {
