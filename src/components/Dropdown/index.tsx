@@ -33,7 +33,7 @@ interface IProps<T> {
     optionStyles?: CSSProperties;
 }
 
-export const  Dropdown = <T extends any>({
+export const Dropdown = <T extends any>({
     isMultiSelect,
     className = '',
     engageOnHover,
@@ -51,11 +51,13 @@ export const  Dropdown = <T extends any>({
     const [selectedOptions, setSelectedOptions] = useState<IDropdownOption<T>[]>(isMultiSelect ? (defaultSelectedOptions || [options[0]]) : null);
 
     useEffect(() => {
-        if (!isOpen) onRequestClose?.({ isOpen: false, selectedOption, selectedOptions });
+        if (!isOpen) {
+            onRequestClose?.({ isOpen: false, selectedOption, selectedOptions });
+        }
     }, [isOpen]);
 
     useEffect(() => {
-        if (!equal(selectedOption?.context, defaultSelectedOption?.context)) {
+        if (!!defaultSelectedOption && !equal(selectedOption?.context, defaultSelectedOption?.context)) {
             setSelectedOption(defaultSelectedOption);
         }
     }, [defaultSelectedOption]);
@@ -87,7 +89,7 @@ export const  Dropdown = <T extends any>({
             }
 
             setSelectedOptions(updated);
-        } else {
+        } else {            
             setIsOpen(false);
             setSelectedOption(option);
         }
@@ -104,7 +106,7 @@ export const  Dropdown = <T extends any>({
                 )
                 : (
                     <div>
-                        { selectedOption.text || '--'}
+                        { selectedOption?.text || '--'}
                     </div>
                 )
 
@@ -131,7 +133,7 @@ export const  Dropdown = <T extends any>({
             if (isMultiSelect) {
                 if (!!selectedOptions.find(o => o.id === option.id)) classes.push('selected');
             } else {
-                if (selectedOption.id === option.id) classes.push('selected');
+                if (selectedOption?.id === option.id) classes.push('selected');
             }
 
             return (

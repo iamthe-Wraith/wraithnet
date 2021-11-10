@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { DnDDate, IDnDYear, Reckoning } from '../../lib/dndDate';
 import { Dropdown, IDropdownOption } from '../Dropdown';
 import { TextInput } from '../TextInput';
@@ -65,14 +65,14 @@ export const DnDYearEditor: React.FC<IProps> = ({
         }
     }, [year, reckoning]);
 
-    const onYearChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const onYearChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.value.length <= 5) {            
             const value = parseInt(e.target.value);
             if ((isNaN(value) && e.target.value === '') || !!value) {
                 setYear(value);
             }
         };
-    }
+    }, [year]);
 
     return (
         <DnDYearEditorContainer className={ className }>

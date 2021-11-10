@@ -179,12 +179,12 @@ const DnDDayPickerBase: React.FC<IProps> = ({
         );
     }
 
-    const onYearChange = (year: number, reckoning: Reckoning) => {
+    const onYearChange = useCallback((year: number, reckoning: Reckoning) => {
         const clone = mSelectedDay.clone();
         clone.year = year;
         clone.reckoning = reckoning;
         setSelectedDay(clone);
-    }
+    }, [mSelectedDay]);
 
     return (
         <DnDDayPickerContainer className={ className }>
