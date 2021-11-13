@@ -116,9 +116,6 @@ export class NoteModel extends BaseModel {
             tags: (data.tags || []).map(tag => tag.id),
         }
 
-        console.log('data: ', data);
-        console.log('parsedData: ', parsedData);
-
         const result = await this.webServiceHelper.sendRequest<INote>({
             path: this.composeUrl(`/notes${!!this.id ? `/${this.id}` : ''}`),
             method: !!this.id ? 'PATCH' : 'POST',
