@@ -28,7 +28,6 @@ export class DnD extends Base {
             filename: path.resolve(__dirname, 'dnd.html'),
             height: 'full',
             width: 'full',
-            resizable: this._isDev,
             webPreferences: {
                 devTools: process.env.NODE_ENV === 'development',
                 preload: path.resolve(__dirname, 'dndPreloader.js'),

@@ -25,7 +25,7 @@ const CampaignsListBase: React.FC<IProps> = ({ className = '' }) => {
     const renderCampaigns = () => {
         if (dnd.campaigns.length === 0) {
             return (
-                <div>No campaigns found</div>
+                <div className='no-campaigns'>No campaigns found</div>
             )
         }
 

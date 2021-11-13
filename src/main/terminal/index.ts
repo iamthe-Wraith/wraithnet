@@ -110,7 +110,6 @@ export class Terminal extends Base {
             width: 800,
             x: 'center',
             y: 'bottom',
-            resizable: this._isDev,
             webPreferences: {
                 devTools: process.env.NODE_ENV === 'development',
                 preload: path.resolve(__dirname, 'terminalPreloader.js'),

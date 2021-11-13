@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { AbsoluteCenter, FlexHorizontalCenter, NoScrollBar } from '../../styles/styles';
+import { AbsoluteCenter, FlexCenter, FlexHorizontalCenter, NoScrollBar } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 
 export const CampaignsListContainer = styled.div<IThemeProps>`
@@ -20,4 +20,9 @@ export const CampaignsContainer = styled.div`
     width: 100%;
     height: calc(100% - 20px);
     overflow-y: auto;
+
+    .no-campaigns {
+      ${ FlexCenter };
+      padding-top: 30px;
+    }
 `;

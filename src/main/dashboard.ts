@@ -17,7 +17,6 @@ export class Dashboard extends Base {
             filename: path.resolve(__dirname, 'dashboard.html'),
             height: 'full',
             width: 'full',
-            resizable: this._isDev,
             webPreferences: {
                 devTools: process.env.NODE_ENV === 'development',
                 preload: path.resolve(__dirname, 'dashboardPreloader.js'),

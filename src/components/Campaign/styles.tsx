@@ -54,7 +54,7 @@ export const Main = styled.div`
 
     .right-col {
         align-items: flex-end;
-        padding: 10px 10px 5px 5px;
+        padding: 20px 10px 5px 5px;
 
         .misc-resources {
             flex-grow: 1;

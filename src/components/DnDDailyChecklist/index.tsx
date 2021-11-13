@@ -86,6 +86,10 @@ export const DnDDailyChecklistBase: React.FC<IProps> = ({ className }) => {
     }
 
     const renderChecklist = () => {
+        if (dnd.campaign.dailyChecklist.items.length === 0) {
+          return <div className='no-items'>no items found</div>
+        }
+
         return dnd.campaign.dailyChecklist.items.map(item => (
             <ChecklistItem
                 className='checklist-item'
@@ -98,8 +102,6 @@ export const DnDDailyChecklistBase: React.FC<IProps> = ({ className }) => {
             />
         ));
     }
-
-    if (dnd.campaign.dailyChecklist.items.length === 0) return null;
 
     return (
         <DnDDailyChecklistContainer className={ className }>
