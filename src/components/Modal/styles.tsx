@@ -85,6 +85,6 @@ export const ModalOverlay = styled(animated.div)<IThemeProps>`
         flex-grow: 1;
         max-height: 100%;
         padding: 10px 20px 20px;
-        overflow: auto;
+        overflow: hidden;
     }
 `;
