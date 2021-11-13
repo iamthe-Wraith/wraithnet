@@ -5,7 +5,7 @@ import { IDnDExp } from '../../models/dnd';
 import { IDnDClass } from '../../models/dnd/class';
 import { PCModel } from '../../models/dnd/pc';
 import { IDnDRace } from '../../models/dnd/race';
-import { Button, ButtonType } from '../Button';
+import { ButtonType } from '../Button';
 import { CTAs } from '../CtasContainer';
 import { Dropdown, IDropdownOption } from '../Dropdown';
 import { LoadingSpinner, SpinnerSize, SpinnerType } from '../LoadingSpinner';
@@ -39,6 +39,8 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
     const [levelOptions, setLevelOptions] = useState<IDropdownOption<IDnDExp>[]>([]);
     const [raceOptions, setRaceOptions] = useState<IDropdownOption<IDnDRace>[]>([]);
     const [noteContent, setNoteContent] = useState('');
+    const nameRef = useRef<HTMLInputElement>(null);
+    const noteRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {        
         dnd.getClasses()
@@ -66,6 +68,19 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
                 console.log(err);
             });
     }, []);
+
+    useEffect(() => {
+        if (isOpen && editMode) {
+            if (!!name) {
+                noteRef.current?.focus();
+                const endIndex = noteRef.current.value.length;
+                noteRef.current.setSelectionRange(endIndex, endIndex);
+                noteRef.current.scrollTop = noteRef.current.scrollHeight;
+            } else {
+                nameRef.current?.focus();
+            }
+        }
+    }, [isOpen, editMode]);
 
     useEffect(() => {
         if (!!dnd?.classes?.length) {
@@ -159,6 +174,15 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
     const onCancelClick = () => {
         reset();
         setEditMode(false);
+        if (!name) onClose();
+    }
+
+    const onNameRef = (ref: HTMLInputElement) => {
+        nameRef.current = ref;
+    };
+
+    const onNoteRef = (ref: HTMLTextAreaElement) => {
+        noteRef.current = ref;
     }
 
     const onPCSaveClick = async () => {
@@ -320,6 +344,7 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
                                 className='name-input'
                                 inputId='pc-name-input'
                                 onChange={ onNameChange }
+                                inputRef={ onNameRef }
                                 value={ name }
                             />
                             { nameError && <div className='error'>{ nameError }</div>}
@@ -416,6 +441,7 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
                     editMode={ editMode }
                     id='pc-note-editor'
                     onChange={c => setNoteContent(c)}
+                    noteRef={ onNoteRef }
                 />
             </div>
             {
