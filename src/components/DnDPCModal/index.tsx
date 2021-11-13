@@ -177,47 +177,6 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
         if (!name) onClose();
     }
 
-    const onNameRef = (ref: HTMLInputElement) => {
-        nameRef.current = ref;
-    };
-
-    const onNoteRef = (ref: HTMLTextAreaElement) => {
-        noteRef.current = ref;
-    }
-
-    const onPCSaveClick = async () => {
-        try {
-            await pc.update(name,
-                selectedRaceOption.context.id,
-                selectedClassOptions.map(o => o.context.id),
-                age,
-                exp,
-                selectedLevelOption.context.level);
-            await pc.note.save({ text: noteContent });
-            reset();
-            setEditMode(false);
-        } catch (err: any) {
-            setError(err.message);
-        }
-    }
-
-    const onPCCreateClick = async () => {
-        try {
-            const newPC = await dnd.campaign.createPC(name,
-                selectedRaceOption.context.id,
-                selectedClassOptions.map(o => o.context.id),
-                age,
-                exp,
-                selectedLevelOption.context.level);
-            
-            await newPC.note.save({ text: noteContent });
-            onSave(newPC);
-            setEditMode(false);
-        } catch (err: any) {
-            setError(err.message);
-        }
-    }
-
     const onExpBlur = () => {
         if (!exp) {
             setExp(0);
@@ -272,6 +231,47 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
     const onNameChange = (e: ChangeEvent<HTMLInputElement>) => {
         setNameError('');
         setName(e.target.value)
+    }
+
+    const onNameRef = (ref: HTMLInputElement) => {
+        nameRef.current = ref;
+    };
+
+    const onNoteRef = (ref: HTMLTextAreaElement) => {
+        noteRef.current = ref;
+    }
+
+    const onPCCreateClick = async () => {
+        try {
+            const newPC = await dnd.campaign.createPC(name,
+                selectedRaceOption.context.id,
+                selectedClassOptions.map(o => o.context.id),
+                age,
+                exp,
+                selectedLevelOption.context.level);
+            
+            await newPC.note.save({ text: noteContent });
+            onSave(newPC);
+            setEditMode(false);
+        } catch (err: any) {
+            setError(err.message);
+        }
+    }
+
+    const onPCSaveClick = async () => {
+        try {
+            await pc.update(name,
+                selectedRaceOption.context.id,
+                selectedClassOptions.map(o => o.context.id),
+                age,
+                exp,
+                selectedLevelOption.context.level);
+            await pc.note.save({ text: noteContent });
+            reset();
+            setEditMode(false);
+        } catch (err: any) {
+            setError(err.message);
+        }
     }
 
     const renderClassesDropdown = () => {
@@ -443,6 +443,7 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
                     onChange={c => setNoteContent(c)}
                     noteRef={ onNoteRef }
                 />
+                { (pc?.busy || dnd.campaign.creatingPC) && <LoadingSpinner size={ SpinnerSize.Medium } /> }
             </div>
             {
                 editMode && (
