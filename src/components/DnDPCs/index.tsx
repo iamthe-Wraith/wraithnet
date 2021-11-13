@@ -80,7 +80,6 @@ const DnDPCsBase: React.FC<IProps> = ({ className = '', theme }) => {
 
     const onPCClick = (pc: PCModel) => {
         setSelectedPC(pc);
-        console.log(`opening pc details for ${pc.name}`)
     }
 
     const onXPChange = (value: string) => {

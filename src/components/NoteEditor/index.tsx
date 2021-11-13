@@ -78,8 +78,10 @@ const NoteEditorBase: React.FC<IProps> = ({
         
         if (editMode) {            
             window.setTimeout(() => {
-                textareaRef.current.focus();
-                // TODO: set cursor to end of file...
+                textareaRef.current?.focus();
+                const endIndex = textareaRef.current.value.length;
+                textareaRef.current.setSelectionRange(endIndex, endIndex);
+                textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
             }, 10);
         } else {
             const refs = document.querySelectorAll('.markdown-container ref');
@@ -211,6 +213,7 @@ const NoteEditorBase: React.FC<IProps> = ({
                     content={ content }
                     editMode={ editMode && !readonly }
                     id='note-editor-textarea'
+                    noteRef={ref => textareaRef.current = ref}
                     onChange={c => setContent(c)}
                 />
                 <div className='note-right-col'>

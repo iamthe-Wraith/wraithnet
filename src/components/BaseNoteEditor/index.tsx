@@ -19,6 +19,7 @@ interface IProps {
     editMode?: boolean;
     id: string;
     onChange(content: string): void;
+    noteRef?(ref: HTMLTextAreaElement): void;
 }
 
 
@@ -39,10 +40,19 @@ export const BaseNoteEditor: React.FC<IProps> = ({
     customComponents = defaultCustomComponents,
     editMode,
     id,
-    onChange
+    onChange,
+    noteRef,
 }) => {
     const [_content, setContent] = useState(content);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    useEffect(() => {
+        if (editMode && !!noteRef) {
+            const textarea = document.querySelector(`#${id}`);
+            textareaRef.current = textarea as HTMLTextAreaElement;
+            noteRef?.(textareaRef.current);
+        }
+    }, [editMode]);
 
     return (
         <BaseNoteEditorContainer className={ className }>
