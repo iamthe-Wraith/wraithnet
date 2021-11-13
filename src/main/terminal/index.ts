@@ -297,11 +297,11 @@ export class Terminal extends Base {
         try {
             const parsed = this._parseCommand<IUserLogArguments, null, IUserLogParameters>(structure);
 
-            if (parsed.error) return { error: parsed.error };
+            if (parsed.error) return { error: `error 001 - ${parsed.error}` };
 
             const { arguments: args, error, parameters } = parsed;
             if (error) {
-                return { error };
+                return { error: `error 002 - ${error}` };
             }
 
             const result = await this.webServiceHelper.sendRequest({
@@ -317,10 +317,10 @@ export class Terminal extends Base {
                 this._broadcast('userlog-update');
                 return { result: 'entry logged successfuly' };
             } else {
-                return { error: result.value as string };
+                return { error: `error 003 - ${result.value}` as string };
             }
         } catch (err: any) {
-            return { error: err.message };
+            return { error: `error 004 - ${err.message}` };
         }
     }
 }
