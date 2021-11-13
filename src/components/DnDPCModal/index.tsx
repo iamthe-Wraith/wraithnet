@@ -159,6 +159,7 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
     const onCancelClick = () => {
         reset();
         setEditMode(false);
+        if (!name) onClose();
     }
 
     const onPCSaveClick = async () => {
