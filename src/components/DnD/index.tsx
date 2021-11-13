@@ -20,7 +20,7 @@ export const DnDBase: React.FC = () => {
         dnd.getCampaigns()
             .then(() => {
                 // TODO: this is only for development purposes...needs to be removed...
-                dnd.forceSelect();
+                // dnd.forceSelect();
             })
             .catch(err => {
                 console.error(err);
