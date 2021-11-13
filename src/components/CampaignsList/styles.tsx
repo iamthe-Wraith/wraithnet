@@ -11,14 +11,18 @@ export const CampaignsListContainer = styled.div<IThemeProps>`
     .add-campaign-button-container {
         ${ FlexHorizontalCenter }
         justify-content: flex-end;
-        height: 20px;
+        padding: 10px 20px 0 0;
+
+        button {
+          padding: 0;
+        }
     }
 `;
 
 export const CampaignsContainer = styled.div`
     ${ NoScrollBar }
     width: 100%;
-    height: calc(100% - 20px);
+    height: calc(100% - 27px);
     overflow-y: auto;
 
     .no-campaigns {
