@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react';
 import React, { useContext, useState } from 'react';
+import { useHistory } from 'react-router';
 import { DnDContext } from '../../contexts/DnD';
 import { DnDDate } from '../../lib/dndDate';
 import { DnDIpcRenderer } from '../../models/ipcRenderers/dnd';
@@ -21,9 +22,11 @@ interface IProps {
 
 const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
     const dnd = useContext(DnDContext);
+    const history = useHistory();
 
-    const onBackClick = () => {
+    const onBackClick = () => {        
         dnd.setCampaign(null);
+        history.replace('/');
     }
 
     const onDayClick = (day: DnDDate) => {
