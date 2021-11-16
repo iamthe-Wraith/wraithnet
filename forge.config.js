@@ -5,7 +5,7 @@ const config = {
         name: 'wraithnet',
         executableName: 'wraithnet',
         asar: true,
-        icon: path.resolve(__dirname, 'src', 'assets', 'wraithnet-logo.icns'),
+        icon: path.resolve(__dirname, 'src', 'assets', 'icon.icns'),
         appBundleId: 'com.electron.wraithnet',
         osxSign: {
             identity: 'Developer ID Application: Jacob Lundberg (KF39MP8648)',
