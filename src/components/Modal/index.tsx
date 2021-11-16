@@ -1,6 +1,6 @@
 import { config, useSpring } from '@react-spring/core';
 import { animated } from '@react-spring/web';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { withTheme } from 'styled-components';
 import { IThemeProps } from '../../styles/themes';
 import { Button, ButtonType } from '../Button';
@@ -8,13 +8,14 @@ import { AngleCorner } from '../containers/AngleCorner';
 import { AnglePos, AngleSize } from '../containers/AngleCorner/styles';
 import { XIcon } from '../svgs/icons/XIcon';
 
-import { ModalOverlay } from './styles';
+import { ModalOverlay, ModalContainer } from './styles';
 
 export enum ModalSize {
     Small = 'small-modal',
     Medium = 'medium-modal',
     Large = 'large-modal',
     XLarge = 'extra-large-modal',
+    Custom = 'custom',
 }
 
 interface IProps extends IThemeProps {
@@ -78,7 +79,7 @@ export const ModalBase: React.FC<IProps> = ({
 
     return (
         <ModalOverlay className={ className } style={ overlaySpring }>
-            <animated.div className={`modal-container ${size}`} style={ modalSpring }>
+            <ModalContainer className={ `modal-container ${size}` } style={ modalSpring }>
                 <AngleCorner
                     childrenContainerClassName='angle-corner-children-container'
                     className='modal-angle-corner'
@@ -90,7 +91,7 @@ export const ModalBase: React.FC<IProps> = ({
                     { renderHeader() }
                     { renderBody() }
                 </AngleCorner>
-            </animated.div>
+            </ModalContainer>
         </ModalOverlay>
     );
 }

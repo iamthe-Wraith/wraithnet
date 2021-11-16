@@ -12,6 +12,7 @@ interface IArrowRenderer {
 export interface ITinyPopoverProps {
 	align?: Exclude<PopoverAlign, 'custom'>;
 	anchor: React.ReactNode;
+    anchorClassName?: string;
 	arrow?: Partial<ArrowContainerProps>;
 	arrowSize?: number;
 	children: React.ReactNode;
@@ -123,6 +124,7 @@ export class TinyPopover extends React.Component<ITinyPopoverProps, IState> {
 		const {
 			align,
 			anchor,
+            anchorClassName = '',
             className = '',
 			contentStyle,
 			disabled,
@@ -144,7 +146,7 @@ export class TinyPopover extends React.Component<ITinyPopoverProps, IState> {
 				transitionDuration={ transitionDuration || 0.01 }
 			>
 				<div
-					className='tiny-popover-anchor'
+					className={ `tiny-popover-anchor ${anchorClassName}` }
 					onClick={ !disabled ? this.onTriggerEngaged : undefined }
 					onMouseDown={ !disabled ? this.onTriggerEngaged : undefined }
 					onMouseOut={ !disabled && engageOnHover ? this.onTriggerEngaged : undefined }
