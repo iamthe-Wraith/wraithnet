@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FlexHorizontalCenter, PrimaryFont } from '../../styles/styles';
+import { FlexCol, FlexHorizontalCenter, PrimaryFont } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 import { BaseNoteEditor } from '../BaseNoteEditor';
 import { Modal } from '../Modal';
@@ -23,7 +23,6 @@ export const DnDPCModalContainer = styled(Modal)<IThemeProps>`
 `;
 
 export const FieldContainer = styled.div<IThemeProps>`
-    flex-grow: 1;
     min-width: 100%;
     max-width: 100%;
     margin-bottom: 10px;
@@ -44,7 +43,28 @@ export const FieldContainer = styled.div<IThemeProps>`
     }
 `;
 
+export const InventoryContainer = styled.div`
+    ${ FlexCol }
+    position: relative;
+    flex-grow: 1;
+    max-width: calc(100% - 20px);
+    margin-top: 5px;
+    padding-top: 10px;
+    border-top: ${({theme}) => `1px solid ${theme.gray}`};
+
+    .header {
+        ${ PrimaryFont }
+        font-size: 16px;
+        color: ${({theme}) => theme.primary};
+    }
+
+    .inventory-list {
+        flex-grow: 1;
+    }
+`;
+
 export const LeftCol = styled.div`
+    ${ FlexCol }
     min-width: 250px;
     max-width: 250px;
 

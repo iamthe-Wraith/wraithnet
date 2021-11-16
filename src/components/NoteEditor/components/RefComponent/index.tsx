@@ -33,7 +33,7 @@ const getNoteProps = (path = '') => {
     return { category, slug };
 }
 
-const RefComponentBase: React.FC<IRefComponentProps> = ({ node, children, path }) => {
+const RefComponentBase: React.FC<IRefComponentProps> = ({ children, path }) => {
     const [isOpen, setIsOpen] = useState(false);
     const note = useRef(new NoteModel(getNoteProps(path))).current;
 

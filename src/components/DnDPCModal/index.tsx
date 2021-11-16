@@ -5,14 +5,17 @@ import { IDnDExp } from '../../models/dnd';
 import { IDnDClass } from '../../models/dnd/class';
 import { PCModel } from '../../models/dnd/pc';
 import { IDnDRace } from '../../models/dnd/race';
+import { NoteModel } from '../../models/notes';
+import { AddItemToInventoryModal } from '../AddItemToInventoryModal';
 import { ButtonType } from '../Button';
 import { CTAs } from '../CtasContainer';
 import { Dropdown, IDropdownOption } from '../Dropdown';
 import { LoadingSpinner, SpinnerSize, SpinnerType } from '../LoadingSpinner';
 import { ModalSize } from '../Modal';
+import { SimpleNoteList } from '../SimpleNoteList';
 import { TextInput } from '../TextInput';
 
-import { DnDPCModalContainer, FieldContainer, LeftCol, NameContainer, NoteEditor } from './styles';
+import { DnDPCModalContainer, FieldContainer, InventoryContainer, LeftCol, NameContainer, NoteEditor } from './styles';
 
 interface IProps {
     className?: string;
@@ -39,6 +42,7 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
     const [levelOptions, setLevelOptions] = useState<IDropdownOption<IDnDExp>[]>([]);
     const [raceOptions, setRaceOptions] = useState<IDropdownOption<IDnDRace>[]>([]);
     const [noteContent, setNoteContent] = useState('');
+    const [showAddItemModal, setShowAddItemModal] = useState(false);
     const nameRef = useRef<HTMLInputElement>(null);
     const noteRef = useRef<HTMLTextAreaElement>(null);
 
@@ -65,6 +69,12 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
             .then(() => setNoteContent(pc.note.text))
             .catch((err: any) => {
                 console.error('error loading PC note');
+                console.log(err);
+            });
+        
+        pc?.loadInventory()
+            .catch((err: any) => {
+                console.error('error loading PC inventory');
                 console.log(err);
             });
     }, []);
@@ -153,6 +163,15 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
             ? raceOptions.find(opt => opt.context.id === pc.race.id)
             : raceOptions[0];
         setSelectedRaceOption(defaultRace);
+    }
+
+    const onAddItems = (items: NoteModel[]) => {
+        pc.updateInventory(items.map(item => item.id))
+            .then(() => setShowAddItemModal(false))
+            .catch(err => {
+                console.log('error updating inventory');
+                console.log(err);
+            });
     }
 
     const onAgeChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -434,6 +453,25 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
                         }
                     </FieldContainer>
                     { !!error && <div className='error'>{ error }</div>}
+                    { !editMode && !!pc && (
+                        <InventoryContainer>
+                            <div className='header'>Inventory</div>
+                            <SimpleNoteList
+                                className='inventory-list'
+                                notes={ pc.inventory }
+                            />
+                            <CTAs
+                                ctas={[
+                                    {
+                                        text: '+ add item',
+                                        type: ButtonType.Blank,
+                                        onClick: () => setShowAddItemModal(true),
+                                    }
+                                ]}
+                            />
+                            { (pc?.loadingInventory || pc?.updatingInventory) && <LoadingSpinner size={SpinnerSize.Small} /> }
+                        </InventoryContainer>
+                    ) }
                 </LeftCol>
                 <NoteEditor
                     className='pc-note-editor'
@@ -463,6 +501,15 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
                         ] }
                     />
                 )
+            }
+            {
+                <AddItemToInventoryModal
+                    defaultItems={ pc?.inventory }
+                    isOpen={ showAddItemModal && !!pc }
+                    onCancel={() => setShowAddItemModal(false)}
+                    onSave={ onAddItems }
+                    saving={ pc.updatingInventory }
+                />
             }
         </DnDPCModalContainer>
     );
