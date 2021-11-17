@@ -8,6 +8,7 @@
         "package": "npm run build:prod && npm run forge:package",
         "deploy": "npm run build:prod && npm run forge:publish",
         "build:prod": "webpack --config ./webpack.prod.js",
+        "start:electron": "electron ./dist/electron.js",
         "forge:package": "electron-forge package",
         "forge:publish": "electron-forge publish",
         "forge:make": "electron-forge make"
