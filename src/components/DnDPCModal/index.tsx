@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react';
-import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { DnDContext } from '../../contexts/DnD';
 import { IDnDExp } from '../../models/dnd';
 import { IDnDClass } from '../../models/dnd/class';
@@ -165,14 +165,14 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
         setSelectedRaceOption(defaultRace);
     }
 
-    const onAddItems = (items: NoteModel[]) => {
+    const onAddItems = useCallback((items: NoteModel[]) => {
         pc.updateInventory(items.map(item => item.id))
             .then(() => setShowAddItemModal(false))
             .catch(err => {
                 console.log('error updating inventory');
                 console.log(err);
             });
-    }
+    }, []);
 
     const onAgeChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (!e.target.value) {
@@ -189,6 +189,10 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
             setAge(value);
         }
     }
+
+    const onCancelAddItems = useCallback(() => {
+        setShowAddItemModal(false);
+    }, []);
 
     const onCancelClick = () => {
         reset();
@@ -506,9 +510,9 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
                 <AddItemToInventoryModal
                     defaultItems={ pc?.inventory }
                     isOpen={ showAddItemModal && !!pc }
-                    onCancel={() => setShowAddItemModal(false)}
+                    onCancel={ onCancelAddItems }
                     onSave={ onAddItems }
-                    saving={ pc.updatingInventory }
+                    saving={ pc?.updatingInventory }
                 />
             }
         </DnDPCModalContainer>

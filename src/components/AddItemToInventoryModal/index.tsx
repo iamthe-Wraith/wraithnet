@@ -42,9 +42,9 @@ export const AddItemToInventoryModal: React.FC<IProps> = ({
     }, []);
 
     useEffect(() => {
-        console.log('defaultItems change detected', defaultItems.length);
-        
-        setSelectedItems(defaultItems || []);
+        if (!!defaultItems && defaultItems.length !== selectedItems.length) {
+            setSelectedItems(defaultItems || []);
+        }
     }, [defaultItems]);
 
     const onItemClick = useCallback((item: NoteModel) => () => {
