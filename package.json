@@ -1,17 +1,16 @@
 {
     "name": "wraithnet",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "wraithnet",
     "main": "./dist/electron.js",
     "scripts": {
+        "start": "webpack --config ./webpack.dev.js --watch",
+        "package": "npm run build:prod && npm run forge:package",
+        "deploy": "npm run build:prod && npm run forge:publish",
         "build:prod": "webpack --config ./webpack.prod.js",
-        "start": "electron-forge start",
-        "start:dev": "webpack --config ./webpack.dev.js --watch",
-        "start:electron": "electron ./dist/electron.js",
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "package": "electron-forge package",
-        "publish": "electron-forge publish",
-        "make": "electron-forge make"
+        "forge:package": "electron-forge package",
+        "forge:publish": "electron-forge publish",
+        "forge:make": "electron-forge make"
     },
     "repository": {
         "type": "git",
