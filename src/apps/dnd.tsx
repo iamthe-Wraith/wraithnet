@@ -8,23 +8,26 @@ import { UserStore } from '../contexts/User';
 import { TerminalStore } from '../contexts/Terminal';
 import { DnD } from '../components/DnD';
 import { DnDStore } from '../contexts/DnD';
+import { ImagesStore } from '../contexts/Images';
 
 const App = () => (
-    <TerminalStore>
-        <UserStore>
-            <DnDStore>
-                <ThemeStore>
-                    <Theme>
-                        <HashRouter>
-                            <AppContainer>
-                                <DnD />
-                            </AppContainer>
-                        </HashRouter>
-                    </Theme>
-                </ThemeStore>
-            </DnDStore>
-        </UserStore>
-    </TerminalStore>
+  <TerminalStore>
+    <UserStore>
+      <DnDStore>
+        <ImagesStore>
+          <ThemeStore>
+            <Theme>
+              <HashRouter>
+                <AppContainer>
+                  <DnD />
+                </AppContainer>
+              </HashRouter>
+            </Theme>
+          </ThemeStore>
+        </ImagesStore>
+      </DnDStore>
+    </UserStore>
+  </TerminalStore>
 );
 
 ReactDOM.render(<App />, document.getElementById('root'));

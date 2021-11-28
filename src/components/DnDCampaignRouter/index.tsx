@@ -10,20 +10,20 @@ import { DnDQuests } from '../DnDQuests';
 import { DnDSessions } from '../DnDSessions';
 import { Theme } from '../Theme';
 
-export const DnDCampaignRouter = () => (
-    <ThemeStore>
-        <Theme>
-            <HashRouter>
-                <Switch>
-                    <Route exact path='/' component={ DnDMainHome } />
-                    <Route exact path='/sessions' component={ DnDSessions } />
-                    <Route path='/npcs' component={ DnDNPCs } />
-                    <Route path='/locations' component={ DnDLocations } />
-                    <Route path='/quests' component={ DnDQuests } />
-                    <Route path='/items' component={ DnDItems} />
-                    <Route path='/misc' component={ DnDMiscCampaignNotes } />
-                </Switch>
-            </HashRouter>
-        </Theme>
-    </ThemeStore>
+export const DnDCampaignRouter: React.FC = () => (
+  <ThemeStore>
+    <Theme>
+      <HashRouter>
+        <Switch>
+          <Route exact path='/' component={ DnDMainHome } />
+          <Route exact path='/sessions' component={ DnDSessions } />
+          <Route path='/npcs' component={ DnDNPCs } />
+          <Route path='/locations' component={ DnDLocations } />
+          <Route path='/quests' component={ DnDQuests } />
+          <Route path='/items' component={ DnDItems } />
+          <Route path='/misc' component={ DnDMiscCampaignNotes } />
+        </Switch>
+      </HashRouter>
+    </Theme>
+  </ThemeStore>
 );

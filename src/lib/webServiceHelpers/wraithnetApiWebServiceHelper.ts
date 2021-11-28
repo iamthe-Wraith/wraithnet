@@ -1,5 +1,5 @@
-import axios, { AxiosInstance, Method } from 'axios';
-import { action, observable, makeObservable } from 'mobx';
+import axios, { AxiosInstance, AxiosRequestHeaders, Method } from 'axios';
+import { action, observable, makeObservable, computed } from 'mobx';
 
 type PrivateFields = '_apiBaseUrl' | '_authToken' | '_client' | '_headers';
 
@@ -8,17 +8,18 @@ interface IRequestConfig {
   method: Method;
   queryParams?: { [key: string]: any };
   path: string;
+  headers?: AxiosRequestHeaders;
 }
 
 interface IResponse<T> {
-    success: boolean;
-    value?: T;
-    error?: string;
+  success: boolean;
+  value?: T;
+  error?: string;
 }
 
 export class WraithnetApiWebServiceHelper {
   private _apiBaseUrl: string = null;
-  private _authToken: string = '';
+  private _authToken = '';
   private _client: AxiosInstance = null;
   private _headers: any = {};
 
@@ -28,6 +29,8 @@ export class WraithnetApiWebServiceHelper {
       _authToken: observable,
       _client: observable.ref,
       _headers: observable,
+      apiBaseUrl: computed,
+      client: computed,
       initClient: action,
       sendRequest: action,
     });
@@ -41,19 +44,22 @@ export class WraithnetApiWebServiceHelper {
     this.initClient();
   }
 
+  get apiBaseUrl() { return this._apiBaseUrl; }
+  get client() { return this._client; }
+
   private _constructQuery = (params: { [key: string]: any }) => {
     const query: string[] = [];
 
     Object.entries(params).forEach(([key, value]) => {
-        if (value) {
-            query.push(`${key}=${value}`);
-        }
+      if (value) {
+        query.push(`${key}=${value}`);
+      }
     });
 
     return query.length > 0
-        ? `?${query.join('&')}`
-        : '';
-}
+      ? `?${query.join('&')}`
+      : '';
+  }
 
   initClient = () => {
     this._client = axios.create({
@@ -82,7 +88,7 @@ export class WraithnetApiWebServiceHelper {
     }, err => Promise.reject(err));
   }
 
-  sendRequest = async <T>({ data, method, queryParams, path }: IRequestConfig, tokenOptional?: boolean): Promise<IResponse<T>> => {
+  sendRequest = async <T>({ data, method, queryParams, path, headers }: IRequestConfig, tokenOptional?: boolean): Promise<IResponse<T>> => {
     if (!this._client) {
       return {
         success: false,
@@ -90,28 +96,41 @@ export class WraithnetApiWebServiceHelper {
       };
     }
 
-    if (!this._authToken && !tokenOptional) {
-      try {
-        const token = await (window as any).App.getToken();
-        if (token) this._authToken = token;
-      } catch (err) {
-        return {
-          success: false,
-          error: 'no token found'
-        }
-      }
-    }
+    if (!this._authToken && !tokenOptional) await this.setAuthToken();
 
-    let query = !!queryParams ? this._constructQuery(queryParams) : '';
+    const query = !!queryParams ? this._constructQuery(queryParams) : '';
 
     try {      
-      const response = await this._client({ data, method, url: `${this._apiBaseUrl}${path}${query}` });
+      const response = await this._client({
+        data,
+        method,
+        url: `${this._apiBaseUrl}${path}${query}`,
+        headers,
+      });
 
       return {
         success: response?.status >= 200 && response?.status < 300,
         value: response?.data,
       };
-    } catch (error) {
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.response?.data,
+      };
+    }
+  }
+
+  sendFormDataRequest = async <T>(url: string, method: Method, formData: FormData): Promise<IResponse<T>> => {
+    try {
+      if (!this._authToken) await this.setAuthToken();
+
+      const response = await this._client.post(url, formData, { headers: this._headers });
+
+      return {
+        success: response?.status >= 200 && response?.status < 300,
+        value: response?.data,
+      };
+    } catch (error: any) {
       return {
         success: false,
         error: error.response?.data,
@@ -120,6 +139,14 @@ export class WraithnetApiWebServiceHelper {
   }
 
   private setAuthToken = async () => {
-    this._authToken = await (window as any).App.getToken();;
+    try {
+      const token = await (window as any).App.getToken();
+      if (token) this._authToken = token;
+    } catch (err) {
+      return {
+        success: false,
+        error: 'no token found',
+      };
+    }
   }
 }
