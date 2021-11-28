@@ -9,24 +9,29 @@ import { TerminalStore } from '../contexts/Terminal';
 import { DnD } from '../components/DnD';
 import { DnDStore } from '../contexts/DnD';
 import { ImagesStore } from '../contexts/Images';
+import { ToasterStore } from '../contexts/Toaster';
+import { Toaster } from '../components/Toaster';
 
 const App = () => (
   <TerminalStore>
-    <UserStore>
-      <DnDStore>
-        <ImagesStore>
-          <ThemeStore>
-            <Theme>
-              <HashRouter>
-                <AppContainer>
-                  <DnD />
-                </AppContainer>
-              </HashRouter>
-            </Theme>
-          </ThemeStore>
-        </ImagesStore>
-      </DnDStore>
-    </UserStore>
+    <ToasterStore>
+      <UserStore>
+        <DnDStore>
+          <ImagesStore>
+            <ThemeStore>
+              <Theme>
+                <HashRouter>
+                  <AppContainer>
+                    <DnD />
+                    <Toaster />
+                  </AppContainer>
+                </HashRouter>
+              </Theme>
+            </ThemeStore>
+          </ImagesStore>
+        </DnDStore>
+      </UserStore>
+    </ToasterStore>
   </TerminalStore>
 );
 
