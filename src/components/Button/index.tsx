@@ -1,4 +1,4 @@
-import React, { FC, useRef } from 'react';
+import React, { FC } from 'react';
 
 import { Btn } from './styles';
 
@@ -26,15 +26,17 @@ export const Button: FC<IProps> = ({
   children,
   className,
   disabled = false,
+  type = 'button',
   onClick,
   ...restProps
 }) => (
-    <Btn
-        className={ `${buttonType} ${className}` }
-        disabled={ disabled }
-        onClick={ onClick }
-        { ...restProps }
-    >
-        { children }
-    </Btn>
+  <Btn
+    className={ `${buttonType} ${className}` }
+    disabled={ disabled }
+    onClick={ onClick }
+    type={ type }
+    { ...restProps }
+  >
+    { children }
+  </Btn>
 );

@@ -13,8 +13,8 @@ export const ThemeStore: FC = ({ children }) => {
   const switchTheme = useCallback((newTheme: Themes) => setTheme(newTheme), [theme]);
 
   return (
-    <ThemeContext.Provider value={{switchTheme, theme}}>
+    <ThemeContext.Provider value={ {switchTheme, theme} }>
       {children}
     </ThemeContext.Provider>
-  )
+  );
 };

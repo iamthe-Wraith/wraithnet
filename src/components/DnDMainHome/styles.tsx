@@ -3,16 +3,16 @@ import { FlexCenter, FlexCol } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 
 export enum StatPosition {
-    Top = 'top',
-    RightTop = 'right-top',
-    RightBottom = 'right-bottom',
-    Bottom = 'bottom',
-    LeftBottom = 'left-bottom',
-    LeftTop = 'left-top'
+  Top = 'top',
+  RightTop = 'right-top',
+  RightBottom = 'right-bottom',
+  Bottom = 'bottom',
+  LeftBottom = 'left-bottom',
+  LeftTop = 'left-top'
 }
 
 export interface IStatProps extends IThemeProps {
-    position: StatPosition;
+  position: StatPosition;
 }
 
 export const DnDMainHomeContainer = styled.div<IThemeProps>`
@@ -27,6 +27,13 @@ export const DnDMainHomeContainer = styled.div<IThemeProps>`
     }
 
     .dots {}
+
+    .file-input {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      min-width: 200px;
+    }
 `;
 
 export const StatsContainer = styled.div<IThemeProps>`
