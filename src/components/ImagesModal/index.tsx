@@ -31,11 +31,13 @@ const ImagesModalBase: React.FC<IProps> = ({
   };
 
   const loadMore = () => {
-    imagesModel.images.loadMore()
-      .catch(err => {
-        console.log('>>>>> error loading images');
-        console.log(err);
-      });
+    if (!imagesModel.images.firstPageLoaded) {
+      imagesModel.images.loadMore()
+        .catch(err => {
+          console.log('>>>>> error loading images');
+          console.log(err);
+        });
+    }
   };
 
   useEffect(() => {
