@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react';
+import { ToasterContext } from '../../contexts/Toaster';
 import { roundFileSize } from '../../lib/files';
 import { ImageModel, ImagesModel } from '../../models/images';
 import { ButtonType } from '../Button';
@@ -22,12 +23,14 @@ const ImagesModalBase: React.FC<IProps> = ({
   isOpen,
   onClose,
 }) => {
+  const toaster = useContext(ToasterContext);
   const imagesModel = useRef(new ImagesModel()).current;
   const inputRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<FileList>(null);
 
   const copyUrl = (img: ImageModel) => () => {
     navigator.clipboard.writeText(img.url);
+    toaster.push({ message: 'Image URL copied to clipboard' });
   };
 
   const loadMore = () => {
@@ -54,7 +57,7 @@ const ImagesModalBase: React.FC<IProps> = ({
     if (!!files) {
       imagesModel.upload(files)
         .then(() => {
-          console.log('>>>>> success');
+          toaster.push({ message: 'Image uploaded successfully'});
           setFiles(null);
         })
         .catch(err => {
