@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FlexCol } from '../../styles/styles';
+import { FlexCol, NoScrollBar } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 import { Modal } from '../Modal';
 
@@ -15,7 +15,10 @@ export const AddItemToInventoryModalContainer = styled(Modal)<IThemeProps>`
 
 export const ItemsList = styled.div<IThemeProps>`
     ${ FlexCol }
+    ${ NoScrollBar }
     flex-grow: 1;
+    max-height: 275px;
+    overflow: auto;
 
     .item-to-add {
         text-align: left;

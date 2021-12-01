@@ -13,58 +13,59 @@ import { UserLogsCount } from '../UserLogsCount';
 import { Container, DateContainer, LeftCol, MainCol, MainContainer, RightCol, UserId } from './styles';
 
 export const DashboardBase: React.FC = () => {
-    const history = useHistory();
-    const user = useContext(UserContext);
-    const [currentDate, setCurrentDate] = useState(dayjs().local().format('MMM DD, YYYY'))
+  const history = useHistory();
+  const user = useContext(UserContext);
+  const [currentDate, setCurrentDate] = useState(dayjs().local().format('MMM DD, YYYY'));
 
-    // TODO - setTimeout to change date
+  // TODO - setTimeout to change date
 
-    const onOpen = (e: CustomEventInit<string>) => {
-        switch (e.detail) {
-            case 'userlog':
-                history.push('/user-log');
-                break;
-            default:
-                console.error(`invalid open command argument: ${e.detail}`);
-                break;
-        }
-    };
-
-    useEffect(() => {
-        window.addEventListener('open-command', onOpen);
-    }, []);
-
-    const renderHeaderLeftContent = () => {
-        return (
-            <div className='header-left-content'>
-                <UserId>{ user?.id }</UserId>
-                <DateContainer>{ currentDate }</DateContainer>
-            </div>
-        )
+  const onOpen = (e: CustomEventInit<string>) => {
+    switch (e.detail) {
+      case 'userlog':
+        history.push('/user-log');
+        DashboardIpcRenderer.focus();
+        break;
+      default:
+        console.error(`invalid open command argument: ${e.detail}`);
+        break;
     }
+  };
 
+  useEffect(() => {
+    window.addEventListener('open-command', onOpen);
+  }, []);
+
+  const renderHeaderLeftContent = () => {
     return (
-        <Container>
-            <Header
-                centerContent={ user?.username }
-                leftContent={ renderHeaderLeftContent() }
-                onClose={ DashboardIpcRenderer.close }
-                rightContent={ <DashboardNav /> }
-            />
-            <MainContainer>
-                <LeftCol>
-                    <UserLogsCount />
-                </LeftCol>
-                <MainCol>
-                    <Main />
-                </MainCol>
-                <RightCol>
-                    <Time className='time' />
-                </RightCol>
-            </MainContainer>
-            <Footer />
-        </Container>
-    )
+      <div className='header-left-content'>
+        <UserId>{ user?.id }</UserId>
+        <DateContainer>{ currentDate }</DateContainer>
+      </div>
+    );
+  };
+
+  return (
+    <Container>
+      <Header
+        centerContent={ user?.username }
+        leftContent={ renderHeaderLeftContent() }
+        onClose={ DashboardIpcRenderer.close }
+        rightContent={ <DashboardNav /> }
+      />
+      <MainContainer>
+        <LeftCol>
+          <UserLogsCount />
+        </LeftCol>
+        <MainCol>
+          <Main />
+        </MainCol>
+        <RightCol>
+          <Time className='time' />
+        </RightCol>
+      </MainContainer>
+      <Footer />
+    </Container>
+  );
 };
 
 export const Dashboard = observer(DashboardBase);
