@@ -13,24 +13,24 @@ import { HashRouter } from 'react-router-dom';
 const App = () => {
   useEffect(() => {
     IpcRenderer
-        .init()
-        .then(IpcRenderer.initDashboard)
-        .then((results: any) => {
-            console.log('initDashboard results: ', results);
-        });
+      .init()
+      .then(IpcRenderer.initDashboard)
+      .then((results: any) => {
+        console.log('initDashboard results: ', results);
+      });
   }, []);
 
   return (
     <UserStore>
-        <ThemeStore>
-            <Theme>
-                <HashRouter>
-                    <AppContainer>
-                        <Dashboard />
-                    </AppContainer>
-                </HashRouter>
-            </Theme>
-        </ThemeStore>
+      <ThemeStore>
+        <Theme>
+          <HashRouter>
+            <AppContainer>
+              <Dashboard />
+            </AppContainer>
+          </HashRouter>
+        </Theme>
+      </ThemeStore>
     </UserStore>
   );
 };
