@@ -18,6 +18,7 @@ export enum ModalSize {
 }
 
 interface IProps extends IThemeProps {
+  borderColor?: string;
   className?: string;
   header?: string | JSX.Element;
   isOpen?: boolean;
@@ -31,6 +32,7 @@ const modalFrom = { ...overlayFrom, transform: 'translate3d(-50%, -80%, 0)' };
 const modalTo = { ...overlayTo, transform: 'translate3d(-50%, -50%, 0)' };
 
 export const ModalBase: React.FC<IProps> = ({
+  borderColor,
   children,
   className = '',
   header,
@@ -83,7 +85,7 @@ export const ModalBase: React.FC<IProps> = ({
           childrenContainerClassName='angle-corner-children-container'
           className='modal-angle-corner'
           backgroundColor={ theme.dark }
-          borderColor={ theme.primary }
+          borderColor={ borderColor || theme.primary }
           borderWidth={ 1 }
           config={ [{ position: AnglePos.TopLeft, size: size === ModalSize.Small ? AngleSize.Small : AngleSize.Medium }] }
         >

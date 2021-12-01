@@ -15,9 +15,10 @@ interface IProps {
   className?: string;
 }
 
-// number of days ago the campaign started
-// number of days (in game) that have ellapsed in game
-// last session date
+// TODO: add the following
+//  - number of days ago the campaign started
+//  - number of days (in game) that have ellapsed in game
+//  - last session date
 
 const DnDMainHomeBase: React.FC<IProps> = ({ className = '' }) => {
   const dnd = useContext(DnDContext);

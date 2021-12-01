@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ITheme, IThemeProps } from '../../styles/themes';
+import { IThemeProps } from '../../styles/themes';
 
 export const Btn = styled.button<IThemeProps>`
     align-items: center;
@@ -72,7 +72,8 @@ export const Btn = styled.button<IThemeProps>`
     &.blank {
         color: ${({theme}) => theme.light};
 
-        &:hover:not(:disabled) {
+        &:hover:not(:disabled),
+        &:focus:not(:disabled) {
             color: ${({theme}) => theme.primaryDark};
         }
     }
@@ -80,7 +81,8 @@ export const Btn = styled.button<IThemeProps>`
     &.blank-reverse {
         color: ${({theme}) => theme.light};
 
-        &:hover:not(:disabled) {
+        &:hover:not(:disabled),
+        &:focus:not(:disabled) {
             color: ${({theme}) => theme.highlight2};
         }
     }
@@ -88,7 +90,8 @@ export const Btn = styled.button<IThemeProps>`
     &.link {
         color: ${({theme}) => theme.primary};
         
-        :hover:not(:disabled) {
+        :hover:not(:disabled),
+        &:focus:not(:disabled) {
             color: ${({theme}) => theme.primaryDark};
         }
     }
@@ -96,8 +99,22 @@ export const Btn = styled.button<IThemeProps>`
     &.secondary-link {
         color: ${({theme}) => theme.highlight1};
         
-        :hover:not(:disabled) {
+        :hover:not(:disabled),
+        &:focus:not(:disabled) {
             color: ${({theme}) => theme.highlight2};
         }
+    }
+
+    &.error {
+        ${({theme}) => `
+            border: 1px solid ${theme.error};
+            background: none;
+            color: ${theme.light};
+
+            &:hover:not(:disabled),
+            &:focus:not(:disabled) {
+                background: ${theme.error}27;
+            }
+        `}
     }
 `;

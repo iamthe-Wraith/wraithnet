@@ -19,6 +19,7 @@ export enum ButtonType {
   BlankReverse = 'blank-reverse',
   Link = 'link',
   SecondaryLink = 'secondary-link',
+  Error = 'error'
 }
 
 export const Button: FC<IProps> = ({

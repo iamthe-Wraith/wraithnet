@@ -11,28 +11,33 @@ import { DnDStore } from '../contexts/DnD';
 import { ImagesStore } from '../contexts/Images';
 import { ToasterStore } from '../contexts/Toaster';
 import { Toaster } from '../components/Toaster';
+import { ErrorMessagesStore } from '../contexts/ErrorMessages';
+import { ErrorMessageModal } from '../components/ErrorMessageModal';
 
 const App = () => (
-  <TerminalStore>
-    <ToasterStore>
-      <UserStore>
-        <DnDStore>
-          <ImagesStore>
-            <ThemeStore>
-              <Theme>
-                <HashRouter>
-                  <AppContainer>
-                    <DnD />
-                    <Toaster />
-                  </AppContainer>
-                </HashRouter>
-              </Theme>
-            </ThemeStore>
-          </ImagesStore>
-        </DnDStore>
-      </UserStore>
-    </ToasterStore>
-  </TerminalStore>
+  <ErrorMessagesStore>
+    <TerminalStore>
+      <ToasterStore>
+        <UserStore>
+          <DnDStore>
+            <ImagesStore>
+              <ThemeStore>
+                <Theme>
+                  <HashRouter>
+                    <AppContainer>
+                      <DnD />
+                      <Toaster />
+                      <ErrorMessageModal />
+                    </AppContainer>
+                  </HashRouter>
+                </Theme>
+              </ThemeStore>
+            </ImagesStore>
+          </DnDStore>
+        </UserStore>
+      </ToasterStore>
+    </TerminalStore>
+  </ErrorMessagesStore>
 );
 
 ReactDOM.render(<App />, document.getElementById('root'));
