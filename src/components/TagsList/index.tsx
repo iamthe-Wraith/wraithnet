@@ -1,6 +1,8 @@
 import { observer } from 'mobx-react';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useContext, useEffect, useRef, useState } from 'react';
 import { Waypoint } from 'react-waypoint';
+import { ErrorMessagesContext } from '../../contexts/ErrorMessages';
+import { ToasterContext } from '../../contexts/Toaster';
 import { TagModel, TagsModel } from '../../models/tags';
 import { ButtonType } from '../Button';
 import { Checkbox } from '../Checkbox';
@@ -19,6 +21,8 @@ interface IProps {
 }
 
 const TagsListBase: FC<IProps> = ({ className, defaultSelectedTags = [], forceClearSelectedList, onSelectedTagsChange }) => {
+  const toaster = useContext(ToasterContext);
+  const errorMessages = useContext(ErrorMessagesContext);
   const tagsModel = useRef(new TagsModel()).current;
   const [selectedTags, setSelectedTags] = useState<TagModel[]>(defaultSelectedTags);
   const [showTagModal, setShowTagModal] = useState(false);
@@ -27,7 +31,7 @@ const TagsListBase: FC<IProps> = ({ className, defaultSelectedTags = [], forceCl
 
   const loadMore = () => {
     // tagsModel.getTags(true);
-    tagsModel.tags.loadMore()
+    tagsModel.loadMoreTags()
       .catch(err => {
         console.log('error loading tags');
         console.error(err);
@@ -47,6 +51,7 @@ const TagsListBase: FC<IProps> = ({ className, defaultSelectedTags = [], forceCl
 
   useEffect(() => {
     if (tagsEngaged.current) {
+      console.log('selected tags changed...');
       onSelectedTagsChange?.(selectedTags);
     }
   }, [selectedTags]);
@@ -54,12 +59,17 @@ const TagsListBase: FC<IProps> = ({ className, defaultSelectedTags = [], forceCl
   const onCreateClick = (name: string) => () => {
     tagsModel.createTag(name)
       .then(tag => {
+        tagsEngaged.current = true;
         setSelectedTags([...selectedTags, tag]);
         setShowTagModal(false);
+        // TODO: scroll to new tag
+        toaster.push({ message: 'New tag created successfully.' });
       })
       .catch(err => {
-        console.log('error creating tag');
-        console.log(err);
+        errorMessages.push({
+          message: err.message,
+          title: 'Create Tag Error',
+        });
       });
   };
 
