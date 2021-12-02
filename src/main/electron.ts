@@ -2,7 +2,7 @@ import path from 'path';
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import keytar from 'keytar';
-import { app, globalShortcut, ipcMain } from 'electron';
+import { app, globalShortcut, ipcMain, shell } from 'electron';
 import updateElectronApp from 'update-electron-app';
 
 import { IWindow } from '../types';
@@ -94,6 +94,8 @@ const logout = async () => {
   }
 };
 
+const navigate = (_: IpcMainEvent, url: string) => shell.openExternal(url);
+
 const onLoginLoad = () => {
   Object.entries(windows).forEach(([name, window]) => {
     if (name !== 'login') {
@@ -138,6 +140,7 @@ ipcMain.on('user-profile-updated', () => {
 ipcMain.on('close-app', quitApp);
 ipcMain.on('delete-token', deleteToken);
 ipcMain.on('get-token', getToken);
+ipcMain.on('navigate', navigate);
 ipcMain.on('open', (e: IpcMainEvent, window: string) => {
   switch (window) {
     case 'dnd':

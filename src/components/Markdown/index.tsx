@@ -7,28 +7,28 @@ import { PluggableList } from 'react-markdown/lib/react-markdown';
 import { MarkdownContainer } from './styles';
 
 interface IProps {
-    className?: string;
-    content: string;
-    rehypePlugins: PluggableList;
-    remarkPlugins: PluggableList;
-    components: Partial<Omit<NormalComponents, keyof SpecialComponents> & SpecialComponents>
+  className?: string;
+  content: string;
+  rehypePlugins: PluggableList;
+  remarkPlugins: PluggableList;
+  components: Partial<Omit<NormalComponents, keyof SpecialComponents> & SpecialComponents>
 }
 
 export const Markdown: React.FC<IProps> = ({
-    className = '',
-    content,
-    rehypePlugins = [],
-    remarkPlugins = [],
-    components = {},
+  className = '',
+  content,
+  rehypePlugins = [],
+  remarkPlugins = [],
+  components = {},
 }) => {
-    return (
-        <MarkdownContainer className={ className }>
-            <ReactMarkdown
-                children={ content }
-                rehypePlugins={rehypePlugins}
-                remarkPlugins={remarkPlugins}
-                components={components}
-            />
-        </MarkdownContainer>
-    );
-}
+  return (
+    <MarkdownContainer className={ className }>
+      <ReactMarkdown
+        children={ content }
+        rehypePlugins={ rehypePlugins }
+        remarkPlugins={ remarkPlugins }
+        components={ components }
+      />
+    </MarkdownContainer>
+  );
+};

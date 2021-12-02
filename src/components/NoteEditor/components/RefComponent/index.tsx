@@ -11,98 +11,100 @@ import { LoadingSpinner, SpinnerSize, SpinnerType } from '../../../LoadingSpinne
 import { RefComponentAnchor, RefComponentContent } from './styles';
 import { Markdown } from '../../../Markdown';
 import { ParagraphComponent } from '../ParagraphComponent';
+import { AnchorComponent } from '../AnchorComponent';
 
 interface IRefComponentProps extends IComponentProps {
-    path: string;
-};
+  path: string;
+}
 
 const customComponents: any = {
-    p: ParagraphComponent,
-    h1: HeadingsComponent,
-    h2: HeadingsComponent,
-    h3: HeadingsComponent,
-    h4: HeadingsComponent,
-    h5: HeadingsComponent,
-    h6: HeadingsComponent,
-    ref: 'ref', // do not reference other notes inside an already referenced note
-}
+  a: AnchorComponent,
+  p: ParagraphComponent,
+  h1: HeadingsComponent,
+  h2: HeadingsComponent,
+  h3: HeadingsComponent,
+  h4: HeadingsComponent,
+  h5: HeadingsComponent,
+  h6: HeadingsComponent,
+  ref: 'ref', // do not reference other notes inside an already referenced note
+};
 
 const getNoteProps = (path = '') => {
-    const [category, slug] = path.split('/');
+  const [category, slug] = path.split('/');
 
-    return { category, slug };
-}
+  return { category, slug };
+};
 
 const RefComponentBase: React.FC<IRefComponentProps> = ({ children, path }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const note = useRef(new NoteModel(getNoteProps(path))).current;
+  const [isOpen, setIsOpen] = useState(false);
+  const note = useRef(new NoteModel(getNoteProps(path))).current;
 
-    useEffect(() => {
-        if (isOpen && !note.loaded && !!path) {
-            note.load()
-                .catch(err => {
-                    console.log('error loading note');
-                    console.log(err);
-                    setIsOpen(false);
-                });
-        }
-    }, [isOpen]);
+  useEffect(() => {
+    if (isOpen && !note.loaded && !!path) {
+      note.load()
+        .catch(err => {
+          console.log('error loading note');
+          console.log(err);
+          setIsOpen(false);
+        });
+    }
+  }, [isOpen]);
 
-    const renderAnchor = useCallback(() => {
-        return (
-            <RefComponentAnchor
-                className={ `ref-anchor ${ !path ? 'error' : '' }` }
-                onClick={() => setIsOpen(!isOpen)}
-            >
-                { children?.[0] }
-            </RefComponentAnchor>
-        )
-    }, [children]);
+  const renderAnchor = useCallback(() => {
+    return (
+      <RefComponentAnchor
+        className={ `ref-anchor ${ !path ? 'error' : '' }` }
+        onClick={ () => setIsOpen(!isOpen) }
+      >
+        { children?.[0] }
+      </RefComponentAnchor>
+    );
+  }, [children]);
 
-    const renderContent = () => {
-        let content: JSX.Element;
+  const renderContent = () => {
+    let content: JSX.Element;
 
-        if (!path) {
-            content = (
-                <span>No path found</span>
-            )
-        } else if (note.busy) {
-            content = (
-                <LoadingSpinner
-                    className='spinner'
-                    size={ SpinnerSize.Medium }
-                    type={ SpinnerType.Random }
-                />
-            )
-        } else {
-            content = (
-                <Markdown
-                    content={ note.text ?? '' }
-                    rehypePlugins={[rehypeRaw]}
-                    remarkPlugins={[remarkGfm, remarkInlineLinks]}
-                    components={customComponents}
-                />
-            )
-        }
-
-        return (
-            <RefComponentContent className='markdown-container'>
-                { content }
-            </RefComponentContent>
-        )
+    if (!path) {
+      content = (
+        <span>No path found</span>
+      );
+    } else if (note.busy) {
+      content = (
+        <LoadingSpinner
+          className='spinner'
+          size={ SpinnerSize.Medium }
+          type={ SpinnerType.Random }
+        />
+      );
+    } else {
+      content = (
+        <Markdown
+          content={ note.text ?? '' }
+          rehypePlugins={ [rehypeRaw] }
+          remarkPlugins={ [remarkGfm, remarkInlineLinks] }
+          components={ customComponents }
+        />
+      );
     }
 
     return (
-        <TinyPopover
-            dismissOnOutsideAction
-            anchor={ renderAnchor() }
-            isOpen={ isOpen }
-            onRequestClose={() => setIsOpen(false)}
-            type={ PopoverType.primaryDark }
-        >
-            { renderContent() }
-        </TinyPopover>
-    )
+      <RefComponentContent className='markdown-container'>
+        { content }
+      </RefComponentContent>
+    );
+  };
+
+  return (
+    <TinyPopover
+      dismissOnOutsideAction
+      anchor={ renderAnchor() }
+      isOpen={ isOpen }
+      onRequestClose={ () => setIsOpen(false) }
+      type={ PopoverType.primaryDark }
+    >
+      { renderContent() }
+    </TinyPopover>
+  );
 };
 
 export const RefComponent = observer(RefComponentBase);
