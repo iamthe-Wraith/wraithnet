@@ -1,0 +1,32 @@
+# This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Staging Deploy
+
+on:
+  push:
+    branches: [ staging ]
+
+jobs:
+  build:
+    env:
+      REACT_APP_API_URL: 'https://api.staging.karmawallet.io'
+      REACT_APP_AUTH: ${{ secrets.REACT_APP_AUTH }}
+    runs-on: [self-hosted, 'staging']
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: 'staging'
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm i
+    - run: npm run build --if-present
+    - run: forever restartall
