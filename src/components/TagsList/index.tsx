@@ -28,6 +28,7 @@ const TagsListBase: FC<IProps> = ({ className, defaultSelectedTags = [], forceCl
   const [showTagModal, setShowTagModal] = useState(false);
   const [newTagName, setNewTagName] = useState('');
   const tagsEngaged = useRef(false);
+  const newTagInputRef = useRef<HTMLInputElement>(null);
 
   const loadMore = () => {
     // tagsModel.getTags(true);
@@ -56,6 +57,12 @@ const TagsListBase: FC<IProps> = ({ className, defaultSelectedTags = [], forceCl
     }
   }, [selectedTags]);
 
+  useEffect(() => {
+    if (showTagModal) {
+      setTimeout(() => newTagInputRef.current.focus(), 10);
+    }
+  }, [showTagModal]);
+
   const onCreateClick = (name: string) => () => {
     tagsModel.createTag(name)
       .then(tag => {
@@ -71,6 +78,10 @@ const TagsListBase: FC<IProps> = ({ className, defaultSelectedTags = [], forceCl
           title: 'Create Tag Error',
         });
       });
+  };
+
+  const onNewTagInputRef = (ref: HTMLInputElement) =>  {
+    newTagInputRef.current = ref;
   };
 
   const onTagChange = (tag: TagModel) => () => {
@@ -175,7 +186,8 @@ const TagsListBase: FC<IProps> = ({ className, defaultSelectedTags = [], forceCl
           <div className='label'>tag name</div>
           <TextInput
             inputId={ `new-tag-input` }
-            onChange={ e => setNewTagName(e.target.value) }
+            inputRef={ onNewTagInputRef }
+            onChange={ e => setNewTagName(e.target.value) }  
             value={ newTagName }
           />
           <CTAs
