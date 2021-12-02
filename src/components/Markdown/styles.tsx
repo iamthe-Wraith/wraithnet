@@ -80,7 +80,8 @@ export const MarkdownContainer = styled.div<IThemeProps>`
             ${ PrimaryFont }
             padding: 3px 10px 3px 5px;
             color: ${({theme}) => theme.primary};
-            border-bottom: ${({theme}) => `2px solid ${theme.gray}`} ;
+            border-bottom: ${({theme}) => `2px solid ${theme.gray}`};
+            white-space: nowrap;
         }
 
         tr {
@@ -99,4 +100,4 @@ export const MarkdownContainer = styled.div<IThemeProps>`
             }
         }
     }
-`
+`;
