@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FlexCenter, FlexHorizontalCenter } from '../../styles/styles';
+import { FlexCenter, FlexHorizontalCenter, NoScrollBar } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 import { Button } from '../Button';
 
@@ -38,6 +38,7 @@ export const AnchorContainer = styled(Button)<IThemeProps>`
 export const DropdownContainer = styled.div<IThemeProps>``;
 
 export const OptionsContainer = styled.div<IThemeProps>`
+    ${ NoScrollBar }
     min-width: 70px;
     max-height: 200px;
     overflow: auto;
