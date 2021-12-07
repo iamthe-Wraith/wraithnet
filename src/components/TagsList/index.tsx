@@ -68,9 +68,9 @@ const TagsListBase: FC<IProps> = ({ className, defaultSelectedTags = [], forceCl
       .then(tag => {
         tagsEngaged.current = true;
         setSelectedTags([...selectedTags, tag]);
-        setShowTagModal(false);
-        // TODO: scroll to new tag
         toaster.push({ message: 'New tag created successfully.' });
+        setShowTagModal(false);
+        setNewTagName('');
       })
       .catch(err => {
         errorMessages.push({
@@ -99,7 +99,7 @@ const TagsListBase: FC<IProps> = ({ className, defaultSelectedTags = [], forceCl
     if (tagsModel.tags.allResultsFetched && tagsModel.tags.results.length === 0) {
       return (
         <NoTagsContainer>
-                    No tags found
+          No tags found
         </NoTagsContainer>
       );
     }

@@ -4,6 +4,134 @@
     <title>{{  htmlWebpackPlugin.options.title }}</title>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src http://localhost:3001 https://wraithnet-api.onrender.com; img-src https://wraithnet.s3.us-east-1.wasabisys.com/">
+
+    <style>
+        @font-face {
+          font-family: "Orbitron";
+          src: local("Orbitron"), url("./fonts/Orbitron-Regular.ttf") format("truetype");
+          font-weight: 400;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: "Orbitron-Medium";
+          src: local("Orbitron Medium"), local("Orbitron-Medium"), url("./fonts/Orbitron-Medium.ttf"), format("truetype");
+          font-weight: 500;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: "Orbitron-SemiBold";
+          src: local("Orbitron SemiBold"), local("Orbitron-SemiBold"), url("./fonts/Orbitron-SemiBold.ttf"), format("truetype");
+          font-weight: 600;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: "Orbitron-Bold";
+          src: local("Orbitron Bold"), local("Orbitron-Bold"), url("./fonts/Orbitron-Bold.ttf"), format("truetype");
+          font-weight: 700;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: "Orbitron-ExtraBold";
+          src: local("Orbitron Extra Bold"), local("Orbitron-ExtraBold"), url("./fonts/Orbitron-ExtraBold.ttf"), format("truetype");
+          font-weight: 800;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: "Orbitron-Black";
+          src: local("Orbitron Black"), local("Orbitron-Black"), url("./fonts/Orbitron-Black.ttf"), format("truetype");
+          font-weight: 900;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: "OpenSans";
+          src: local('OpenSans Light'), local('OpenSans-Light'), url('./fonts/OpenSans-Light.ttf') format('truetype');
+          font-weight: 300;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: "OpenSans";
+          src: local('OpenSans LightItalic'), local('OpenSans-LightItalic'), url('./fonts/OpenSans-LightItalic.ttf') format('truetype');
+          font-weight: 300;
+          font-style: italic;
+        }
+
+        @font-face {
+          font-family: "OpenSans";
+          src: local('OpenSans'), local('Open-Sans'), url('./fonts/OpenSans-Regular.ttf') format('truetype');
+          font-weight: 400;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: "OpenSans";
+          src: local('OpenSans Italic'), local('OpenSans-Italic'), url('./fonts/OpenSans-Italic.ttf') format('truetype');
+          font-weight: 400;
+          font-style: italic;
+        }
+
+        @font-face {
+          font-family: "OpenSans";
+          src: local('OpenSans Medium'), local('OpenSans-Medium'), url('./fonts/OpenSans-Medium.ttf') format('truetype');
+          font-weight: 500;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: "OpenSans";
+          src: local('OpenSans MediumItalic'), local('OpenSans-MediumItalic'), url('./fonts/OpenSans-MediumItalic.ttf') format('truetype');
+          font-weight: 500;
+          font-style: italic;
+        }
+
+        @font-face {
+          font-family: "OpenSans";
+          src: local('OpenSans SemiBold'), local('OpenSans-SemiBold'), url('./fonts/OpenSans-SemiBold.ttf') format('truetype');
+          font-weight: 600;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: "OpenSans";
+          src: local('OpenSans SemiBoldItalic'), local('OpenSans-SemiBoldItalic'), url('./fonts/OpenSans-SemiBoldItalic.ttf') format('truetype');
+          font-weight: 600;
+          font-style: italic;
+        }
+
+        @font-face {
+          font-family: "OpenSans";
+          src: local('OpenSans Bold'), local('OpenSans-Bold'), url('./fonts/OpenSans-Bold.ttf') format('truetype');
+          font-weight: 700;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: "OpenSans";
+          src: local('OpenSans BoldItalic'), local('OpenSans-BoldItalic'), url('./fonts/OpenSans-BoldItalic.ttf') format('truetype');
+          font-weight: 700;
+          font-style: italic;
+        }
+
+        @font-face {
+          font-family: "OpenSans";
+          src: local('OpenSans ExtraBold'), local('OpenSans-ExtraBold'), url('./fonts/OpenSans-ExtraBold.ttf') format('truetype');
+          font-weight: 800;
+          font-style: normal;
+        }
+
+        @font-face {
+          font-family: "OpenSans";
+          src: local('OpenSans ExtraBoldItalic'), local('OpenSans-ExtraBoldItalic'), url('./fonts/OpenSans-ExtraBoldItalic.ttf') format('truetype');
+          font-weight: 800;
+          font-style: italic;
+        }
+    </style>
   </head>
   <body>
     <div id="root"></div>

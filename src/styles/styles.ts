@@ -1,99 +1,32 @@
 import styled, { createGlobalStyle, css, keyframes } from 'styled-components';
-import './fonts/Orbitron/static/Orbitron-Regular.ttf';
-import './fonts/Orbitron/static/Orbitron-Medium.ttf';
-import './fonts/Orbitron/static/Orbitron-SemiBold.ttf';
-import './fonts/Orbitron/static/Orbitron-Bold.ttf';
-import './fonts/Orbitron/static/Orbitron-ExtraBold.ttf';
-import './fonts/Orbitron/static/Orbitron-Black.ttf';
-import './fonts/Rajdhani/Rajdhani-Light.ttf';
-import './fonts/Rajdhani/Rajdhani-Regular.ttf';
-import './fonts/Rajdhani/Rajdhani-Medium.ttf';
-import './fonts/Rajdhani/Rajdhani-SemiBold.ttf';
-import './fonts/Rajdhani/Rajdhani-Bold.ttf';
+import './fonts/Orbitron/Orbitron-Regular.ttf';
+import './fonts/Orbitron/Orbitron-Medium.ttf';
+import './fonts/Orbitron/Orbitron-SemiBold.ttf';
+import './fonts/Orbitron/Orbitron-Bold.ttf';
+import './fonts/Orbitron/Orbitron-ExtraBold.ttf';
+import './fonts/Orbitron/Orbitron-Black.ttf';
+
+import './fonts/OpenSans/OpenSans-Bold.ttf';
+import './fonts/OpenSans/OpenSans-BoldItalic.ttf';
+import './fonts/OpenSans/OpenSans-ExtraBold.ttf';
+import './fonts/OpenSans/OpenSans-ExtraBoldItalic.ttf';
+import './fonts/OpenSans/OpenSans-Italic.ttf';
+import './fonts/OpenSans/OpenSans-Light.ttf';
+import './fonts/OpenSans/OpenSans-LightItalic.ttf';
+import './fonts/OpenSans/OpenSans-Medium.ttf';
+import './fonts/OpenSans/OpenSans-MediumItalic.ttf';
+import './fonts/OpenSans/OpenSans-Regular.ttf';
+import './fonts/OpenSans/OpenSans-SemiBold.ttf';
+import './fonts/OpenSans/OpenSans-SemiBoldItalic.ttf';
+import './fonts/OpenSans/OpenSans.ttf';
 import { IThemeProps } from './themes';
 
 export const GlobalStyles = createGlobalStyle<IThemeProps>`
-  @font-face {
-    font-family: "Orbitron";
-    src: local("Orbitron"), url("./fonts/Orbitron-Regular.ttf") format("truetype");
-    font-weight: 400;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Orbitron-Medium";
-    src: local("Orbitron Medium"), local("Orbitron-Medium"), url("./fonts/Orbitron-Medium.ttf"), format("truetype");
-    font-weight: 500;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Orbitron-SemiBold";
-    src: local("Orbitron SemiBold"), local("Orbitron-SemiBold"), url("./fonts/Orbitron-SemiBold.ttf"), format("truetype");
-    font-weight: 600;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Orbitron-Bold";
-    src: local("Orbitron Bold"), local("Orbitron-Bold"), url("./fonts/Orbitron-Bold.ttf"), format("truetype");
-    font-weight: 700;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Orbitron-ExtraBold";
-    src: local("Orbitron Extra Bold"), local("Orbitron-ExtraBold"), url("./fonts/Orbitron-ExtraBold.ttf"), format("truetype");
-    font-weight: 800;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Orbitron-Black";
-    src: local("Orbitron Black"), local("Orbitron-Black"), url("./fonts/Orbitron-Black.ttf"), format("truetype");
-    font-weight: 900;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Rajdhani";
-    src: local('Rajdhani Light'), local('Rajdhani-Light'), url('./fonts/Rajdhani-Light.ttf') format('truetype');
-    font-weight: 300;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Rajdhani-Regular";
-    src: local('Rajdhani Regular'), local('Rajdhani-Regular'), url('./fonts/Rajdhani-Regular.ttf') format('truetype');
-    font-weight: 400;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Rajdhani-Medium";
-    src: local('Rajdhani Medium'), local('Rajdhani-Medium'), url('./fonts/Rajdhani-Medium.ttf') format('truetype');
-    font-weight: 500;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Rajdhani-SemiBold";
-    src: local('Rajdhani SemiBold'), local('Rajdhani-SemiBold'), url('./fonts/Rajdhani-SemiBold.ttf') format('truetype');
-    font-weight: 600;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: "Rajdhani-Bold";
-    src: local('Rajdhani Bold'), local('Rajdhani-Bold'), url('./fonts/Rajdhani-Bold.ttf') format('truetype');
-    font-weight: 600;
-    font-style: italic;
-  }
-
   * {
     box-sizing: border-box;
     color: ${({ theme }) => theme.light};
-    font-family: Rajdhani;
+    font-family: OpenSans;
+    font-weight: 300;
     letter-spacing: 1px;
     margin: 0;
     padding: 0;
