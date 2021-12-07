@@ -62,6 +62,7 @@ export class TagsModel extends BaseModel {
       _tags: observable,
       creatingTag: computed,
       createTag: action.bound,
+      loadMoreTags: action.bound,
     });
     this._tags = new CollectionModel<ITag, TagModel>(
       this.composeUrl(`/tags`),
@@ -86,8 +87,9 @@ export class TagsModel extends BaseModel {
       if (result.success) {
         const newTag = new TagModel(result.value);
         runInAction(() => {
-          this._creatingTag = false;
           this._tags.push(newTag);
+          this._tags.sort('text', 'desc');
+          this._creatingTag = false;
         });
         return newTag;
       } else {
@@ -98,5 +100,10 @@ export class TagsModel extends BaseModel {
         throw new Error(result.error);
       }
     }
+  }
+
+  public loadMoreTags = async (queryParams?: { [key: string]: any; }) => {
+    await this._tags.loadMore(queryParams);
+    this._tags.sort('text', 'desc');
   }
 }

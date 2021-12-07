@@ -15,11 +15,15 @@ export const AnchorContainer = styled.div<IThemeProps>`
 
     .tags-container {
         ${ FlexHorizontalCenter }
-        justify-content: flex-end;
+        flex-wrap: wrap;
         margin: 4px 4px 0 0;
 
         &:last-child {
             margin-right: 0;
+        }
+
+        & > * {
+          margin: 0 4px 4px 0;
         }
     }
 `;
@@ -31,6 +35,6 @@ export const ContentContainer = styled.div<IThemeProps>`
     max-height: 600px;
     padding: 10px;
     overflow: auto;
-`
+`;
 
-export const SimpleNoteItemContainer = styled.div<IThemeProps>``
+export const SimpleNoteItemContainer = styled.div<IThemeProps>``;
