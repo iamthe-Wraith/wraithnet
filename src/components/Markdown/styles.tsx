@@ -100,4 +100,9 @@ export const MarkdownContainer = styled.div<IThemeProps>`
             }
         }
     }
+
+    img {
+      width:80%;
+      max-width: 700px;
+    }
 `;

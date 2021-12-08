@@ -25,4 +25,8 @@ export const RefComponentContent = styled.div<IThemeProps>`
     max-height: 600px;
     padding: 10px;
     overflow: auto;
-`
+
+    img {
+      max-width: 100%;
+    }
+`;
