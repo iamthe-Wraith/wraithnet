@@ -52,7 +52,6 @@ const TagsListBase: FC<IProps> = ({ className, defaultSelectedTags = [], forceCl
 
   useEffect(() => {
     if (tagsEngaged.current) {
-      console.log('selected tags changed...');
       onSelectedTagsChange?.(selectedTags);
     }
   }, [selectedTags]);
