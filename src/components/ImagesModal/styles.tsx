@@ -64,3 +64,9 @@ export const ImagesContainer = styled.div`
 `;
 
 export const ImageUploadConfirmationModal = styled(Modal)``;
+
+export const LoadingSpinnerContainer = styled.div`
+  position: relative;
+  min-width: 100%;
+  min-height: 100px;
+`;

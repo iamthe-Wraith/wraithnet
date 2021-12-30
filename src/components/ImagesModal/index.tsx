@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react';
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react';
+import { Waypoint } from 'react-waypoint';
 import { ToasterContext } from '../../contexts/Toaster';
 import { roundFileSize } from '../../lib/files';
 import { ImageModel, ImagesModel } from '../../models/images';
@@ -7,7 +8,7 @@ import { ButtonType } from '../Button';
 import { CTAs } from '../CtasContainer';
 import { LoadingSpinner, SpinnerSize } from '../LoadingSpinner';
 import { ModalSize } from '../Modal';
-import { FileContent, ImageContainer, ImagesContainer, ImagesModalContainer, ImageUploadConfirmationModal } from './styles';
+import { FileContent, ImageContainer, ImagesContainer, ImagesModalContainer, ImageUploadConfirmationModal, LoadingSpinnerContainer } from './styles';
 
 const supportedImageTypes = '.jpeg,.jpg,.png,.svg,.pdf';
 
@@ -34,17 +35,15 @@ const ImagesModalBase: React.FC<IProps> = ({
   };
 
   const loadMore = () => {
-    if (!imagesModel.images.firstPageLoaded) {
-      imagesModel.images.loadMore()
-        .catch(err => {
-          console.log('>>>>> error loading images');
-          console.log(err);
-        });
-    }
+    imagesModel.images.loadMore()
+      .catch(err => {
+        console.log('>>>>> error loading images');
+        console.log(err);
+      });
   };
 
   useEffect(() => {
-    loadMore();
+    if (!imagesModel.images.firstPageLoaded) loadMore();
   }, []);
 
   const onCancelUpload = () => setFiles(null);
@@ -87,16 +86,40 @@ const ImagesModalBase: React.FC<IProps> = ({
   const renderImages = () => {
     if (!imagesModel.images.firstPageLoaded) return null;
 
-    return imagesModel.images.results.map(img => (
-      <ImageContainer key={ img.id } onClick={ copyUrl(img) }>
+    let images: JSX.Element[] = [];
+
+    if (imagesModel.images.results.length > 0) {
+      images = imagesModel.images.results.map(img => (
+        <ImageContainer key={ img.id } onClick={ copyUrl(img) }>
+          <div>
+            <img src={ img.url } />
+          </div>
+          <div>
+            { img.fileName }
+          </div>
+        </ImageContainer>
+      ));
+    } else if (!imagesModel.images.busy && imagesModel.images.firstPageLoaded) {
+      images.push((
         <div>
-          <img src={ img.url } />
+          No images found
         </div>
-        <div>
-          { img.fileName }
-        </div>
-      </ImageContainer>
-    ));
+      ));
+    }
+
+    if (imagesModel.images.busy) {
+      images.push((
+        <LoadingSpinnerContainer>
+          <LoadingSpinner size={ SpinnerSize.Medium } />
+        </LoadingSpinnerContainer>
+      ));
+    }
+
+    if (!imagesModel.images.busy && !imagesModel.images.allResultsFetched) {
+      images.push(<Waypoint key='waypoint' onEnter={ loadMore } topOffset={ 200 } />);
+    }
+
+    return images;
   };
 
   return (
