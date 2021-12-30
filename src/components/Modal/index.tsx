@@ -20,6 +20,7 @@ export enum ModalSize {
 interface IProps extends IThemeProps {
   borderColor?: string;
   className?: string;
+  closeOnOverlayClick?: boolean;
   header?: string | JSX.Element;
   isOpen?: boolean;
   onClose:() => void;
@@ -34,6 +35,7 @@ const modalTo = { ...overlayTo, transform: 'translate3d(-50%, -50%, 0)' };
 export const ModalBase: React.FC<IProps> = ({
   borderColor,
   children,
+  closeOnOverlayClick,
   className = '',
   header,
   isOpen,
@@ -79,7 +81,11 @@ export const ModalBase: React.FC<IProps> = ({
   if (!isOpen) return null;
 
   return (
-    <ModalOverlay className={ className } style={ overlaySpring }>
+    <ModalOverlay
+      className={ className }
+      style={ overlaySpring }
+      onClick={ closeOnOverlayClick ? onClose : null }
+    >
       <ModalContainer className={ `modal-container ${size}` } style={ modalSpring }>
         <AngleCorner
           childrenContainerClassName='angle-corner-children-container'

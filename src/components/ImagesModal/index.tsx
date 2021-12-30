@@ -124,6 +124,7 @@ const ImagesModalBase: React.FC<IProps> = ({
 
   return (
     <ImagesModalContainer
+      closeOnOverlayClick
       className={ className }
       header='Images'
       isOpen={ isOpen }
