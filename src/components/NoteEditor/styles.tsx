@@ -6,6 +6,7 @@ const headerHeight = 50;
 
 export const NoteEditorContainer = styled.div<IThemeProps>`
     ${ FlexCol }
+    max-width: 100%;
     max-height: 100%;
     overflow: hidden;
 
@@ -61,6 +62,7 @@ export const Body = styled.div<IThemeProps>`
     ${ FlexHorizontalCenter }
     flex-grow: 1;
     align-items: stretch;
+    max-width: 100%;
     max-height: calc(100% - ${headerHeight}px);
     min-height: calc(100% - ${headerHeight}px);
     overflow: hidden;
