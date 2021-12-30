@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FlexCol, FlexHorizontalCenter, NoScrollBar, PrimaryFont } from '../../styles/styles';
+import { FlexCol, FlexHorizontalCenter, PrimaryFont } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 
 const headerHeight = 50;

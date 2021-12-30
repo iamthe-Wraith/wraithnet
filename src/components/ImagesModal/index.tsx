@@ -9,7 +9,7 @@ import { LoadingSpinner, SpinnerSize } from '../LoadingSpinner';
 import { ModalSize } from '../Modal';
 import { FileContent, ImageContainer, ImagesContainer, ImagesModalContainer, ImageUploadConfirmationModal } from './styles';
 
-const supportedImageTypes = '.jpeg,.jpg,.png,.svg';
+const supportedImageTypes = '.jpeg,.jpg,.png,.svg,.pdf';
 
 interface IProps {
   className?: string;

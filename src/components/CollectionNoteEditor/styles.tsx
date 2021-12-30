@@ -5,7 +5,7 @@ import { IThemeProps } from '../../styles/themes';
 export const CollectionNoteEditorContainer = styled.div<IThemeProps>`
     ${ FlexHorizontalCenter }
     align-items: stretch;
-`
+`;
 
 export const FilterContainer = styled.div<IThemeProps>`
     position: relative;
@@ -62,6 +62,7 @@ export const NoteEditorContainer = styled.div`
     ${ FlexCol }
     position: relative;
     flex-grow: 1;
+    max-width: 100%;
 
     .back-button {
         padding: 0;
