@@ -24,9 +24,11 @@ export const AnchorComponent: React.FC<IProps> = ({
     });
   }, [text]);
 
-  const onClick = (e: MouseEvent) => {
-    e.preventDefault();
-    IpcRenderer.navigate(href);
+  const onClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    if (href.includes('http://') || href.includes('https://')) {
+      e.preventDefault();
+      IpcRenderer.navigate(href);
+    }
   };
 
   return (
