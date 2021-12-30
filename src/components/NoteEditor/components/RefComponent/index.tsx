@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import remarkInlineLinks from 'remark-inline-links';
@@ -12,6 +12,7 @@ import { RefComponentAnchor, RefComponentContent } from './styles';
 import { Markdown } from '../../../Markdown';
 import { ParagraphComponent } from '../ParagraphComponent';
 import { AnchorComponent } from '../AnchorComponent';
+import { ErrorMessagesContext } from '../../../../contexts/ErrorMessages';
 
 interface IRefComponentProps extends IComponentProps {
   path: string;
@@ -36,24 +37,28 @@ const getNoteProps = (path = '') => {
 };
 
 const RefComponentBase: React.FC<IRefComponentProps> = ({ children, path }) => {
+  const errorMessages = useContext(ErrorMessagesContext);
   const [isOpen, setIsOpen] = useState(false);
   const note = useRef(new NoteModel(getNoteProps(path))).current;
 
   useEffect(() => {
-    if (isOpen && !note.loaded && !!path) {
+    const invalidPath = validatePath();
+
+    if (isOpen && !note.loaded && !invalidPath) {
       note.load()
         .catch(err => {
-          console.log('error loading note');
-          console.log(err);
+          errorMessages.push({ message: err.message });
           setIsOpen(false);
         });
     }
   }, [isOpen]);
 
   const renderAnchor = useCallback(() => {
+    const invalidPath = validatePath();
+
     return (
       <RefComponentAnchor
-        className={ `ref-anchor ${ !path ? 'error' : '' }` }
+        className={ `ref-anchor ${ invalidPath ? 'error' : '' }` }
         onClick={ () => setIsOpen(!isOpen) }
       >
         { children?.[0] }
@@ -61,12 +66,22 @@ const RefComponentBase: React.FC<IRefComponentProps> = ({ children, path }) => {
     );
   }, [children]);
 
+  const validatePath = () => {
+    if (!path) return 'No path found';
+
+    const pathPieces = path.split('/').filter(p => !!p.trim());
+    if (pathPieces.length !== 2) return 'Invalid path found';
+
+    return false;
+  };
+
   const renderContent = () => {
     let content: JSX.Element;
+    const invalidPath = validatePath();
 
-    if (!path) {
+    if (!!invalidPath) {
       content = (
-        <span>No path found</span>
+        <div className='invalid-path-msg'>{ invalidPath }</div>
       );
     } else if (note.busy) {
       content = (
@@ -88,7 +103,7 @@ const RefComponentBase: React.FC<IRefComponentProps> = ({ children, path }) => {
     }
 
     return (
-      <RefComponentContent className='markdown-container'>
+      <RefComponentContent className={ `markdown-container ${!!invalidPath ? 'invalid-path' : ''}` }>
         { content }
       </RefComponentContent>
     );

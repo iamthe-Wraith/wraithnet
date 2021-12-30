@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { NoScrollBar } from '../../../../styles/styles';
+import { FlexCenter, NoScrollBar } from '../../../../styles/styles';
 import { IThemeProps } from '../../../../styles/themes';
 
 export const RefComponentAnchor = styled.span<IThemeProps>`
@@ -26,7 +26,15 @@ export const RefComponentContent = styled.div<IThemeProps>`
     padding: 10px;
     overflow: auto;
 
+    &.invalid-path {
+      ${ FlexCenter }
+    }
+
     img {
       max-width: 100%;
+    }
+
+    .invalid-path-msg {
+      color: ${({theme}) => theme.error};      
     }
 `;

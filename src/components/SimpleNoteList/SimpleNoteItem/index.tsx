@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { PopoverPosition } from 'react-tiny-popover';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import remarkInlineLinks from 'remark-inline-links';
+import { ErrorMessagesContext } from '../../../contexts/ErrorMessages';
 import { NoteModel } from '../../../models/notes';
 import { LoadingSpinner, SpinnerSize, SpinnerType } from '../../LoadingSpinner';
 import { Markdown } from '../../Markdown';
@@ -37,22 +38,20 @@ export const SimpleNoteItem: React.FC<IProps> = ({
   note,
   popoverPlacement = ['right', 'bottom', 'top'],
 }) => {
+  const errorMessages = useContext(ErrorMessagesContext);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (isOpen && !note.loaded) {
       note.load()
         .catch(err => {
-          console.log('error loading note');
-          console.log(err);
+          errorMessages.push({ message: err.message });
           setIsOpen(false);
         });
     }
   }, [isOpen]);
 
   const renderAnchor = () => {
-    console.log('note.tags', note.tags.map(tag => ({...tag})));
-
     const tags = note.tags.map(tag =>(
       <Tag
         key={ tag.id }

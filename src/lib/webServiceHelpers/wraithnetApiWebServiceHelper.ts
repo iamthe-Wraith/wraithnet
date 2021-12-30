@@ -115,7 +115,7 @@ export class WraithnetApiWebServiceHelper {
     } catch (error: any) {
       return {
         success: false,
-        error: error.response?.data,
+        error: error.response?.data?.message,
       };
     }
   }
