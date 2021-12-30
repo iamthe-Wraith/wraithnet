@@ -45,6 +45,7 @@ export class CollectionModel<T, U> extends BaseModel {
       loadMore: action.bound,
       push: action.bound,
       refresh: action.bound,
+      reset: action.bound,
       sort: action.bound,
       unshift: action.bound,
     });
@@ -90,14 +91,17 @@ export class CollectionModel<T, U> extends BaseModel {
   }
 
   public refresh = async (queryParams: { [key: string]: any } = {}) => {
+    this.reset();
+    return this.loadMore(queryParams);
+  }
+
+  public reset = () => {
     this._firstPageLoaded = false;
     this._totalCount = 0;
     this._index = new Set();
     this._results = [];
     this._page = 0;
     this._pageSize = 25;
-
-    return this.loadMore(queryParams);
   }
 
   public sort = (property: keyof U, order: SortOrder) => {

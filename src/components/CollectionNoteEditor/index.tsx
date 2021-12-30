@@ -56,6 +56,12 @@ const CollectionNoteEditorBase: React.FC<IProps> = ({ busy, className = '', coll
 
   useEffect(() => {
     if (!collection.firstPageLoaded) loadMore();
+
+    return () => {
+      setSearch('');
+      setSelectedTags([]);
+      collection.reset();
+    };
   }, []);
 
   useEffect(() => {
