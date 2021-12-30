@@ -100,27 +100,27 @@ export class CampaignModel extends BaseModel {
     this._currentDate = new DnDDate(campaign.currentDate);
     this._items = new CollectionModel<INoteRef, NoteModel>(
       this.composeUrl(`/dnd/${this.id}/item`),
-      (note: INoteRef) => new NoteModel(note),
+      (note: INoteRef) => new NoteModel(note, this._items),
     );
     this._locations = new CollectionModel<INoteRef, NoteModel>(
       this.composeUrl(`/dnd/${this.id}/location`),
-      (note: INoteRef) => new NoteModel(note),
+      (note: INoteRef) => new NoteModel(note, this._locations),
     );
     this._misc = new CollectionModel<INoteRef, NoteModel>(
       this.composeUrl(`/dnd/${this.id}/misc`),
-      (note: INoteRef) => new NoteModel(note),
+      (note: INoteRef) => new NoteModel(note, this._misc),
     );
     this._npcs = new CollectionModel<INoteRef, NoteModel>(
       this.composeUrl(`/dnd/${this.id}/npc`),
-      (note: INoteRef) => new NoteModel(note),
+      (note: INoteRef) => new NoteModel(note, this._npcs),
     );
     this._quests = new CollectionModel<INoteRef, NoteModel>(
       this.composeUrl(`/dnd/${this.id}/quest`),
-      (note: INoteRef) => new NoteModel(note),
+      (note: INoteRef) => new NoteModel(note, this._quests),
     );
     this._sessions = new CollectionModel<INoteRef, NoteModel>(
       this.composeUrl(`/dnd/${this.id}/session`),
-      (note: INoteRef) => new NoteModel(note),
+      (note: INoteRef) => new NoteModel(note, this._sessions),
     );
   }
 
@@ -151,7 +151,7 @@ export class CampaignModel extends BaseModel {
       });
 
       if (result.success) {
-        const newItem = new NoteModel(result.value);
+        const newItem = new NoteModel(result.value, this._items);
         runInAction(() => {
           this.items.push(newItem);
           this._busy = false;
@@ -178,7 +178,7 @@ export class CampaignModel extends BaseModel {
       });
 
       if (result.success) {
-        const newLocation = new NoteModel(result.value);
+        const newLocation = new NoteModel(result.value, this._locations);
         runInAction(() => {
           this.locations.push(newLocation);
           this._busy = false;
@@ -205,7 +205,7 @@ export class CampaignModel extends BaseModel {
       });
 
       if (result.success) {
-        const newMiscNote = new NoteModel(result.value);
+        const newMiscNote = new NoteModel(result.value, this._misc);
         runInAction(() => {
           this.misc.push(newMiscNote);
           this._busy = false;
@@ -232,7 +232,7 @@ export class CampaignModel extends BaseModel {
       });
 
       if (result.success) {
-        const newNPC = new NoteModel(result.value);
+        const newNPC = new NoteModel(result.value, this._npcs);
         runInAction(() => {
           this.npcs.push(newNPC);
           this._busy = false;
@@ -302,7 +302,7 @@ export class CampaignModel extends BaseModel {
       });
 
       if (result.success) {
-        const newQuest = new NoteModel(result.value);
+        const newQuest = new NoteModel(result.value, this._quests);
         runInAction(() => {
           this.quests.push(newQuest);
           this._busy = false;
@@ -329,7 +329,7 @@ export class CampaignModel extends BaseModel {
       });
 
       if (result.success) {
-        const newSession = new NoteModel(result.value);
+        const newSession = new NoteModel(result.value, this._sessions);
         runInAction(() => {
           this._sessions.unshift(newSession);
           this._busy = false;

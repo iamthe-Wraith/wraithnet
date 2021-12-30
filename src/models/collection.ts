@@ -17,7 +17,7 @@ interface ICollectionResponse<T> {
 
 type SortOrder = 'asc' | 'desc'
 
-export class CollectionModel<T, U> extends BaseModel {
+export class CollectionModel<T, U extends { id: string }> extends BaseModel {
   private _busy = false;
   private _firstPageLoaded = false;
   private _totalCount = 0;
@@ -45,6 +45,7 @@ export class CollectionModel<T, U> extends BaseModel {
       loadMore: action.bound,
       push: action.bound,
       refresh: action.bound,
+      remove: action.bound,
       reset: action.bound,
       sort: action.bound,
       unshift: action.bound,
@@ -93,6 +94,10 @@ export class CollectionModel<T, U> extends BaseModel {
   public refresh = async (queryParams: { [key: string]: any } = {}) => {
     this.reset();
     return this.loadMore(queryParams);
+  }
+
+  public remove = (id: string) => {
+    this._results = this._results.filter(r => r.id! !== id);
   }
 
   public reset = () => {

@@ -1,4 +1,4 @@
 export interface IComponentProps {
-    node: HTMLElement,
-    children: string[],
+  node: HTMLElement,
+  children: string[],
 }

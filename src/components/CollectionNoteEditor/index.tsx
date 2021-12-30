@@ -1,9 +1,13 @@
 import { observer } from 'mobx-react';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react';
 import { Waypoint } from 'react-waypoint';
+import { withTheme } from 'styled-components';
+import { ErrorMessagesContext } from '../../contexts/ErrorMessages';
+import { ToasterContext } from '../../contexts/Toaster';
 import { CollectionModel } from '../../models/collection';
 import { INoteRef, NoteModel } from '../../models/notes';
 import { TagModel } from '../../models/tags';
+import { IThemeProps } from '../../styles/themes';
 import { Button, ButtonType } from '../Button';
 import { CTAs } from '../CtasContainer';
 import { Right2 } from '../decorators/right/Right2';
@@ -14,9 +18,9 @@ import { TagsList } from '../TagsList';
 import { TextInput } from '../TextInput';
 import { ListItem } from './ListItem';
 
-import { NoteEditorContainer, ListContainer, CollectionNoteEditorContainer, NewNoteModal, FilterContainer, SearchContainer } from './styles';
+import { NoteEditorContainer, ListContainer, CollectionNoteEditorContainer, NewNoteModal, FilterContainer, SearchContainer, ConfirmDeleteContent } from './styles';
 
-interface IProps {
+interface IProps extends IThemeProps {
   busy?: boolean;
   className?: string;
   collection?: CollectionModel<INoteRef, NoteModel>;
@@ -29,13 +33,23 @@ interface INotesSearchParams {
   name?: string;
 }
 
-const CollectionNoteEditorBase: React.FC<IProps> = ({ busy, className = '', collection, onCreateNewClick, type }) => {
+const CollectionNoteEditorBase: React.FC<IProps> = ({
+  busy,
+  className = '',
+  collection,
+  onCreateNewClick,
+  type,
+  theme,
+}) => {
+  const errorMessages = useContext(ErrorMessagesContext);
+  const toaster = useContext(ToasterContext);
   const [selectedNote, setSelectedNote] = useState<NoteModel>(null);
   const [showNewNoteModal, setShowNewNoteModal] = useState(false);
   const [newNoteName, setNewNoteName] = useState('');
   const [search, setSearch] = useState('');
   const [searchTimeout, setSearchTimeout] = useState<number>(null);
   const [selectedTags, setSelectedTags] = useState<TagModel[]>([]);
+  const [noteToBeDeleted, setNoteToBeDeleted] = useState<NoteModel>(null);
   const searchEngaged = useRef(false);
   const tagsEngaged = useRef(false);
   const lowerType = useRef(type.toLowerCase()).current;
@@ -98,6 +112,24 @@ const CollectionNoteEditorBase: React.FC<IProps> = ({ busy, className = '', coll
       });
   };
 
+  const onCancelDeletion = () => {
+    setNoteToBeDeleted(null);
+  };
+
+  const onDeleteClick = (note: NoteModel) => () => {
+    setNoteToBeDeleted(note);
+  };
+
+  const onDeleteConfirm = async () => {
+    try {
+      await noteToBeDeleted.delete();
+      toaster.push({ message: 'Note deleted successfully' });
+      setNoteToBeDeleted(null);
+    } catch (err: any) {
+      errorMessages.push({ message: err.message });
+    }
+  };
+
   const onNoteClick = (note: NoteModel) => () => {
     note.load()
       .catch(err => {
@@ -158,7 +190,9 @@ const CollectionNoteEditorBase: React.FC<IProps> = ({ busy, className = '', coll
       const items = collection.results.map(note => (
         <ListItem
           key={ note.id }
+          className='list-item'
           onClick={ onNoteClick(note) }
+          onDelete={ onDeleteClick(note) }
           selected={ selectedNote?.id === note.id }
           note={ note }
         />
@@ -206,7 +240,7 @@ const CollectionNoteEditorBase: React.FC<IProps> = ({ busy, className = '', coll
                     buttonType={ ButtonType.Blank }
                     onClick={ () => setSearch('') }
                   >
-                                        clear search
+                    clear search
                   </Button>
                 )
               }
@@ -275,8 +309,35 @@ const CollectionNoteEditorBase: React.FC<IProps> = ({ busy, className = '', coll
           { busy && <LoadingSpinner size={ SpinnerSize.Tiny } />}
         </NewNoteModal>
       </Modal>
+      <Modal
+        borderColor={ theme.error }
+        header='Confim Note Deletion'
+        isOpen={ !!noteToBeDeleted }
+        onClose={ () => setNoteToBeDeleted(null) }
+        size={ ModalSize.Medium }
+      >
+        <ConfirmDeleteContent>
+          <div>Are you sure you want to delete note:</div>
+          <div className='note-name'>{ noteToBeDeleted?.name }</div>
+        </ConfirmDeleteContent>
+        <CTAs
+          ctas={ [
+            {
+              text: 'Delete',
+              type: ButtonType.Error,
+              onClick: onDeleteConfirm,
+            },
+            {
+              text: 'Cancel',
+              type: ButtonType.Blank,
+              onClick: onCancelDeletion,
+            },
+          ] }
+        />
+      </Modal>
     </CollectionNoteEditorContainer>
   );
 };
 
-export const CollectionNoteEditor = observer(CollectionNoteEditorBase);
+const CollectionNoteEditorAsObserver = observer(CollectionNoteEditorBase);
+export const CollectionNoteEditor = withTheme(CollectionNoteEditorAsObserver);

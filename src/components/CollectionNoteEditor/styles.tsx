@@ -7,6 +7,18 @@ export const CollectionNoteEditorContainer = styled.div<IThemeProps>`
     align-items: stretch;
 `;
 
+export const ConfirmDeleteContent = styled.div`
+  flex-grow: 1;
+
+  .note-name {
+    ${ PrimaryFont }
+    margin-top: 10px;
+    font-size: 21px;
+    color: ${({theme}) => theme.error};
+    text-align: center;
+  }
+`;
+
 export const FilterContainer = styled.div<IThemeProps>`
     position: relative;
     ${ FlexCol }
@@ -41,6 +53,10 @@ export const ListContainer = styled.div`
             padding-top: 20px;
             color: ${({theme}) => theme.gray};
             text-align: center;
+        }
+
+        .list-item {
+          margin-bottom: 6px;
         }
     }
 

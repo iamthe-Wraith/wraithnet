@@ -1,9 +1,11 @@
 import dayjs from 'dayjs';
 import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 import { BaseModel } from './base';
+import { CollectionModel } from './collection';
 import { ITag, TagModel } from './tags';
 
 type NotePrivateFields = '_busy' |
+'_collectionRef' |
 '_loaded' |
 '_note' |
 '_setNote' |
@@ -33,12 +35,14 @@ export class NoteModel extends BaseModel {
   private _busy = false;
   private _loaded = false;
   private _note: Partial<INoteRef | INote> = null;
+  private _collectionRef: CollectionModel<INoteRef, NoteModel> = null;
   private _tags: TagModel[] = [];
     
-  constructor(note?: Partial<INoteRef>) {
+  constructor(note?: Partial<INoteRef>, collection?: CollectionModel<INoteRef, NoteModel>) {
     super();
     makeObservable<NoteModel, NotePrivateFields>(this, {
       _busy: observable,
+      _collectionRef: observable,
       _loaded: observable,
       _note: observable,
       _tags: observable,
@@ -55,6 +59,7 @@ export class NoteModel extends BaseModel {
       load: action.bound,
       save: action.bound,
     });
+    this._collectionRef = collection;
     this._setNote(note);
   }
 
@@ -68,6 +73,30 @@ export class NoteModel extends BaseModel {
   get slug() { return this._note?.slug ?? ''; }
   get tags() { return this._tags; }
   get text() { return (this._note as INote)?.text || ''; }
+
+  public delete = async () => {
+    if (this._busy) return;
+
+    this._busy = true;
+
+    const result = await this.webServiceHelper.sendRequest({
+      path: this.composeUrl(`/notes/${this.id}`),
+      method: 'DELETE',
+    });
+
+    if (result.success) {
+      runInAction(() => {
+        this._collectionRef?.remove(this._note.id);
+        this._busy = false;
+      });
+    } else {
+      runInAction(() => {
+        this._busy = false;
+      });
+
+      throw new Error(result.error);
+    }
+  }
 
   public load = async () => {
     if (this._busy || this._loaded) return;
