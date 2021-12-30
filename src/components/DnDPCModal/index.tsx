@@ -482,6 +482,7 @@ export const DnDPCModalBase: React.FC<IProps> = ({ className = '', isOpen, onClo
           content={ noteContent }
           editMode={ editMode }
           id='pc-note-editor'
+          onSave={ !!pc ? onPCSaveClick : onPCCreateClick }
           onChange={ c => setNoteContent(c) }
           noteRef={ onNoteRef }
         />

@@ -205,6 +205,7 @@ const NoteEditorBase: React.FC<IProps> = ({
           id='note-editor-textarea'
           noteRef={ ref => textareaRef.current = ref }
           onChange={ c => setContent(c) }
+          onSave={ onSaveClick }
         />
         <div className='note-right-col'>
           <div className='property-container'>

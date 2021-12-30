@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { KeyboardEvent, useEffect, useRef } from 'react';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import remarkInlineLinks from 'remark-inline-links';
@@ -20,6 +20,7 @@ interface IProps {
   editMode?: boolean;
   id: string;
   onChange(content: string): void;
+  onSave?(): void;
   noteRef?(ref: HTMLTextAreaElement): void;
 }
 
@@ -43,6 +44,7 @@ export const BaseNoteEditor: React.FC<IProps> = ({
   editMode,
   id,
   onChange,
+  onSave,
   noteRef,
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -55,6 +57,13 @@ export const BaseNoteEditor: React.FC<IProps> = ({
     }
   }, [editMode]);
 
+  const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    console.log('keypress');
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      onSave?.();
+    }
+  };
+
   return (
     <BaseNoteEditorContainer className={ className }>
       {
@@ -64,6 +73,7 @@ export const BaseNoteEditor: React.FC<IProps> = ({
               className='editor-textarea'
               textareaId={ id }
               textareaRef={ ref => textareaRef.current = ref }
+              onKeyDown={ onKeyDown }
               onChange={ e => onChange(e.target.value) }
               value={ content }
             />

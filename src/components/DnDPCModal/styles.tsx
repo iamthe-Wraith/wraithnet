@@ -79,7 +79,7 @@ export const NameContainer = styled.div`
     .name-input {
         width: 100%;
     }
-`
+`;
 
 export const NoteEditor = styled(BaseNoteEditor)`
     flex-grow: 1;
