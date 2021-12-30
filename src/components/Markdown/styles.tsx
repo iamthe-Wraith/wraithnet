@@ -57,10 +57,14 @@ export const MarkdownContainer = styled.div<IThemeProps>`
             position: relative;
             list-style: none;  
 
+            &:not(:last-child) {
+                padding-bottom: 5px;
+            }
+
             &:before {
                 content: ' ';
                 position: absolute;
-                top: 50%;
+                top: 10px;
                 right: calc(100% + 8px);
                 width: 5px;
                 height: 5px;
