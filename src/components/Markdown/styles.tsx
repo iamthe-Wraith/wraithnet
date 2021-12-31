@@ -33,6 +33,10 @@ export const MarkdownContainer = styled.div<IThemeProps>`
         font-weight: 700;
     }
 
+    hr {
+        margin: 20px 0;
+    }
+
     a {
         color: ${({theme}) => theme.primary};
         text-decoration: none;
@@ -81,7 +85,7 @@ export const MarkdownContainer = styled.div<IThemeProps>`
 
     table {
         width: 80%;
-        margin: 5px 0;
+        margin: 20px 0;
         border-spacing: 0;
 
         th {
