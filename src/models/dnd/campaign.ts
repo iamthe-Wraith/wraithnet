@@ -47,6 +47,7 @@ export class CampaignModel extends BaseModel {
   private _sessions: CollectionModel<INoteRef, NoteModel> = null;
   private _startDate: DnDDate = null;
   private _stats: ICampaignStats = null;
+  public changingDate = false;
   public loadingPCs = false;
   public gettingStats = false;
   public creatingPC = false;
@@ -87,6 +88,7 @@ export class CampaignModel extends BaseModel {
       stats: computed,
       id: computed,
       name: computed,
+      changeDate: action.bound,
       createLocation: action.bound,
       createNPC: action.bound,
       createSession: action.bound,
@@ -139,6 +141,33 @@ export class CampaignModel extends BaseModel {
   get quests() { return this._quests; }
   get sessions() { return this._sessions; }
   get stats() { return this._stats; }
+
+  public changeDate = async (direction: 'next' | 'previous') => {
+    if (this.changingDate) return null;
+    
+    this.changingDate = true;
+
+    const result = await this.webServiceHelper.sendRequest<ICampaign>({
+      path: this.composeUrl(`/dnd/${this._campaign.id}/date`),
+      method: 'PATCH',
+      data: { direction },
+    });
+
+    if (result.success) {
+      runInAction(() => {
+        this._campaign = result.value;
+        this._currentDate = new DnDDate(this._campaign.currentDate);
+        this.changingDate = false;
+      });
+      return this._campaign;
+    } else {
+      runInAction(() => {
+        this.changingDate = false;
+      });
+
+      throw new Error(result.error);
+    }
+  }
 
   public createItem = async (name: string) => {
     if (!this._busy) {

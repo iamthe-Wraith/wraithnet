@@ -4,225 +4,225 @@ import { ReactTinyPopover, ReactTinyPopoverContent } from './styles';
 import { debounce } from '../../lib/utils';
 
 interface IArrowRenderer {
-	childRect: ClientRect;
-	popoverRect: ClientRect;
-	position: PopoverPosition;
+  childRect: ClientRect;
+  popoverRect: ClientRect;
+  position: PopoverPosition;
 }
 
 export interface ITinyPopoverProps {
-	align?: Exclude<PopoverAlign, 'custom'>;
-	anchor: React.ReactNode;
-    anchorClassName?: string;
-	arrow?: Partial<ArrowContainerProps>;
-	arrowSize?: number;
-	children: React.ReactNode;
-    className?: string;
-	contentStyle?: Partial<CSSStyleDeclaration>; // trigger
-	disabled?: boolean;
-	dismissOnOutsideAction?: boolean;
-	engageOnHover?: boolean;
-	isOpen?: boolean;
-	onRequestClose?(): void;
-	placement?: Exclude<PopoverPosition, 'custom'>[];
-	tipSize?: number;
-	transitionDuration?: number;
-	type?: PopoverType;
+  align?: Exclude<PopoverAlign, 'custom'>;
+  anchor: React.ReactNode;
+  anchorClassName?: string;
+  arrow?: Partial<ArrowContainerProps>;
+  arrowSize?: number;
+  children: React.ReactNode;
+  className?: string;
+  contentStyle?: Partial<CSSStyleDeclaration>; // trigger
+  disabled?: boolean;
+  dismissOnOutsideAction?: boolean;
+  engageOnHover?: boolean;
+  isOpen?: boolean;
+  onRequestClose?(): void;
+  placement?: Exclude<PopoverPosition, 'custom'>[];
+  tipSize?: number;
+  transitionDuration?: number;
+  type?: PopoverType;
 }
 
 interface IState {
-	arrowColor?: string;
-	containerClassName?: string;
-	isMousedOver?: boolean;
-	isOpen?: boolean;
+  arrowColor?: string;
+  containerClassName?: string;
+  isMousedOver?: boolean;
+  isOpen?: boolean;
 }
 
 export enum PopoverType {
-	custom = 0,
-	error,
-    light,
-    primary,
-    primaryDark,
-    highlight,
+  custom = 0,
+  error,
+  light,
+  primary,
+  primaryDark,
+  highlight,
 }
 
 const getStylesByType = (type: PopoverType) => {
-	switch (type) {
-		case PopoverType.error: {
-			return {
-				containerClassName: 'tiny-popover-error',
-			};
-		}
-		case PopoverType.light: {
-			return {
-				containerClassName: 'tiny-popover-light',
-			};
-		}
-        case PopoverType.primary: {
-			return {
-				containerClassName: 'tiny-popover-primary',
-			};
-		}
-        case PopoverType.primaryDark: {
-			return {
-				containerClassName: 'tiny-popover-primary-dark',
-			};
-		}
-        case PopoverType.highlight: {
-            return {
-				containerClassName: 'tiny-popover-highlight',
-			};
-        }
-		default: {
-			return null;
-		}
-	}
+  switch (type) {
+    case PopoverType.error: {
+      return {
+        containerClassName: 'tiny-popover-error',
+      };
+    }
+    case PopoverType.light: {
+      return {
+        containerClassName: 'tiny-popover-light',
+      };
+    }
+    case PopoverType.primary: {
+      return {
+        containerClassName: 'tiny-popover-primary',
+      };
+    }
+    case PopoverType.primaryDark: {
+      return {
+        containerClassName: 'tiny-popover-primary-dark',
+      };
+    }
+    case PopoverType.highlight: {
+      return {
+        containerClassName: 'tiny-popover-highlight',
+      };
+    }
+    default: {
+      return null;
+    }
+  }
 };
 
 export class TinyPopover extends React.Component<ITinyPopoverProps, IState> {
-	public static defaultProps: ITinyPopoverProps = {
-		anchor: null,
-		children: null,
-		type: PopoverType.custom,
-	};
+  public static defaultProps: ITinyPopoverProps = {
+    anchor: null,
+    children: null,
+    type: PopoverType.custom,
+  };
 
-	public static getDerivedStateFromProps(props: ITinyPopoverProps, state: IState) {
-		const nextState: IState = {};
+  public static getDerivedStateFromProps(props: ITinyPopoverProps, state: IState) {
+    const nextState: IState = {};
 
-		if (state.isOpen !== props.isOpen) {
-			nextState.isOpen = props.isOpen;
-		}
+    if (state.isOpen !== props.isOpen) {
+      nextState.isOpen = props.isOpen;
+    }
 
-		return Object.keys(nextState).length > 0 ? nextState : null;
-	}
+    return Object.keys(nextState).length > 0 ? nextState : null;
+  }
 
-	constructor(props: ITinyPopoverProps) {
-		super(props);
+  constructor(props: ITinyPopoverProps) {
+    super(props);
 
-		this.state = {
-			isOpen: props.isOpen,
-			...getStylesByType(props.type),
-		};
-	}
+    this.state = {
+      isOpen: props.isOpen,
+      ...getStylesByType(props.type),
+    };
+  }
 
-	public componentDidMount() {
-		if (this.props.dismissOnOutsideAction) {
-			this.watchForOutsideAction();
-		}
+  public componentDidMount() {
+    if (this.props.dismissOnOutsideAction) {
+      this.watchForOutsideAction();
+    }
 
-		window.addEventListener('select-close', this.onOuterAction);
-	}
+    window.addEventListener('select-close', this.onOuterAction);
+  }
 
-	public componentWillUnmount() {
-		if (this.props.dismissOnOutsideAction) {
-			this.stopWatchingForOutsideAction();
-		}
+  public componentWillUnmount() {
+    if (this.props.dismissOnOutsideAction) {
+      this.stopWatchingForOutsideAction();
+    }
 
-		window.removeEventListener('select-close', this.onOuterAction);
-	}
+    window.removeEventListener('select-close', this.onOuterAction);
+  }
 
-	public render() {
-		const {
-			align,
-			anchor,
-            anchorClassName = '',
-            className = '',
-			contentStyle,
-			disabled,
-			engageOnHover,
-			placement,
-			transitionDuration,
-		} = this.props;
-		const { isOpen } = this.state;
+  public render() {
+    const {
+      align,
+      anchor,
+      anchorClassName = '',
+      className = '',
+      contentStyle,
+      disabled,
+      engageOnHover,
+      placement,
+      transitionDuration,
+    } = this.props;
+    const { isOpen } = this.state;
 
-		return (
-			<ReactTinyPopover
-				align={ align || 'start' }
-				containerClassName={ `tiny-popover ${className}` }
-				containerStyle={ contentStyle }
-				content={ this.onRenderContent }
-				isOpen={ !disabled && isOpen }
-				positions={ placement || ['bottom', 'top'] }
-                style={ { zIndex: 5 } }
-				transitionDuration={ transitionDuration || 0.01 }
-			>
-				<div
-					className={ `tiny-popover-anchor ${anchorClassName}` }
-					onClick={ !disabled ? this.onTriggerEngaged : undefined }
-					onMouseDown={ !disabled ? this.onTriggerEngaged : undefined }
-					onMouseOut={ !disabled && engageOnHover ? this.onTriggerEngaged : undefined }
-					onMouseOver={ !disabled && engageOnHover ? this.onTriggerEngaged : undefined }
-					onTouchStart={ !disabled ? this.onTriggerEngaged : undefined }
-				>
-					{ anchor }
-				</div>
-			</ReactTinyPopover>
-		);
-	}
+    return (
+      <ReactTinyPopover
+        align={ align || 'start' }
+        containerClassName={ `tiny-popover ${className}` }
+        containerStyle={ contentStyle }
+        content={ this.onRenderContent }
+        isOpen={ !disabled && isOpen }
+        positions={ placement || ['bottom', 'top'] }
+        style={ { zIndex: 5 } }
+        transitionDuration={ transitionDuration || 0.01 }
+      >
+        <div
+          className={ `tiny-popover-anchor ${anchorClassName}` }
+          onClick={ !disabled ? this.onTriggerEngaged : undefined }
+          onMouseDown={ !disabled ? this.onTriggerEngaged : undefined }
+          onMouseOut={ !disabled && engageOnHover ? this.onTriggerEngaged : undefined }
+          onMouseOver={ !disabled && engageOnHover ? this.onTriggerEngaged : undefined }
+          onTouchStart={ !disabled ? this.onTriggerEngaged : undefined }
+        >
+          { anchor }
+        </div>
+      </ReactTinyPopover>
+    );
+  }
 
-	private onTriggerEngaged = (e?: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-		this.stopPropagation(e);
-		window.removeEventListener('select-close', this.onOuterAction);
-		const event = new CustomEvent('select-close');
-		window.dispatchEvent(event);
-		window.addEventListener('select-close', this.onOuterAction);
-	}
+  private onTriggerEngaged = (e?: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    this.stopPropagation(e);
+    window.removeEventListener('select-close', this.onOuterAction);
+    const event = new CustomEvent('select-close');
+    window.dispatchEvent(event);
+    window.addEventListener('select-close', this.onOuterAction);
+  }
 
-	private onOuterAction = () => {
-		if (this.state.isOpen) {
-			const { onRequestClose } = this.props;
-			onRequestClose?.();
+  private onOuterAction = () => {
+    if (this.state.isOpen) {
+      const { onRequestClose } = this.props;
+      onRequestClose?.();
 
-			if (!onRequestClose) {
-				this.setState({ isOpen: false });
-			}
-		}
-	}
+      if (!onRequestClose) {
+        this.setState({ isOpen: false });
+      }
+    }
+  }
 
-	private onRenderContent = ({ position, childRect, popoverRect }: IArrowRenderer) => {
-		const { arrow, children, arrowSize } = this.props;
-		const { arrowColor, containerClassName } = this.state;
+  private onRenderContent = ({ position, childRect, popoverRect }: IArrowRenderer) => {
+    const { arrow, children, arrowSize } = this.props;
+    const { arrowColor, containerClassName } = this.state;
 
-		return (
-			<ArrowContainer
-				arrowColor={ arrowColor || 'white' }
-				arrowSize={ arrowSize ?? 0 }
-				arrowStyle={ { display: 'none' } }
-				childRect={ childRect }
-				className='tiny-popover-arrow'
-				popoverRect={ popoverRect }
-				position={ position }
-				{ ...(arrow || {}) }
-			>
-				<ReactTinyPopoverContent
-					className={ `tiny-popover-content ${containerClassName}` }
-					onClick={ this.stopPropagation }
-					onMouseDown={ this.stopPropagation }
-					onTouchStart={ this.stopPropagation }
-				>
-					{ children }
-				</ReactTinyPopoverContent>
-			</ArrowContainer>
-		);
-	}
+    return (
+      <ArrowContainer
+        arrowColor={ arrowColor || 'white' }
+        arrowSize={ arrowSize ?? 0 }
+        arrowStyle={ { display: 'none' } }
+        childRect={ childRect }
+        className='tiny-popover-arrow'
+        popoverRect={ popoverRect }
+        position={ position }
+        { ...(arrow || {}) }
+      >
+        <ReactTinyPopoverContent
+          className={ `tiny-popover-content ${containerClassName}` }
+          onClick={ this.stopPropagation }
+          onMouseDown={ this.stopPropagation }
+          onTouchStart={ this.stopPropagation }
+        >
+          { children }
+        </ReactTinyPopoverContent>
+      </ArrowContainer>
+    );
+  }
 
-	private stopPropagation = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-		e.stopPropagation();
-	}
+  private stopPropagation = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  }
 
-	private stopWatchingForOutsideAction = () => {
-		window.removeEventListener('mousedown', this.onOuterAction);
-		window.removeEventListener('touchstart', this.onOuterAction);
-		window.removeEventListener('resize', debounce(this.onOuterAction, 25));
-	}
+  private stopWatchingForOutsideAction = () => {
+    window.removeEventListener('mousedown', this.onOuterAction);
+    window.removeEventListener('touchstart', this.onOuterAction);
+    window.removeEventListener('resize', debounce(this.onOuterAction, 25));
+  }
 
-	private watchForOutsideAction = () => {
-		/**
+  private watchForOutsideAction = () => {
+    /**
 		 * react-tiny-popover's default outside action tracking is
 		 * insufficient. adding this to ensure that popover is dismissed
 		 * as expected (similar to how old react-popover was tracking this)
 		 */
-		window.addEventListener('mousedown', this.onOuterAction);
-		window.addEventListener('touchstart', this.onOuterAction);
-		window.addEventListener('resize', debounce(this.onOuterAction, 25));
-	}
+    window.addEventListener('mousedown', this.onOuterAction);
+    window.addEventListener('touchstart', this.onOuterAction);
+    window.addEventListener('resize', debounce(this.onOuterAction, 25));
+  }
 }

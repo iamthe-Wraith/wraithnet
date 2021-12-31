@@ -8,6 +8,7 @@ import { DnDIpcRenderer } from '../../models/ipcRenderers/dnd';
 import { Button, ButtonType } from '../Button';
 import { DnDCampaignRouter } from '../DnDCampaignRouter';
 import { DnDDailyChecklist } from '../DnDDailyChecklist';
+import { DnDDateDisplay } from '../DnDDateDisplay';
 import { DnDDayPicker } from '../DnDDayPicker';
 import { DnDMiscResources } from '../DnDMiscResources';
 import { DnDNav } from '../DnDNav';
@@ -47,7 +48,7 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
           <span>back</span>
         </Button>
         <div className='campaign-id'>{ dnd.campaign.id }</div>
-        <div>{ dnd.campaign.currentDate.stringify() }</div>
+        <DnDDateDisplay />
       </HeaderLeftContent>
     );
   };
