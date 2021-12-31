@@ -19,79 +19,79 @@ import { PrevArrowIcon } from '../svgs/icons/PrevArrowIcon';
 import { CampaignContainer, Footer, HeaderLeftContent, Main } from './styles';
 
 interface IProps {
-  className?: string;
+    className?: string;
 }
 
 const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
-  const dnd = useContext(DnDContext);
-  const imagesModel = useContext(ImagesContext);
-  const history = useHistory();
+    const dnd = useContext(DnDContext);
+    const imagesModel = useContext(ImagesContext);
+    const history = useHistory();
 
-  const onBackClick = () => {        
-    dnd.setCampaign(null);
-    history.replace('/');
-  };
+    const onBackClick = () => {        
+        dnd.setCampaign(null);
+        history.replace('/');
+    };
 
-  const onDayClick = (day: DnDDate) => {
-    console.log('day change: ', day);
-  };
+    const onDayClick = (day: DnDDate) => {
+        console.log('day change: ', day);
+    };
 
-  const renderHeaderLeftContent = () => {
+    const renderHeaderLeftContent = () => {
+        return (
+            <HeaderLeftContent>
+                <Button
+                    className='back-button'
+                    buttonType={ ButtonType.BlankReverse }
+                    onClick={ onBackClick }
+                >
+                    <PrevArrowIcon />
+                    <span>back</span>
+                </Button>
+                <div className='campaign-id'>{ dnd.campaign.id }</div>
+                <DnDDateDisplay />
+            </HeaderLeftContent>
+        );
+    };
+
     return (
-      <HeaderLeftContent>
-        <Button
-          className='back-button'
-          buttonType={ ButtonType.BlankReverse }
-          onClick={ onBackClick }
-        >
-          <PrevArrowIcon />
-          <span>back</span>
-        </Button>
-        <div className='campaign-id'>{ dnd.campaign.id }</div>
-        <DnDDateDisplay />
-      </HeaderLeftContent>
-    );
-  };
-
-  return (
-    <CampaignContainer className={ className }>
-      <Header
-        centerContent={ dnd.campaign.name }
-        leftContent={ renderHeaderLeftContent() }
-        onClose={ DnDIpcRenderer.close }
-        rightContent={ <DnDNav /> }
-      />
-      <Main>
-        <div className='side-col left-col'>
-          <DnDDayPicker
-            className='day-picker'
-            onDayClick={ onDayClick }
-            selectedDay={ dnd.campaign.currentDate.stringify() }
-          />
-          <DnDPCs className='pcs' />
-        </div>
-        <div className='primary-display'>
-          <DnDCampaignRouter />
-        </div>
-        <div className='side-col right-col'>
-          <DnDMiscResources className='misc-resources' />
-          <DnDDailyChecklist className='daily-checklist' />
-        </div>
-      </Main>
-      <Footer>
+        <CampaignContainer className={ className }>
+            <Header
+                centerContent={ dnd.campaign.name }
+                leftContent={ renderHeaderLeftContent() }
+                onClose={ DnDIpcRenderer.close }
+                rightContent={ <DnDNav /> }
+            />
+            <Main>
+                <div className='side-col left-col'>
+                    <DnDDayPicker
+                        className='day-picker'
+                        onDayClick={ onDayClick }
+                        selectedDay={ dnd.campaign.currentDate.stringify() }
+                    />
+                    <DnDPCs className='pcs' />
+                </div>
+                <div className='primary-display'>
+                    <DnDCampaignRouter />
+                </div>
+                <div className='side-col right-col'>
+                    <DnDMiscResources className='misc-resources' />
+                    <DnDDailyChecklist className='daily-checklist' />
+                </div>
+            </Main>
+            <Footer>
                 footer
-      </Footer>
-      {
-        imagesModel.modalIsOpen && (
-          <ImagesModal
-            header='Images'
-            onClose={ imagesModel.hideModal }
-            isOpen={ imagesModel.modalIsOpen }
-          />
-        )
-      }
-    </CampaignContainer>
-  );
+            </Footer>
+            {
+                imagesModel.modalIsOpen && (
+                    <ImagesModal
+                        header='Images'
+                        onClose={ imagesModel.hideModal }
+                        isOpen={ imagesModel.modalIsOpen }
+                    />
+                )
+            }
+        </CampaignContainer>
+    );
 };
 
 export const Campaign = observer(CampaignBase);
