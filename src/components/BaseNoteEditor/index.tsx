@@ -58,7 +58,6 @@ export const BaseNoteEditor: React.FC<IProps> = ({
     }, [editMode]);
 
     const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-        console.log('keypress');
         if ((e.ctrlKey || e.metaKey) && e.key === 's') {
             onSave?.();
         }
