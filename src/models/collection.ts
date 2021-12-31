@@ -54,7 +54,11 @@ export class CollectionModel<T, U extends { id: string }> extends BaseModel {
   }
 
   get busy() { return this._busy; }
-  get allResultsFetched() { return this._totalCount === this._results.length; }
+  get allResultsFetched() {
+    console.log('totalCount: ', this._totalCount);
+    console.log('results count: ', this._results.length);
+    return this._totalCount === this._results.length;
+  }
   get firstPageLoaded() { return this._firstPageLoaded; }
   get totalCount() { return this._totalCount; }
   get results() { return this._results; }
