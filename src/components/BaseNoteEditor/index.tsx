@@ -14,79 +14,79 @@ import { AnchorComponent } from '../NoteEditor/components/AnchorComponent';
 export type ICustomComponents = { [key: string]: React.FC<any> };
 
 interface IProps {
-  className?: string;
-  content?: string;
-  customComponents?: ICustomComponents
-  editMode?: boolean;
-  id: string;
-  onChange(content: string): void;
-  onSave?(): void;
-  noteRef?(ref: HTMLTextAreaElement): void;
+    className?: string;
+    content?: string;
+    customComponents?: ICustomComponents
+    editMode?: boolean;
+    id: string;
+    onChange(content: string): void;
+    onSave?(): void;
+    noteRef?(ref: HTMLTextAreaElement): void;
 }
 
 
 export const defaultCustomComponents: ICustomComponents = {
-  a: AnchorComponent,
-  p: ParagraphComponent,
-  h1: HeadingsComponent,
-  h2: HeadingsComponent,
-  h3: HeadingsComponent,
-  h4: HeadingsComponent,
-  h5: HeadingsComponent,
-  h6: HeadingsComponent,
-  ref: RefComponent,
+    a: AnchorComponent,
+    p: ParagraphComponent,
+    h1: HeadingsComponent,
+    h2: HeadingsComponent,
+    h3: HeadingsComponent,
+    h4: HeadingsComponent,
+    h5: HeadingsComponent,
+    h6: HeadingsComponent,
+    ref: RefComponent,
 };
 
 export const BaseNoteEditor: React.FC<IProps> = ({
-  className = '',
-  content = '',
-  customComponents = defaultCustomComponents,
-  editMode,
-  id,
-  onChange,
-  onSave,
-  noteRef,
+    className = '',
+    content = '',
+    customComponents = defaultCustomComponents,
+    editMode,
+    id,
+    onChange,
+    onSave,
+    noteRef,
 }) => {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    if (editMode && !!noteRef) {
-      const textarea = document.querySelector(`#${id}`);
-      textareaRef.current = textarea as HTMLTextAreaElement;
-      noteRef?.(textareaRef.current);
-    }
-  }, [editMode]);
+    useEffect(() => {
+        if (editMode && !!noteRef) {
+            const textarea = document.querySelector(`#${id}`);
+            textareaRef.current = textarea as HTMLTextAreaElement;
+            noteRef?.(textareaRef.current);
+        }
+    }, [editMode]);
 
-  const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    console.log('keypress');
-    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-      onSave?.();
-    }
-  };
+    const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+        console.log('keypress');
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            onSave?.();
+        }
+    };
 
-  return (
-    <BaseNoteEditorContainer className={ className }>
-      {
-        editMode
-          ? (
-            <TextArea
-              className='editor-textarea'
-              textareaId={ id }
-              textareaRef={ ref => textareaRef.current = ref }
-              onKeyDown={ onKeyDown }
-              onChange={ e => onChange(e.target.value) }
-              value={ content }
-            />
-          )
-          : (
-            <Markdown
-              content={ content }
-              rehypePlugins={ [rehypeRaw] }
-              remarkPlugins={ [remarkGfm, remarkInlineLinks] }
-              components={ customComponents }
-            />
-          )
-      }
-    </BaseNoteEditorContainer>
-  );
+    return (
+        <BaseNoteEditorContainer className={ className }>
+            {
+                editMode
+                    ? (
+                        <TextArea
+                            className='editor-textarea'
+                            textareaId={ id }
+                            textareaRef={ ref => textareaRef.current = ref }
+                            onKeyDown={ onKeyDown }
+                            onChange={ e => onChange(e.target.value) }
+                            value={ content }
+                        />
+                    )
+                    : (
+                        <Markdown
+                            content={ content }
+                            rehypePlugins={ [rehypeRaw] }
+                            remarkPlugins={ [remarkGfm, remarkInlineLinks] }
+                            components={ customComponents }
+                        />
+                    )
+            }
+        </BaseNoteEditorContainer>
+    );
 };

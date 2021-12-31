@@ -29,6 +29,10 @@ export const MarkdownContainer = styled.div<IThemeProps>`
         }
     }
 
+    strong {
+        font-weight: 700;
+    }
+
     a {
         color: ${({theme}) => theme.primary};
         text-decoration: none;
