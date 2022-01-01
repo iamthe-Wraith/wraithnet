@@ -10,43 +10,43 @@ import { LoadingSpinner } from '../LoadingSpinner';
 import { DnDContainer } from './styles';
 
 export const DnDBase: React.FC = () => {
-  const user = useContext(UserContext);
-  const dnd = useContext(DnDContext);
+    const user = useContext(UserContext);
+    const dnd = useContext(DnDContext);
 
-  useEffect(() => {
-    IpcRenderer.init();
+    useEffect(() => {
+        IpcRenderer.init();
 
-    dnd.getCampaigns()
-      .then(() => {
-        // TODO: this is only for development purposes...needs to be removed...
-        // dnd.forceSelect();
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  }, []);
+        dnd.getCampaigns()
+            .then(() => {
+                // TODO: this is only for development purposes...needs to be removed...
+                // dnd.forceSelect();
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }, []);
 
-  if (!user.username) {
-    return (
-      <DnDContainer>
-        <LoadingSpinner className='loading' />
-      </DnDContainer>
-    );
-  }
-
-  const renderContent = () => {
-    if (!dnd.campaign) {
-      return <CampaignsList className='campaigns-list' />;
+    if (!user.username) {
+        return (
+            <DnDContainer>
+                <LoadingSpinner className='loading' />
+            </DnDContainer>
+        );
     }
 
-    return <Campaign />;
-  };
+    const renderContent = () => {
+        if (!dnd.campaign) {
+            return <CampaignsList className='campaigns-list' />;
+        }
 
-  return (
-    <DnDContainer>
-      { renderContent() }
-    </DnDContainer>
-  );
+        return <Campaign />;
+    };
+
+    return (
+        <DnDContainer>
+            { renderContent() }
+        </DnDContainer>
+    );
 };
 
 export const DnD = observer(DnDBase);
