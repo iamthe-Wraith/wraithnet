@@ -39,7 +39,7 @@ const NoteEditorBase: React.FC<IProps> = ({
     const [category, setCategory] = useState('');
     const [shareWithAllUsers, setShareWithAllUsers] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
-    const [selectedTags, setSelectedTags] = useState<TagModel[]>([]);
+    const [selectedTags, setSelectedTags] = useState<TagModel[]>(note?.tags || []);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
