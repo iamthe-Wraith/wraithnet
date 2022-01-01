@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react';
-import React, { useContext } from 'react';
-import { useHistory } from 'react-router';
+import React, { useContext, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import { DnDContext } from '../../contexts/DnD';
 import { ImagesContext } from '../../contexts/Images';
 import { DnDDate } from '../../lib/dndDate';
@@ -25,11 +25,11 @@ interface IProps {
 const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
     const dnd = useContext(DnDContext);
     const imagesModel = useContext(ImagesContext);
-    const history = useHistory();
+    const [redirectTo, setRedirectTo] = useState<string>(null);
 
     const onBackClick = () => {        
         dnd.setCampaign(null);
-        history.replace('/');
+        setRedirectTo('/');
     };
 
     const onDayClick = (day: DnDDate) => {
@@ -52,6 +52,8 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
             </HeaderLeftContent>
         );
     };
+
+    if (!!redirectTo) <Navigate to={ redirectTo } />;
 
     return (
         <CampaignContainer className={ className }>
