@@ -3,11 +3,11 @@ import { TextAreaContainer } from './styles';
 
 interface IProps extends React.InputHTMLAttributes<HTMLTextAreaElement> {
     allowAutoComplete?: boolean;
-	className?: string;
-	textareaClassName?: string;
-	textareaId: string;
-	textareaRef?: (ref: HTMLTextAreaElement) => void;
-};
+    className?: string;
+    textareaClassName?: string;
+    textareaId: string;
+    textareaRef?: (ref: HTMLTextAreaElement) => void;
+}
 
 export const TextArea: React.FC<IProps> = ({
     className = '',
@@ -24,21 +24,21 @@ export const TextArea: React.FC<IProps> = ({
     const onTextAreaBlur = (e: FocusEvent<HTMLTextAreaElement>) => {
         setIsFocused(false);
         onBlur?.(e);
-    }
+    };
 
     const onTextAreaFocus = (e: FocusEvent<HTMLTextAreaElement>) => {
         setIsFocused(true);
         onFocus?.(e);
-    }
+    };
 
     const onPaddingClicked = (e: React.MouseEvent<HTMLDivElement>) => {
-		if (!!taRef) {
-			taRef.focus();
-		}
+        if (!!taRef) {
+            taRef.focus();
+        }
 
-		e.preventDefault();
-		e.stopPropagation();
-	};
+        e.preventDefault();
+        e.stopPropagation();
+    };
 
     const onRef = (ref: HTMLTextAreaElement | null) => {
         if (ref) {
@@ -48,7 +48,7 @@ export const TextArea: React.FC<IProps> = ({
                 textareaRef(ref);
             }
         }
-	};
+    };
 
     return (
         <TextAreaContainer className={ `${className} ${isFocused && 'focused '}` } onClick={ onPaddingClicked }>
@@ -61,5 +61,5 @@ export const TextArea: React.FC<IProps> = ({
                 { ...restProps }
             />
         </TextAreaContainer>
-    )
-}
+    );
+};

@@ -15,6 +15,7 @@ import { DnDNav } from '../DnDNav';
 import { DnDPCs } from '../DnDPCs';
 import { Header } from '../Header';
 import { ImagesModal } from '../ImagesModal';
+import { ScratchPad } from '../ScratchPad';
 import { PrevArrowIcon } from '../svgs/icons/PrevArrowIcon';
 import { CampaignContainer, Footer, HeaderLeftContent, Main } from './styles';
 
@@ -81,7 +82,8 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
                 </div>
             </Main>
             <Footer>
-                footer
+                <div />
+                <ScratchPad />
             </Footer>
             {
                 imagesModel.modalIsOpen && (

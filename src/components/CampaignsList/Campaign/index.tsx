@@ -36,7 +36,7 @@ const CampaignBase: React.FC<IProps> = ({
                 borderColor={ isHovered ? theme.highlight1 : 'transparent' }
                 borderWidth={ 1 }
                 className='angle-corner'
-                config={[{ position: AnglePos.BottomRight, size: AngleSize.Tiny }]}
+                config={ [{ position: AnglePos.BottomRight, size: AngleSize.Tiny }] }
             >
                 <h2 className='campaign-name'>{ campaign.name }</h2>
                 <div className='campaign-created-date'>
@@ -44,7 +44,7 @@ const CampaignBase: React.FC<IProps> = ({
                 </div>
             </AngleCorner>
         </CampaignContainer>
-    )
+    );
 };
 
 export const Campaign = withTheme(CampaignBase);
