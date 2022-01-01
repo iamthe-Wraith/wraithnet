@@ -10,7 +10,7 @@ export const TextAreaContainer = styled.div<IThemeProps>`
 
     textarea {
         width: 100%;
-        height: auto;
+        height: 100%;
         background: none;
         border: none;
         outline: none;

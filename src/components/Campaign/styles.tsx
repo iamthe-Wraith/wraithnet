@@ -98,6 +98,7 @@ export const Main = styled.div`
 
 export const Footer = styled.div<IThemeProps>`
     ${ FlexCenter }
+    justify-content: space-between;
     width: 100%;
     min-height: 100px;
     max-height: 100px;

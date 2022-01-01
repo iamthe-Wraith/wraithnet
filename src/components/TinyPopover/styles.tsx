@@ -12,8 +12,6 @@ export const ReactTinyPopover = styled(Popover)<IThemeProps>`
 `;
 
 export const ReactTinyPopoverContent = styled.div<IThemeProps>`
-    background: ${({theme}) => theme.dark};
-
     &.tiny-popover-error {
         border: 1px solid ${({theme}) => theme.error};
     }
@@ -30,7 +28,7 @@ export const ReactTinyPopoverContent = styled.div<IThemeProps>`
         border: 1px solid ${({theme}) => theme.primaryDark};
     }
 
-    &.tiny-popover-primary {
+    &.tiny-popover-highlight {
         border: 1px solid ${({theme}) => theme.highlight1};
     }
-`
+`;
