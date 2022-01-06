@@ -106,6 +106,7 @@ export class DnDDate {
 
     // requires format: DD MMM, YYYY RR
     static parseStringToDnDDate = (d = '1 Hammer, 1 DR'): [number, DnDMonth, number, Reckoning, IDnDCalendarDay] => {
+        console.log('>>>>> d', d);
         const [part1, part2] = d.split(',');
         const holiday = dndCalendar.find(d => d.holiday?.name === part1 || !!d.holiday?.alternativeNames?.find(a => a === part1));
         const [yearStr, reckoning] = part2.trim().split(' ');

@@ -9,6 +9,7 @@ export const day = css`
     justify-content: center;
     position: relative;
     width: 30px;
+    font-size: 14px;
 `;
 
 export const DnDDayPickerContainer = styled.div<IThemeProps>`
@@ -66,7 +67,7 @@ export const DnDDayPickerContainer = styled.div<IThemeProps>`
     .popover {
         border: 1px solid red;
     }
-`
+`;
 
 export const Day = styled(Button)<IThemeProps>`
     ${ day }

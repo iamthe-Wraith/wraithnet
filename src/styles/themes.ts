@@ -56,4 +56,4 @@ export const PinkBerry: ITheme = {
     primary: '#CC5490',
     primaryDark: '#7A3256',
     primaryLight: '#FF87C3',
-}
+};

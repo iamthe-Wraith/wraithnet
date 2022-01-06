@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { FlexCol, FlexHorizontalCenter, PrimaryFont } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 import { BaseNoteEditor } from '../BaseNoteEditor';
+import { Button } from '../Button';
+import { DnDDayPicker } from '../DnDDayPicker';
 import { Modal } from '../Modal';
 
 export const DnDPCModalContainer = styled(Modal)<IThemeProps>`
@@ -83,4 +85,25 @@ export const NameContainer = styled.div`
 
 export const NoteEditor = styled(BaseNoteEditor)`
     flex-grow: 1;
+`;
+
+export const PCBirthdayPicker = styled(DnDDayPicker)`
+    min-width: 350px;
+    padding: 20px;
+    background: ${({theme}) => theme.dark};
+`;
+
+export const PickBirthdayButton = styled(Button)`
+    &.pick-birthday-btn { // required for overriding Button component styles
+        border: ${({theme}) => `1px solid ${theme.gray}`};
+        width: 100%;
+    
+        &:hover:not(:disabled),
+        &:focus:not(:disabled) {
+            ${({theme}) => `
+                background: ${theme.lightGray}40;
+                border: 1px solid ${theme.light};
+            `}
+        }
+    }
 `;

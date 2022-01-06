@@ -1,9 +1,7 @@
-import { observer } from 'mobx-react-lite';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { withTheme } from 'styled-components';
-import { DnDContext } from '../../contexts/DnD';
-import { DnDDate, IDnDYear, Reckoning } from '../../lib/dndDate';
-import { dndCalendar, DnDMonthOrder, IDnDCalendarDay } from '../../static/dnd-calendar';
+import { DnDDate, Reckoning } from '../../lib/dndDate';
+import { dndCalendar, DnDMonthOrder } from '../../static/dnd-calendar';
 import { IThemeProps } from '../../styles/themes';
 import { Button, ButtonType } from '../Button';
 import { AngleCorner } from '../containers/AngleCorner';
@@ -11,7 +9,6 @@ import { AnglePos, AngleSize } from '../containers/AngleCorner/styles';
 import { DnDYearEditor } from '../DnDYearEditor';
 import { NextArrowIcon } from '../svgs/icons/NextArrowIcon';
 import { PrevArrowIcon } from '../svgs/icons/PrevArrowIcon';
-import { PopoverType, TinyPopover } from '../TinyPopover';
 
 import { Day, DnDDayPickerContainer } from './styles';
 
@@ -20,7 +17,7 @@ interface IProps extends IThemeProps {
     className?: string;
     daysWithEvents?: DnDDate[];
     onDayClick?:(day: DnDDate) => void;
-    selectedDay?: string;
+    defaultSelectedDay?: string;
 }
 
 const DnDDayPickerBase: React.FC<IProps> = ({
@@ -28,20 +25,17 @@ const DnDDayPickerBase: React.FC<IProps> = ({
     className = '',
     daysWithEvents = [],
     onDayClick,
-    selectedDay,
+    defaultSelectedDay,
     theme,
 }) => {
-    const dnd = useContext(DnDContext)
-    const [mSelectedDay, setSelectedDay] = useState(new DnDDate(selectedDay));
+    const [mSelectedDay, setSelectedDay] = useState(new DnDDate(defaultSelectedDay));
     const [days, setDays] = useState<DnDDate[]>([]);
     const [specialDays, setSpecialDays] = useState<DnDDate[]>([]);
     const [dayHovered, setDayHovered] = useState<DnDDate>(null);
 
     useEffect(() => {
-        setSelectedDay(new DnDDate(selectedDay));
-    }, [selectedDay]);
-
-
+        setSelectedDay(new DnDDate(defaultSelectedDay));
+    }, [defaultSelectedDay]);
 
     useEffect(() => {        
         let lastIndex = 0;
@@ -59,7 +53,7 @@ const DnDDayPickerBase: React.FC<IProps> = ({
         // get special days
         const _specialDays: DnDDate[] = [];
         while (dndCalendar[lastIndex + 1]?.special) {
-            const { month, holiday } = dndCalendar[lastIndex + 1];
+            const { holiday } = dndCalendar[lastIndex + 1];
             _specialDays.push(new DnDDate(`${holiday?.name}, ${mSelectedDay.year} ${mSelectedDay.reckoning}`));
             lastIndex += 1;
         }
@@ -100,7 +94,7 @@ const DnDDayPickerBase: React.FC<IProps> = ({
     };
 
     const render10Days = () => {
-        let tenDays: JSX.Element[] = [];
+        const tenDays: JSX.Element[] = [];
         for (let i = 1; i <= 10; i++) {
             tenDays.push((
                 <div
@@ -116,7 +110,7 @@ const DnDDayPickerBase: React.FC<IProps> = ({
 
     const renderDays = () => {
         return days.map(d => {
-            let classes: string[] = [];
+            const classes: string[] = [];
 
             if (d.isSame(mSelectedDay)) classes.push('today');
             if (d.isSame(mSelectedDay)) classes.push('selected');
@@ -130,7 +124,7 @@ const DnDDayPickerBase: React.FC<IProps> = ({
                     className={ `${classes.join(' ')}` }
                     key={ `day-${d.date}` }
                     buttonType={ ButtonType.Blank }
-                    onClick={() => mOnDayClick(d)}
+                    onClick={ () => mOnDayClick(d) }
                 >
                     { d.date }
                 </Day>
@@ -149,16 +143,16 @@ const DnDDayPickerBase: React.FC<IProps> = ({
                         key={ `special-day-${i}` }
                         buttonType={ ButtonType.Blank }
                         className='day-button'
-                        onClick={() => mOnDayClick(d)}
-                        onMouseEnter={() => setDayHovered(d)}
-                        onMouseLeave={() => setDayHovered(null)}
+                        onClick={ () => mOnDayClick(d) }
+                        onMouseEnter={ () => setDayHovered(d) }
+                        onMouseLeave={ () => setDayHovered(null) }
                     >
                         <AngleCorner
                             backgroundColor={ (d.isSame(mSelectedDay) || d.isSame(dayHovered)) ? `${theme.primary}50` : `${theme.darkestGray}` }
                             borderWidth={ 1 }
                             borderColor={ (d.isSame(mSelectedDay) || d.isSame(dayHovered)) ? theme.primary : theme.darkGray }
                             className='special-day'
-                            config={[{ size: AngleSize.Tiny, position: AnglePos.TopRight }]}
+                            config={ [{ size: AngleSize.Tiny, position: AnglePos.TopRight }] }
                         >
                             <span>{ d.holiday.name }</span>
                             {
@@ -177,7 +171,7 @@ const DnDDayPickerBase: React.FC<IProps> = ({
                 { sDays }
             </div>
         );
-    }
+    };
 
     const onYearChange = useCallback((year: number, reckoning: Reckoning) => {
         const clone = mSelectedDay.clone();
@@ -221,6 +215,6 @@ const DnDDayPickerBase: React.FC<IProps> = ({
             { renderSpecialDays() }
         </DnDDayPickerContainer>
     );
-}
+};
 
 export const DnDDayPicker = withTheme(DnDDayPickerBase);

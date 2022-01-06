@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { AbsoluteCenter, FlexHorizontalCenter } from '../../styles/styles';
+import { AbsoluteCenter } from '../../styles/styles';
 import { IThemeProps } from '../../styles/themes';
 import { AngleCorner } from '../containers/AngleCorner';
 import { Modal } from '../Modal';

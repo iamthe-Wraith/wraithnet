@@ -3,13 +3,12 @@ import React, { useContext, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { DnDContext } from '../../contexts/DnD';
 import { ImagesContext } from '../../contexts/Images';
-import { DnDDate } from '../../lib/dndDate';
 import { DnDIpcRenderer } from '../../models/ipcRenderers/dnd';
 import { Button, ButtonType } from '../Button';
+import { DnDCampaignDayPicker } from '../DnDCampaignDayPicker';
 import { DnDCampaignRouter } from '../DnDCampaignRouter';
 import { DnDDailyChecklist } from '../DnDDailyChecklist';
 import { DnDDateDisplay } from '../DnDDateDisplay';
-import { DnDDayPicker } from '../DnDDayPicker';
 import { DnDMiscResources } from '../DnDMiscResources';
 import { DnDNav } from '../DnDNav';
 import { DnDPCs } from '../DnDPCs';
@@ -31,10 +30,6 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
     const onBackClick = () => {        
         dnd.setCampaign(null);
         setRedirectTo('/');
-    };
-
-    const onDayClick = (day: DnDDate) => {
-        console.log('day change: ', day);
     };
 
     const renderHeaderLeftContent = () => {
@@ -66,11 +61,7 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
             />
             <Main>
                 <div className='side-col left-col'>
-                    <DnDDayPicker
-                        className='day-picker'
-                        onDayClick={ onDayClick }
-                        selectedDay={ dnd.campaign.currentDate.stringify() }
-                    />
+                    <DnDCampaignDayPicker className='campaign-day-picker' />
                     <DnDPCs className='pcs' />
                 </div>
                 <div className='primary-display'>

@@ -49,6 +49,7 @@ export class CampaignModel extends BaseModel {
     private _stats: ICampaignStats = null;
     public changingDate = false;
     public loadingPCs = false;
+    public gettingEvents = false;
     public gettingStats = false;
     public creatingPC = false;
     public updatingPartyXP = false;
@@ -70,6 +71,7 @@ export class CampaignModel extends BaseModel {
             _startDate: observable,
             _stats: observable,
             creatingPC: observable,
+            gettingEvents: observable,
             gettingStats: observable,
             loadingPCs: observable,
             updatingPartyXP: observable,
@@ -282,6 +284,7 @@ export class CampaignModel extends BaseModel {
         race: string,
         classes: string[],
         age: number,
+        birthday: DnDDate,
         exp: number,
         level: number,
     ) => {
@@ -293,6 +296,7 @@ export class CampaignModel extends BaseModel {
                 race,
                 classes,
                 age,
+                birthday: birthday?.stringify(),
                 exp,
                 level,
             };
@@ -371,6 +375,33 @@ export class CampaignModel extends BaseModel {
                 
                 throw new Error(result.error);
             }
+        }
+    }
+
+    public getEvents = async (date: DnDDate) => {
+        if (this.gettingEvents) return null;
+
+        this.gettingEvents = true;
+
+        const result = await this.webServiceHelper.sendRequest({
+            path: this.composeUrl(`/dnd/${this._campaign.id}/events`),
+            method: 'GET',
+            queryParams: { date: date.stringify() },
+        });
+
+        if (result.success) {
+            runInAction(() => {
+                console.log('>>>>> events');
+                console.log(result.value);
+                this.gettingEvents = false;
+            });
+            return result.value;
+        } else {
+            runInAction(() => {
+                this.gettingEvents = false;
+            });
+
+            throw new Error(result.error);
         }
     }
 

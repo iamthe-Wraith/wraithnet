@@ -87,6 +87,31 @@ export const Btn = styled.button<IThemeProps>`
         }
     }
 
+    &.light {
+        ${({theme}) => (`
+            background: ${theme.light};
+            color: ${theme.dark};
+
+            &:hover:not(:disabled),
+            &:focus:not(:disabled) {
+                background: ${theme.lightGray};
+            }
+        `)}
+    }
+
+    &.light-reverse {
+        ${({theme}) => (`
+            border: 1px solid ${theme.light};
+            color: ${theme.light};
+
+            &:hover:not(:disabled),
+            &:focus:not(:disabled) {
+                background: ${theme.lightGray}40;
+                border: 1px solid ${theme.lightGray};
+            }
+        `)}
+    }
+
     &.link {
         color: ${({theme}) => theme.primary};
         

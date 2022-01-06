@@ -72,10 +72,15 @@ export const Main = styled.div`
     .left-col {
         padding: 30px 5px 5px 10px;
         
+        .campaign-day-picker,
         .pcs {
             flex-grow: 1;
-            margin-top: 15px;
+            max-height: 50%;
             width: 100%;
+        }
+
+        .pcs {
+            margin-top: 15px;
         }
     }
 
