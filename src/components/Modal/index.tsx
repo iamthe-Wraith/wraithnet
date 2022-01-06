@@ -10,21 +10,21 @@ import { XIcon } from '../svgs/icons/XIcon';
 import { ModalOverlay, ModalContainer } from './styles';
 
 export enum ModalSize {
-  Small = 'small-modal',
-  Medium = 'medium-modal',
-  Large = 'large-modal',
-  XLarge = 'extra-large-modal',
-  Custom = 'custom',
+    Small = 'small-modal',
+    Medium = 'medium-modal',
+    Large = 'large-modal',
+    XLarge = 'extra-large-modal',
+    Custom = 'custom',
 }
 
 interface IProps extends IThemeProps {
-  borderColor?: string;
-  className?: string;
-  closeOnOverlayClick?: boolean;
-  header?: string | JSX.Element;
-  isOpen?: boolean;
-  onClose:() => void;
-  size?: ModalSize;
+    borderColor?: string;
+    className?: string;
+    closeOnOverlayClick?: boolean;
+    header?: string | JSX.Element;
+    isOpen?: boolean;
+    onClose:() => void;
+    size?: ModalSize;
 }
 
 const overlayFrom = { opacity: 0 };
@@ -33,74 +33,78 @@ const modalFrom = { ...overlayFrom, transform: 'translate3d(-50%, -80%, 0)' };
 const modalTo = { ...overlayTo, transform: 'translate3d(-50%, -50%, 0)' };
 
 export const ModalBase: React.FC<IProps> = ({
-  borderColor,
-  children,
-  closeOnOverlayClick,
-  className = '',
-  header,
-  isOpen,
-  onClose,
-  size = ModalSize.Medium,
-  theme,
+    borderColor,
+    children,
+    closeOnOverlayClick,
+    className = '',
+    header,
+    isOpen,
+    onClose,
+    size = ModalSize.Medium,
+    theme,
 }) => {
-  const overlaySpring = useSpring({
-    config: config.gentle,
-    from: overlayFrom,
-    to: isOpen ? overlayTo : overlayFrom,
-  });
+    const overlaySpring = useSpring({
+        config: config.gentle,
+        from: overlayFrom,
+        to: isOpen ? overlayTo : overlayFrom,
+    });
 
-  const modalSpring = useSpring({
-    config: config.gentle,
-    from: modalFrom,
-    to: isOpen ? modalTo : modalFrom, 
-  });
+    const modalSpring = useSpring({
+        config: config.gentle,
+        from: modalFrom,
+        to: isOpen ? modalTo : modalFrom, 
+    });
 
-  const renderHeader = () => {
+    const renderHeader = () => {
+        return (
+            <div className={ `modal-header ${ typeof header === 'string' && 'header-text font-1'}` }>
+                <Button
+                    className='close'
+                    buttonType={ ButtonType.Blank }
+                    onClick={ onClose }
+                >
+                    <XIcon fill={ theme.light } />
+                </Button>
+                { header }
+            </div>
+        );
+    };
+
+    const renderBody = () => {
+        return (
+            <div className='body'>
+                { children }
+            </div>
+        );
+    };
+
+    if (!isOpen) return null;
+
     return (
-      <div className={ `modal-header ${ typeof header === 'string' && 'header-text font-1'}` }>
-        <Button
-          className='close'
-          buttonType={ ButtonType.Blank }
-          onClick={ onClose }
+        <ModalOverlay
+            className={ className }
+            style={ overlaySpring }
+            onClick={ closeOnOverlayClick ? onClose : null }
         >
-          <XIcon fill={ theme.light } />
-        </Button>
-        { header }
-      </div>
+            <ModalContainer 
+                className={ `modal-container ${size}` }
+                style={ modalSpring }
+                onClick={ e => e.stopPropagation() }
+            >
+                <AngleCorner
+                    childrenContainerClassName='angle-corner-children-container'
+                    className='modal-angle-corner'
+                    backgroundColor={ theme.dark }
+                    borderColor={ borderColor || theme.primary }
+                    borderWidth={ 1 }
+                    config={ [{ position: AnglePos.TopLeft, size: size === ModalSize.Small ? AngleSize.Small : AngleSize.Medium }] }
+                >
+                    { renderHeader() }
+                    { renderBody() }
+                </AngleCorner>
+            </ModalContainer>
+        </ModalOverlay>
     );
-  };
-
-  const renderBody = () => {
-    return (
-      <div className='body'>
-        { children }
-      </div>
-    );
-  };
-
-  if (!isOpen) return null;
-
-  return (
-    <ModalOverlay
-      className={ className }
-      style={ overlaySpring }
-      onClick={ closeOnOverlayClick ? onClose : null }
-    >
-      <ModalContainer className={ `modal-container ${size}` } style={ modalSpring }>
-        <AngleCorner
-          childrenContainerClassName='angle-corner-children-container'
-          className='modal-angle-corner'
-          backgroundColor={ theme.dark }
-          borderColor={ borderColor || theme.primary }
-          borderWidth={ 1 }
-          config={ [{ position: AnglePos.TopLeft, size: size === ModalSize.Small ? AngleSize.Small : AngleSize.Medium }] }
-        >
-          { renderHeader() }
-          { renderBody() }
-        </AngleCorner>
-      </ModalContainer>
-    </ModalOverlay>
-  );
 };
 
 export const Modal = withTheme(ModalBase);
