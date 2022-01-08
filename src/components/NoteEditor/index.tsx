@@ -9,7 +9,7 @@ import { EditIcon } from '../svgs/icons/EditIcon';
 import { TextInput } from '../TextInput';
 
 import { Body, Header, NoteEditorContainer } from './styles';
-import { Modal, ModalSize } from '../Modal';
+import { Modal } from '../Modal';
 import { CTAs } from '../CtasContainer';
 import { TagsList } from '../TagsList';
 import { Tag, TagType } from '../Tag';
@@ -277,7 +277,6 @@ const NoteEditorBase: React.FC<IProps> = ({
                 isOpen={ showConfirmation }
                 header='Hang on...'
                 onClose={ onCancelConfirmation }
-                size={ ModalSize.Medium }
             >
                 <div className='confirmation-modal'>
                     <div>{ `you're currently in edit mode...if you continue, any unsaved changes may be lost...` }</div>

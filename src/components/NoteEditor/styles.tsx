@@ -67,6 +67,10 @@ export const Body = styled.div<IThemeProps>`
     min-height: calc(100% - ${headerHeight}px);
     overflow: hidden;
 
+    .main-col {
+        max-width: calc(100% - 200px);
+    }
+
     .note-right-col {
         ${ FlexCol }
         align-items: flex-start;

@@ -9,7 +9,7 @@ import { LoadingSpinner, SpinnerSize, SpinnerType } from '../../../LoadingSpinne
 import { RefComponentAnchor, RefComponentContent } from './styles';
 import { Markdown } from '../../../Markdown';
 import { ErrorMessagesContext } from '../../../../contexts/ErrorMessages';
-import { Modal, ModalSize } from '../../../Modal';
+import { Modal } from '../../../Modal';
 
 interface IRefComponentProps extends IComponentProps {
     path: string;
@@ -97,26 +97,14 @@ const RefComponentBase: React.FC<IRefComponentProps> = ({ children, path }) => {
         );
     };
 
-    // return (
-    //     <TinyPopover
-    //         dismissOnOutsideAction
-    //         anchor={ renderAnchor() }
-    //         isOpen={ isOpen }
-    //         onRequestClose={ () => setIsOpen(false) }
-    //         type={ PopoverType.primaryDark }
-    //     >
-    //         { renderContent() }
-    //     </TinyPopover>
-    // );
-
     return (
         <>
             { renderAnchor() }
             <Modal
+                closeOnOverlayClick
                 isOpen={ isOpen }
                 header={ children?.[0] }
                 onClose={ onClose }
-                size={ ModalSize.Large }
             >
                 { renderContent() }
             </Modal>

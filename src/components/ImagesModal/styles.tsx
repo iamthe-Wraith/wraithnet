@@ -33,73 +33,84 @@ export const FilterContainer = styled.div`
 `;
 
 export const ImagesModalContainer = styled(Modal)`
-  .body {
-    justify-content: space-between;
-  }
+    .modal-container {
+        min-height: 800px;
+        max-height: 800px;
+    }
 
-  input[type="file"] {
-    display: none;
-  }
+    .body {
+        justify-content: space-between;
+    }
+
+    input[type="file"] {
+        display: none;
+    }
 `;
 
 export const ImageContainer = styled.div`
-  ${ FlexCol }
-  align-items: center;
-  min-width: 16%;
-  max-width: 16%;
-  margin: 4px 0.333%;
-  padding: 5px;
+    ${ FlexCol }
+    align-items: center;
+    min-width: 16%;
+    max-width: 16%;
+    margin: 4px 0.333%;
+    padding: 5px;
 
-  & > div:first-child {
-    ${ FlexCenter }
-    min-height: 80px;
-    max-height: 80px;
-    padding-bottom: 5px;
+    & > div:first-child {
+        ${ FlexCenter }
+        min-height: 80px;
+        max-height: 80px;
+        padding-bottom: 5px;
 
-    img {
-      display: block;
-      max-width: 75px;
-      max-height: 75px;
-      transition: transform .3s ease-in-out;
+        img {
+            display: block;
+            width: 100%;
+            max-width: 75px;
+            max-height: 75px;
+            transition: transform .3s ease-in-out;
 
-      &:hover {
-        transform: scale(1.1);
-      }
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
     }
-  }
 
-  & > div:last-child {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    min-height: 28px;
-    max-height: 28px;
-    font-size: 11px;
-    overflow: hidden;
-    text-align: center;
-  }
+    & > div:last-child {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        min-height: 28px;
+        max-height: 28px;
+        font-size: 11px;
+        overflow: hidden;
+        text-align: center;
+    }
 `;
 
 export const ImagesContainer = styled.div`
-  ${ NoScrollBar }
-  ${ FlexHorizontalCenter }
-  flex-grow: 1;
-  flex-wrap: wrap;
-  min-height: 100px;
-  overflow: auto;
+    ${ NoScrollBar }
+    ${ FlexHorizontalCenter }
+    flex-grow: 1;
+    flex-wrap: wrap;
+    min-height: 100px;
+    overflow: auto;
 `;
 
 export const ImageUploadConfirmationModal = styled(Modal)``;
 
+export const InnerContainer = styled.div`
+    width: 65vw;
+    height: calc(75vh - 100px);
+`;
+
 export const LoadingSpinnerContainer = styled.div`
-  position: relative;
-  min-width: 100%;
-  min-height: 100px;
+    position: relative;
+    min-width: 100%;
+    min-height: 100px;
 `;
 
 export const MainImagesContainer = styled.div`
-  ${ FlexHorizontalCenter };
-  flex-grow: 1;
-  align-items: flex-start;
-  min-width: 100%;
+    ${ FlexHorizontalCenter };
+    flex-grow: 1;
+    align-items: flex-start;
+    min-width: 100%;
 `;

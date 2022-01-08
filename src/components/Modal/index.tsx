@@ -9,14 +9,6 @@ import { XIcon } from '../svgs/icons/XIcon';
 
 import { ModalOverlay, ModalContainer } from './styles';
 
-export enum ModalSize {
-    Small = 'small-modal',
-    Medium = 'medium-modal',
-    Large = 'large-modal',
-    XLarge = 'extra-large-modal',
-    Custom = 'custom',
-}
-
 interface IProps extends IThemeProps {
     borderColor?: string;
     className?: string;
@@ -24,7 +16,7 @@ interface IProps extends IThemeProps {
     header?: string | JSX.Element;
     isOpen?: boolean;
     onClose:() => void;
-    size?: ModalSize;
+    angleSize?: AngleSize;
 }
 
 const overlayFrom = { opacity: 0 };
@@ -40,7 +32,7 @@ export const ModalBase: React.FC<IProps> = ({
     header,
     isOpen,
     onClose,
-    size = ModalSize.Medium,
+    angleSize = AngleSize.Medium,
     theme,
 }) => {
     const overlaySpring = useSpring({
@@ -87,7 +79,7 @@ export const ModalBase: React.FC<IProps> = ({
             onClick={ closeOnOverlayClick ? onClose : null }
         >
             <ModalContainer 
-                className={ `modal-container ${size}` }
+                className='modal-container'
                 style={ modalSpring }
                 onClick={ e => e.stopPropagation() }
             >
@@ -97,7 +89,7 @@ export const ModalBase: React.FC<IProps> = ({
                     backgroundColor={ theme.dark }
                     borderColor={ borderColor || theme.primary }
                     borderWidth={ 1 }
-                    config={ [{ position: AnglePos.TopLeft, size: size === ModalSize.Small ? AngleSize.Small : AngleSize.Medium }] }
+                    config={ [{ position: AnglePos.TopLeft, size: angleSize }] }
                 >
                     { renderHeader() }
                     { renderBody() }

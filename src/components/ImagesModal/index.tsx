@@ -9,9 +9,8 @@ import { ButtonType } from '../Button';
 import { Checkbox } from '../Checkbox';
 import { CTAs } from '../CtasContainer';
 import { LoadingSpinner, SpinnerSize } from '../LoadingSpinner';
-import { ModalSize } from '../Modal';
 import { TextInput } from '../TextInput';
-import { FileContent, FileExtOptions, FilterContainer, ImageContainer, ImagesContainer, ImagesModalContainer, ImageUploadConfirmationModal, LoadingSpinnerContainer, MainImagesContainer } from './styles';
+import { FileContent, FileExtOptions, FilterContainer, ImageContainer, ImagesContainer, ImagesModalContainer, ImageUploadConfirmationModal, InnerContainer, LoadingSpinnerContainer, MainImagesContainer } from './styles';
 
 type FileTypes = 'png' | 'jpg' | 'jpeg' | 'svg' | 'pdf';
 const supportedImageTypes = '.jpeg,.jpg,.png,.svg,.pdf';
@@ -229,68 +228,69 @@ const ImagesModalBase: React.FC<IProps> = ({
             header='Images'
             isOpen={ isOpen }
             onClose={ onClose }
-            size={ ModalSize.Large }
         >
-            <input
-                accept={ supportedImageTypes }
-                name='image'
-                onChange={ onInputChange }
-                ref={ inputRef }
-                type='file'
-            />
-            <MainImagesContainer>
-                <FilterContainer>
-                    <TextInput
-                        inputId='images-search'
-                        placeholder='search images'
-                        onChange={ onSearchChange }
-                        value={ searchQuery }
-                    />
-                    <FileExtOptions>
-                        <h4>File Types</h4>
-                        { renderFileExtOptions() }
-                    </FileExtOptions>
-                </FilterContainer>
-                <ImagesContainer>
-                    { renderImages() }
-                </ImagesContainer>
-            </MainImagesContainer>
-            <CTAs
-                ctas={ [
-                    {
-                        disabled: false,
-                        text: 'Upload',
-                        type: ButtonType.Primary,
-                        onClick: onUploadClick,
-                    },
-                ] }
-            />
-            <ImageUploadConfirmationModal
-                header={ !!files ? 'Confirm Upload' : '' }
-                isOpen={ !!files }
-                onClose={ onCancelUpload }
-            >
-                <div className={ `align-${!!files ? 'left' : 'center'}` }>
-                    { renderConfirmationContent() }
-                </div>
+            <InnerContainer>
+                <input
+                    accept={ supportedImageTypes }
+                    name='image'
+                    onChange={ onInputChange }
+                    ref={ inputRef }
+                    type='file'
+                />
+                <MainImagesContainer>
+                    <FilterContainer>
+                        <TextInput
+                            inputId='images-search'
+                            placeholder='search images'
+                            onChange={ onSearchChange }
+                            value={ searchQuery }
+                        />
+                        <FileExtOptions>
+                            <h4>File Types</h4>
+                            { renderFileExtOptions() }
+                        </FileExtOptions>
+                    </FilterContainer>
+                    <ImagesContainer>
+                        { renderImages() }
+                    </ImagesContainer>
+                </MainImagesContainer>
                 <CTAs
                     ctas={ [
                         {
-                            disabled: !files,
-                            text: 'Confirm Upload',
-                            type: ButtonType.Primary,
-                            onClick: onConfirmUploadClick,
-                        },
-                        {
                             disabled: false,
-                            text: 'Cancel',
-                            type: ButtonType.BlankReverse,
-                            onClick: onCancelUpload,
+                            text: 'Upload',
+                            type: ButtonType.Primary,
+                            onClick: onUploadClick,
                         },
                     ] }
                 />
-                { imagesModel.busy && <LoadingSpinner size={ SpinnerSize.Small } /> }
-            </ImageUploadConfirmationModal>
+                <ImageUploadConfirmationModal
+                    header={ !!files ? 'Confirm Upload' : '' }
+                    isOpen={ !!files }
+                    onClose={ onCancelUpload }
+                >
+                    <div className={ `align-${!!files ? 'left' : 'center'}` }>
+                        { renderConfirmationContent() }
+                    </div>
+                    <CTAs
+                        ctas={ [
+                            {
+                                disabled: !files,
+                                text: 'Confirm Upload',
+                                type: ButtonType.Primary,
+                                onClick: onConfirmUploadClick,
+                            },
+                            {
+                                disabled: false,
+                                text: 'Cancel',
+                                type: ButtonType.BlankReverse,
+                                onClick: onCancelUpload,
+                            },
+                        ] }
+                    />
+                    { imagesModel.busy && <LoadingSpinner size={ SpinnerSize.Small } /> }
+                </ImageUploadConfirmationModal>
+            </InnerContainer>
         </ImagesModalContainer>
     );
 };

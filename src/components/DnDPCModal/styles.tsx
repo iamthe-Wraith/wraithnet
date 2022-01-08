@@ -4,6 +4,11 @@ import { IThemeProps } from '../../styles/themes';
 import { BaseNoteEditor } from '../BaseNoteEditor';
 import { Modal } from '../Modal';
 
+export const ContentContainer = styled.div`
+    width: 55vw;
+    height: calc(85vh - 100px);
+`;
+
 export const DnDPCModalContainer = styled(Modal)<IThemeProps>`
     .pc-upper-ctas-container {
         min-height: 30px;
@@ -51,6 +56,7 @@ export const InventoryContainer = styled.div`
     margin-top: 5px;
     padding-top: 10px;
     border-top: ${({theme}) => `1px solid ${theme.gray}`};
+    overflow: hidden;
 
     .header {
         ${ PrimaryFont }
@@ -60,6 +66,7 @@ export const InventoryContainer = styled.div`
 
     .inventory-list {
         flex-grow: 1;
+        height: calc(100% - 70px);
     }
 `;
 

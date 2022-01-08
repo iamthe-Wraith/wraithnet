@@ -4,6 +4,11 @@ import { IThemeProps } from '../../styles/themes';
 
 export const MarkdownContainer = styled.div<IThemeProps>`
     ${ NoScrollBar }
+    max-width: 100%;
+
+    & > * {
+        max-width: 100%;
+    }
 
     & > :first-child {
         margin-top: 0;
@@ -84,22 +89,28 @@ export const MarkdownContainer = styled.div<IThemeProps>`
     }
 
     table {
-        width: 80%;
+        width: max-content;
+        max-width: 90%;
         margin: 20px 0;
         border-spacing: 0;
+
+        thead,
+        tbody {
+            max-width: 100%;
+        }
 
         th {
             ${ PrimaryFont }
             padding: 3px 10px 3px 5px;
             color: ${({theme}) => theme.primary};
-            border-bottom: ${({theme}) => `2px solid ${theme.gray}`};
-            white-space: nowrap;
+            border-bottom: ${({theme}) => `2px solid ${theme.darkGray}`};
+            white-space: pre-wrap;
         }
 
         tr {
             &:not(:last-child) {
                 td {
-                    border-bottom: ${({theme}) => `1px solid ${theme.darkGray}`};
+                    border-bottom: ${({theme}) => `1px solid ${theme.darkerGray}`};
                 }
             }
 
