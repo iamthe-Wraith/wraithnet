@@ -26,7 +26,8 @@ export const RefComponentAnchor = styled.span<IThemeProps>`
 
 export const RefComponentContent = styled.div<IThemeProps>`
     ${ NoScrollBar }
-    width: 100%;
+    width: 65vw;
+    height: calc(75vh - 100px);
     overflow: auto;
 
     &.invalid-path {

@@ -12,7 +12,7 @@ import { Button, ButtonType } from '../Button';
 import { CTAs } from '../CtasContainer';
 import { Right2 } from '../decorators/right/Right2';
 import { LoadingSpinner, SpinnerSize, SpinnerType } from '../LoadingSpinner';
-import { Modal, ModalSize } from '../Modal';
+import { Modal } from '../Modal';
 import { NoteEditor } from '../NoteEditor';
 import { TagsList } from '../TagsList';
 import { TextInput } from '../TextInput';
@@ -282,7 +282,6 @@ const CollectionNoteEditorBase: React.FC<IProps> = ({
                 header={ `New ${type}` }
                 onClose={ () => setShowNewNoteModal(false) }
                 isOpen={ showNewNoteModal }
-                size={ ModalSize.Small }
             >
                 <NewNoteModal>
                     <div className='label'>{ `${lowerType} name` }</div>
@@ -314,7 +313,6 @@ const CollectionNoteEditorBase: React.FC<IProps> = ({
                 header='Confim Note Deletion'
                 isOpen={ !!noteToBeDeleted }
                 onClose={ () => setNoteToBeDeleted(null) }
-                size={ ModalSize.Medium }
             >
                 <ConfirmDeleteContent>
                     <div>Are you sure you want to delete note:</div>

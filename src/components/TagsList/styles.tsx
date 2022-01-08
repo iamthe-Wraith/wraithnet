@@ -9,7 +9,10 @@ export const LoadingSpinnerContainer = styled.div`
 `;
 
 export const NewTagModal = styled.div<IThemeProps>`
+    width: 250px;
+
     .label {
+        margin-bottom: 4px;
         font-size: 12px;
         color: ${({theme}) => theme.gray};
     }

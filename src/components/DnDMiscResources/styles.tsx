@@ -59,3 +59,8 @@ export const DnDMiscResourcesContainer = styled.div<IThemeProps>`
         ${ AbsoluteCenter }
     }
 `;
+
+export const NoteEditorContainer = styled.div`
+    width: 55vw;
+    height: 70vh;
+`;

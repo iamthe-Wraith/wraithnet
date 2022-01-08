@@ -12,7 +12,7 @@ export const ConfirmDeleteContent = styled.div`
 
   .note-name {
     ${ PrimaryFont }
-    margin-top: 10px;
+    margin: 10px 0;
     font-size: 21px;
     color: ${({theme}) => theme.error};
     text-align: center;
@@ -91,6 +91,8 @@ export const NoteEditorContainer = styled.div`
 `;
 
 export const NewNoteModal = styled.div<IThemeProps>`
+    width: 250px;
+
     .label {
         font-size: 12px;
         color: ${({theme}) => theme.gray};
