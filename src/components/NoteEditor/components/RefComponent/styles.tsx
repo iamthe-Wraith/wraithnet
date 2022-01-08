@@ -4,6 +4,12 @@ import { IThemeProps } from '../../../../styles/themes';
 
 export const RefComponentAnchor = styled.span<IThemeProps>`
     position: relative;
+    color: ${({ theme }) => theme.highlight1};
+
+    &:hover {
+        cursor: default;
+        color: ${({ theme }) => theme.highlight2};
+    }
 
     &.error:before {
         content: ' ';
@@ -20,10 +26,7 @@ export const RefComponentAnchor = styled.span<IThemeProps>`
 
 export const RefComponentContent = styled.div<IThemeProps>`
     ${ NoScrollBar }
-    width: 500px;
-    min-height: 600px;
-    max-height: 600px;
-    padding: 10px;
+    width: 100%;
     overflow: auto;
 
     &.invalid-path {
