@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FlexCenter, FlexCol, FlexHorizontalCenter } from '../../styles/styles';
+import { FlexCenter, FlexCol, FlexHorizontalCenter, NoScrollBar } from '../../styles/styles';
 import { Modal } from '../Modal';
 
 export const FileContent = styled.div`
@@ -56,6 +56,7 @@ export const ImageContainer = styled.div`
 `;
 
 export const ImagesContainer = styled.div`
+  ${ NoScrollBar }
   ${ FlexHorizontalCenter }
   flex-wrap: wrap;
   min-width: 100%;
