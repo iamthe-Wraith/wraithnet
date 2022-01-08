@@ -47,7 +47,7 @@ export class UserModel {
     }
 
     get createdAt() {
-        return this._user?.createdAt
+        return this._user?.createdAt;
     }
 
     get email() {
@@ -72,8 +72,8 @@ export class UserModel {
 
     get webServiceHelper() {
         if (!this._webServiceHelper) {
-          // only want to instantiate object when used...
-          this._webServiceHelper = new WraithnetApiWebServiceHelper();
+            // only want to instantiate object when used...
+            this._webServiceHelper = new WraithnetApiWebServiceHelper();
         }
     
         return this._webServiceHelper;
@@ -82,7 +82,7 @@ export class UserModel {
     public toJs = () => this._user;
 
     private load = async () => {
-        const result = await this.webServiceHelper.sendRequest({
+        const result = await this.webServiceHelper.sendRequest<IUserModel>({
             path: '/api/v1/profile',
             method: 'GET',
         });
@@ -93,7 +93,7 @@ export class UserModel {
                 this._loaded = true;
             });
         } else {
-            throw new Error(result.value);
+            throw new Error(result.error);
         }
     }
 }

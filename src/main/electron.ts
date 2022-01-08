@@ -88,7 +88,11 @@ const logout = async () => {
         const service = getKeyTarService();
         await keytar.deletePassword(service, service);
 
-        windows.login.init();
+        await windows.login.init();
+
+        Object.entries(windows).map(([key, win]) => {
+            if (key !== 'login' && !!win) win.close();
+        });
     } catch (err: any) {
         console.log('an error occurred while loging out: ', err.message);
     }

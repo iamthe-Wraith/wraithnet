@@ -12,9 +12,9 @@ const bgColor = '#000';
 type AuthenticationRequest = [string, string];
 
 interface IProps extends IBaseProps {
-  isDev: boolean;
-  onLoad?: () => void;
-  onSuccess: () => void;
+    isDev: boolean;
+    onLoad?: () => void;
+    onSuccess: () => void;
 }
 
 export class Login extends Base {
@@ -29,7 +29,7 @@ export class Login extends Base {
         this._onLoad = props.onLoad || noop;
     }
 
-    public init = async () => new Promise((resolve, reject) => {
+    public init = async () => new Promise(() => {
         const service = getKeyTarService();
         keytar.getPassword(service, service)
             .then(result => {
@@ -58,7 +58,7 @@ export class Login extends Base {
         const result = await this.webServiceHelper.sendRequest<void>({
             data: { username, password },
             method: 'POST',
-            path: '/auth'
+            path: '/auth',
         }, true);
 
         if (result.success) {
@@ -106,7 +106,7 @@ export class Login extends Base {
     private verifyToken = async () => {
         const result = await this.webServiceHelper.sendRequest({
             method: 'POST',
-            path: '/auth/verify-token'
+            path: '/auth/verify-token',
         });
 
         if (result.success) {
