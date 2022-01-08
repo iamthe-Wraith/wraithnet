@@ -80,7 +80,7 @@ const ImagesModalBase: React.FC<IProps> = ({
 
     const copyUrl = (img: ImageModel) => () => {
         navigator.clipboard.writeText(img.url);
-        toaster.push({ message: 'Image URL copied to clipboard' });
+        toaster.push({ message: 'URL copied to clipboard' });
     };
 
     const getQueryParameters = () => {
@@ -202,7 +202,7 @@ const ImagesModalBase: React.FC<IProps> = ({
         } else if (!imagesModel.images.busy && imagesModel.images.firstPageLoaded) {
             images.push((
                 <div>
-          No images found
+                    No images found
                 </div>
             ));
         }
