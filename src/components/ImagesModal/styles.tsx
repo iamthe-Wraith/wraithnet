@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FlexCenter, FlexCol, FlexHorizontalCenter } from '../../styles/styles';
+import { FlexCenter, FlexCol, FlexHorizontalCenter, NoScrollBar } from '../../styles/styles';
 import { Modal } from '../Modal';
 
 export const FileContent = styled.div`
@@ -7,12 +7,37 @@ export const FileContent = styled.div`
   justify-content: space-between;
 `;
 
+export const FileExtOptions = styled.div`
+    ${FlexCol}
+    padding-top: 10px;
+
+    h4 {
+        margin-bottom: 10px;
+    }
+
+    .file-type-option {
+        font-size: 12px; 
+        
+        &:not(:last-child) {
+            margin-bottom: 4px;
+        }
+    }
+`;
+
+export const FilterContainer = styled.div`
+    ${ FlexCol }
+    min-width: 220px;
+    max-width: 220px;
+    min-height: 100%;
+    margin-right: 30px;
+`;
+
 export const ImagesModalContainer = styled(Modal)`
   .body {
     justify-content: space-between;
   }
 
-  input {
+  input[type="file"] {
     display: none;
   }
 `;
@@ -56,9 +81,10 @@ export const ImageContainer = styled.div`
 `;
 
 export const ImagesContainer = styled.div`
+  ${ NoScrollBar }
   ${ FlexHorizontalCenter }
+  flex-grow: 1;
   flex-wrap: wrap;
-  min-width: 100%;
   min-height: 100px;
   overflow: auto;
 `;
@@ -69,4 +95,11 @@ export const LoadingSpinnerContainer = styled.div`
   position: relative;
   min-width: 100%;
   min-height: 100px;
+`;
+
+export const MainImagesContainer = styled.div`
+  ${ FlexHorizontalCenter };
+  flex-grow: 1;
+  align-items: flex-start;
+  min-width: 100%;
 `;
