@@ -21,322 +21,322 @@ import { ListItem } from './ListItem';
 import { NoteEditorContainer, ListContainer, CollectionNoteEditorContainer, NewNoteModal, FilterContainer, SearchContainer, ConfirmDeleteContent } from './styles';
 
 interface IProps extends IThemeProps {
-  busy?: boolean;
-  className?: string;
-  collection?: CollectionModel<INoteRef, NoteModel>;
-  onCreateNewClick?(name: string): Promise<NoteModel>;
-  type: string;
+    busy?: boolean;
+    className?: string;
+    collection?: CollectionModel<INoteRef, NoteModel>;
+    onCreateNewClick?(name: string): Promise<NoteModel>;
+    type: string;
 }
 
 interface INotesSearchParams {
-  tags?: string[];
-  name?: string;
+    tags?: string[];
+    name?: string;
 }
 
 const CollectionNoteEditorBase: React.FC<IProps> = ({
-  busy,
-  className = '',
-  collection,
-  onCreateNewClick,
-  type,
-  theme,
+    busy,
+    className = '',
+    collection,
+    onCreateNewClick,
+    type,
+    theme,
 }) => {
-  const errorMessages = useContext(ErrorMessagesContext);
-  const toaster = useContext(ToasterContext);
-  const [selectedNote, setSelectedNote] = useState<NoteModel>(null);
-  const [showNewNoteModal, setShowNewNoteModal] = useState(false);
-  const [newNoteName, setNewNoteName] = useState('');
-  const [search, setSearch] = useState('');
-  const [searchTimeout, setSearchTimeout] = useState<number>(null);
-  const [selectedTags, setSelectedTags] = useState<TagModel[]>([]);
-  const [noteToBeDeleted, setNoteToBeDeleted] = useState<NoteModel>(null);
-  const searchEngaged = useRef(false);
-  const tagsEngaged = useRef(false);
-  const lowerType = useRef(type.toLowerCase()).current;
+    const errorMessages = useContext(ErrorMessagesContext);
+    const toaster = useContext(ToasterContext);
+    const [selectedNote, setSelectedNote] = useState<NoteModel>(null);
+    const [showNewNoteModal, setShowNewNoteModal] = useState(false);
+    const [newNoteName, setNewNoteName] = useState('');
+    const [search, setSearch] = useState('');
+    const [searchTimeout, setSearchTimeout] = useState<number>(null);
+    const [selectedTags, setSelectedTags] = useState<TagModel[]>([]);
+    const [noteToBeDeleted, setNoteToBeDeleted] = useState<NoteModel>(null);
+    const searchEngaged = useRef(false);
+    const tagsEngaged = useRef(false);
+    const lowerType = useRef(type.toLowerCase()).current;
 
-  const getQueryParams = () => {
-    const queryParams: INotesSearchParams = {};
-    if (search) queryParams.name = search;
-    if (selectedTags.length) queryParams.tags = selectedTags.map(t => t.id);  
-    return queryParams;
-  };
-
-  const loadMore = () => {
-    collection.loadMore(getQueryParams())
-      .catch(err => {
-        console.error(err);
-      });
-  };
-
-  useEffect(() => {
-    if (!collection.firstPageLoaded) loadMore();
-
-    return () => {
-      setSearch('');
-      setSelectedTags([]);
-      collection.reset();
+    const getQueryParams = () => {
+        const queryParams: INotesSearchParams = {};
+        if (search) queryParams.name = search;
+        if (selectedTags.length) queryParams.tags = selectedTags.map(t => t.id);  
+        return queryParams;
     };
-  }, []);
 
-  useEffect(() => {
-    if (!showNewNoteModal) setNewNoteName('');
-  }, [showNewNoteModal]);
+    const loadMore = () => {
+        collection.loadMore(getQueryParams())
+            .catch(err => {
+                console.error(err);
+            });
+    };
 
-  useEffect(() => {
-    if (searchEngaged.current || tagsEngaged.current) {
-      window.clearTimeout(searchTimeout);
-      setSearchTimeout(window.setTimeout(() => {         
-        collection.refresh(getQueryParams())
-          .catch(err => {
-            console.error(err);
-          });
-      }, 300));
-    }
-  }, [search, selectedTags]);
+    useEffect(() => {
+        if (!collection.firstPageLoaded) loadMore();
 
-  const onCancelNoteChange = (origNote: NoteModel, _: NoteModel) => {
-    setSelectedNote(origNote);
-  };
+        return () => {
+            setSearch('');
+            setSelectedTags([]);
+            collection.reset();
+        };
+    }, []);
 
-  const _onCreateNewClick = () => {
-    onCreateNewClick?.(newNoteName)
-      .then((n: NoteModel) => {
-        // automatically select newly created 
-        setShowNewNoteModal(false);
-        setSelectedNote(n);
-        setNewNoteName('');
-      })
-      .catch(err => {
-        console.log(`error creating ${type}`);
-        console.error(err);
-      });
-  };
+    useEffect(() => {
+        if (!showNewNoteModal) setNewNoteName('');
+    }, [showNewNoteModal]);
 
-  const onCancelDeletion = () => {
-    setNoteToBeDeleted(null);
-  };
+    useEffect(() => {
+        if (searchEngaged.current || tagsEngaged.current) {
+            window.clearTimeout(searchTimeout);
+            setSearchTimeout(window.setTimeout(() => {         
+                collection.refresh(getQueryParams())
+                    .catch(err => {
+                        console.error(err);
+                    });
+            }, 300));
+        }
+    }, [search, selectedTags]);
 
-  const onDeleteClick = (note: NoteModel) => () => {
-    setNoteToBeDeleted(note);
-  };
+    const onCancelNoteChange = (origNote: NoteModel, _: NoteModel) => {
+        setSelectedNote(origNote);
+    };
 
-  const onDeleteConfirm = async () => {
-    try {
-      await noteToBeDeleted.delete();
-      toaster.push({ message: 'Note deleted successfully' });
-      setNoteToBeDeleted(null);
-    } catch (err: any) {
-      errorMessages.push({ message: err.message });
-    }
-  };
+    const _onCreateNewClick = () => {
+        onCreateNewClick?.(newNoteName)
+            .then((n: NoteModel) => {
+                // automatically select newly created 
+                setShowNewNoteModal(false);
+                setSelectedNote(n);
+                setNewNoteName('');
+            })
+            .catch(err => {
+                console.log(`error creating ${type}`);
+                console.error(err);
+            });
+    };
 
-  const onNoteClick = (note: NoteModel) => () => {
-    note.load()
-      .catch(err => {
-        console.log(`error loading ${type}`);
-        console.error(err);
-      });
+    const onCancelDeletion = () => {
+        setNoteToBeDeleted(null);
+    };
 
-    setSelectedNote(note);
-  };
+    const onDeleteClick = (note: NoteModel) => () => {
+        setNoteToBeDeleted(note);
+    };
 
-  const onSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    searchEngaged.current = true;
-    setSearch(e.target.value);
-  };
+    const onDeleteConfirm = async () => {
+        try {
+            await noteToBeDeleted.delete();
+            toaster.push({ message: 'Note deleted successfully' });
+            setNoteToBeDeleted(null);
+        } catch (err: any) {
+            errorMessages.push({ message: err.message });
+        }
+    };
 
-  const onSelectedTagsChange = (selectedTags: TagModel[]) => {
-    tagsEngaged.current = true;
-    setSelectedTags(selectedTags);
-  };
+    const onNoteClick = (note: NoteModel) => () => {
+        note.load()
+            .catch(err => {
+                console.log(`error loading ${type}`);
+                console.error(err);
+            });
 
-  const renderEditor = () => {
-    return (
-      <NoteEditorContainer>
-        <div>
-          <Button
-            buttonType={ ButtonType.Blank }
-            className='back-button'
-            onClick={ () => setSelectedNote(null) }
-          >
+        setSelectedNote(note);
+    };
+
+    const onSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+        searchEngaged.current = true;
+        setSearch(e.target.value);
+    };
+
+    const onSelectedTagsChange = (selectedTags: TagModel[]) => {
+        tagsEngaged.current = true;
+        setSelectedTags(selectedTags);
+    };
+
+    const renderEditor = () => {
+        return (
+            <NoteEditorContainer>
+                <div>
+                    <Button
+                        buttonType={ ButtonType.Blank }
+                        className='back-button'
+                        onClick={ () => setSelectedNote(null) }
+                    >
                         back
-          </Button>
-        </div>
-        {
-          selectedNote?.busy && (
-            <LoadingSpinner
-              type={ SpinnerType.Random }
-              size={ SpinnerSize.Large }
-            />
-          )
-        }
-        {
-          !!selectedNote && (
-            <NoteEditor
-              className={ `editor ${lowerType}-editor` }
-              note={ selectedNote }
-              onCancelNoteChange={ onCancelNoteChange }
-            />
-          ) 
-        }
-      </NoteEditorContainer>
-    );
-  };
+                    </Button>
+                </div>
+                {
+                    selectedNote?.busy && (
+                        <LoadingSpinner
+                            type={ SpinnerType.Random }
+                            size={ SpinnerSize.Large }
+                        />
+                    )
+                }
+                {
+                    !!selectedNote && (
+                        <NoteEditor
+                            className={ `editor ${lowerType}-editor` }
+                            note={ selectedNote }
+                            onCancelNoteChange={ onCancelNoteChange }
+                        />
+                    ) 
+                }
+            </NoteEditorContainer>
+        );
+    };
 
-  const renderList = () => {
-    let list: JSX.Element[] = [];
+    const renderList = () => {
+        let list: JSX.Element[] = [];
 
-    if (collection.results.length > 0) {
-      const items = collection.results.map(note => (
-        <ListItem
-          key={ note.id }
-          className='list-item'
-          onClick={ onNoteClick(note) }
-          onDelete={ onDeleteClick(note) }
-          selected={ selectedNote?.id === note.id }
-          note={ note }
-        />
-      ));
+        if (collection.results.length > 0) {
+            const items = collection.results.map(note => (
+                <ListItem
+                    key={ note.id }
+                    className='list-item'
+                    onClick={ onNoteClick(note) }
+                    onDelete={ onDeleteClick(note) }
+                    selected={ selectedNote?.id === note.id }
+                    note={ note }
+                />
+            ));
     
-      list = [...list, ...items];
-    } else {
-      list.push(<div key='no-notes' className='no-notes'>no notes</div>);
-    }
+            list = [...list, ...items];
+        } else {
+            list.push(<div key='no-notes' className='no-notes'>no notes</div>);
+        }
 
-    if (collection.busy) {
-      list.push((
-        <div key='spinner' className='spinner-container'>
-          <LoadingSpinner
-            className='spinner'
-            type={ SpinnerType.Random }
-            size={ SpinnerSize.Medium }
-          />
-        </div>
-      ));
-    }
+        if (collection.busy) {
+            list.push((
+                <div key='spinner' className='spinner-container'>
+                    <LoadingSpinner
+                        className='spinner'
+                        type={ SpinnerType.Random }
+                        size={ SpinnerSize.Medium }
+                    />
+                </div>
+            ));
+        }
 
-    if (!collection.allResultsFetched && !collection.busy) {
-      return [...list, <Waypoint key='waypoint' onEnter={ loadMore } topOffset={ 200 } />];
-    }
+        if (!collection.allResultsFetched && !collection.busy) {
+            return [...list, <Waypoint key='waypoint' onEnter={ loadMore } topOffset={ 200 } />];
+        }
 
-    return list;
-  };
+        return list;
+    };
 
-  const renderSearch = () => {
+    const renderSearch = () => {
+        return (
+            <>
+                <FilterContainer>
+                    <SearchContainer>
+                        <TextInput
+                            inputId={ `${lowerType}-search-input` }
+                            onChange={ onSearchChange }
+                            placeholder={ `Search ${type}${lowerType === 'misc' ? '' : 's'}`  }
+                            value={ search }
+                        />
+                        <div className='clear-search-container'>
+                            {
+                                !!search && (
+                                    <Button
+                                        buttonType={ ButtonType.Blank }
+                                        onClick={ () => setSearch('') }
+                                    >
+                                        clear search
+                                    </Button>
+                                )
+                            }
+                        </div>
+                        <Right2 />
+                    </SearchContainer>
+                    <TagsList
+                        className='tags-list'
+                        defaultSelectedTags={ selectedTags }
+                        onSelectedTagsChange={ onSelectedTagsChange }
+                    />
+                </FilterContainer>
+                <ListContainer>
+                    <div className='header'>{ `${type}${lowerType === 'misc' ? '' : 's'}` }</div>
+                    <div className='list'>
+                        { renderList() }
+                    </div>
+                    <div className='footer'>
+                        <Button
+                            buttonType={ ButtonType.Blank }
+                            onClick={ () => setShowNewNoteModal(true) }
+                        >
+                            { `+ add ${lowerType}` }
+                        </Button>
+                    </div>
+                </ListContainer>
+            </>
+        );
+    };
+
     return (
-      <>
-        <FilterContainer>
-          <SearchContainer>
-            <TextInput
-              inputId={ `${lowerType}-search-input` }
-              onChange={ onSearchChange }
-              placeholder={ `Search ${type}${lowerType === 'misc' ? '' : 's'}`  }
-              value={ search }
-            />
-            <div className='clear-search-container'>
-              {
-                !!search && (
-                  <Button
-                    buttonType={ ButtonType.Blank }
-                    onClick={ () => setSearch('') }
-                  >
-                    clear search
-                  </Button>
-                )
-              }
-            </div>
-            <Right2 />
-          </SearchContainer>
-          <TagsList
-            className='tags-list'
-            defaultSelectedTags={ selectedTags }
-            onSelectedTagsChange={ onSelectedTagsChange }
-          />
-        </FilterContainer>
-        <ListContainer>
-          <div className='header'>{ `${type}${lowerType === 'misc' ? '' : 's'}` }</div>
-          <div className='list'>
-            { renderList() }
-          </div>
-          <div className='footer'>
-            <Button
-              buttonType={ ButtonType.Blank }
-              onClick={ () => setShowNewNoteModal(true) }
+        <CollectionNoteEditorContainer className={ className }>
+            {
+                selectedNote
+                    ? renderEditor()
+                    : renderSearch()
+            }
+            <Modal
+                header={ `New ${type}` }
+                onClose={ () => setShowNewNoteModal(false) }
+                isOpen={ showNewNoteModal }
+                size={ ModalSize.Small }
             >
-              { `+ add ${lowerType}` }
-            </Button>
-          </div>
-        </ListContainer>
-      </>
+                <NewNoteModal>
+                    <div className='label'>{ `${lowerType} name` }</div>
+                    <TextInput
+                        inputId={ `new-${lowerType}-name-input` }
+                        onChange={ e => setNewNoteName(e.target.value) }
+                        value={ newNoteName }
+                    />
+                    <CTAs
+                        ctas={ [
+                            {
+                                disabled: !newNoteName,
+                                text: 'create',
+                                type: ButtonType.Primary,
+                                onClick: _onCreateNewClick,
+                            },
+                            {
+                                text: 'cancel',
+                                type: ButtonType.Blank,
+                                onClick: () => setShowNewNoteModal(false),
+                            },
+                        ] }
+                    />
+                    { busy && <LoadingSpinner size={ SpinnerSize.Tiny } />}
+                </NewNoteModal>
+            </Modal>
+            <Modal
+                borderColor={ theme.error }
+                header='Confim Note Deletion'
+                isOpen={ !!noteToBeDeleted }
+                onClose={ () => setNoteToBeDeleted(null) }
+                size={ ModalSize.Medium }
+            >
+                <ConfirmDeleteContent>
+                    <div>Are you sure you want to delete note:</div>
+                    <div className='note-name'>{ noteToBeDeleted?.name }</div>
+                </ConfirmDeleteContent>
+                <CTAs
+                    ctas={ [
+                        {
+                            text: 'Delete',
+                            type: ButtonType.Error,
+                            onClick: onDeleteConfirm,
+                        },
+                        {
+                            text: 'Cancel',
+                            type: ButtonType.Blank,
+                            onClick: onCancelDeletion,
+                        },
+                    ] }
+                />
+            </Modal>
+        </CollectionNoteEditorContainer>
     );
-  };
-
-  return (
-    <CollectionNoteEditorContainer className={ className }>
-      {
-        selectedNote
-          ? renderEditor()
-          : renderSearch()
-      }
-      <Modal
-        header={ `New ${type}` }
-        onClose={ () => setShowNewNoteModal(false) }
-        isOpen={ showNewNoteModal }
-        size={ ModalSize.Small }
-      >
-        <NewNoteModal>
-          <div className='label'>{ `${lowerType} name` }</div>
-          <TextInput
-            inputId={ `new-${lowerType}-name-input` }
-            onChange={ e => setNewNoteName(e.target.value) }
-            value={ newNoteName }
-          />
-          <CTAs
-            ctas={ [
-              {
-                disabled: !newNoteName,
-                text: 'create',
-                type: ButtonType.Primary,
-                onClick: _onCreateNewClick,
-              },
-              {
-                text: 'cancel',
-                type: ButtonType.Blank,
-                onClick: () => setShowNewNoteModal(false),
-              },
-            ] }
-          />
-          { busy && <LoadingSpinner size={ SpinnerSize.Tiny } />}
-        </NewNoteModal>
-      </Modal>
-      <Modal
-        borderColor={ theme.error }
-        header='Confim Note Deletion'
-        isOpen={ !!noteToBeDeleted }
-        onClose={ () => setNoteToBeDeleted(null) }
-        size={ ModalSize.Medium }
-      >
-        <ConfirmDeleteContent>
-          <div>Are you sure you want to delete note:</div>
-          <div className='note-name'>{ noteToBeDeleted?.name }</div>
-        </ConfirmDeleteContent>
-        <CTAs
-          ctas={ [
-            {
-              text: 'Delete',
-              type: ButtonType.Error,
-              onClick: onDeleteConfirm,
-            },
-            {
-              text: 'Cancel',
-              type: ButtonType.Blank,
-              onClick: onCancelDeletion,
-            },
-          ] }
-        />
-      </Modal>
-    </CollectionNoteEditorContainer>
-  );
 };
 
 const CollectionNoteEditorAsObserver = observer(CollectionNoteEditorBase);

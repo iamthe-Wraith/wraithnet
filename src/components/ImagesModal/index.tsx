@@ -1,15 +1,19 @@
 import { observer } from 'mobx-react';
-import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Waypoint } from 'react-waypoint';
+import { ErrorMessagesContext } from '../../contexts/ErrorMessages';
 import { ToasterContext } from '../../contexts/Toaster';
 import { roundFileSize } from '../../lib/files';
 import { ImageModel, ImagesModel } from '../../models/images';
 import { ButtonType } from '../Button';
+import { Checkbox } from '../Checkbox';
 import { CTAs } from '../CtasContainer';
 import { LoadingSpinner, SpinnerSize } from '../LoadingSpinner';
 import { ModalSize } from '../Modal';
-import { FileContent, ImageContainer, ImagesContainer, ImagesModalContainer, ImageUploadConfirmationModal, LoadingSpinnerContainer } from './styles';
+import { TextInput } from '../TextInput';
+import { FileContent, FileExtOptions, FilterContainer, ImageContainer, ImagesContainer, ImagesModalContainer, ImageUploadConfirmationModal, LoadingSpinnerContainer, MainImagesContainer } from './styles';
 
+type FileTypes = 'png' | 'jpg' | 'jpeg' | 'svg' | 'pdf';
 const supportedImageTypes = '.jpeg,.jpg,.png,.svg,.pdf';
 
 interface IProps {
@@ -19,32 +23,98 @@ interface IProps {
     onClose(): void;
 }
 
+interface IQueryParams {
+    fileName?: string;
+    fileTypes?: FileTypes[];
+}
+
+interface IFileTypeOption {
+    context: FileTypes,
+    text: string;
+    selected: boolean;
+}
+
+const defaultFileTypeOptions: IFileTypeOption[] = [
+    {
+        context: 'png',
+        text: '.png',
+        selected: true,
+    },
+    {
+        context: 'jpg',
+        text: '.jpg',
+        selected: true,
+    },
+    {
+        context: 'jpeg',
+        text: '.jpeg',
+        selected: true,
+    },
+    {
+        context: 'svg',
+        text: '.svg',
+        selected: true,
+    },
+    {
+        context: 'pdf',
+        text: '.pdf',
+        selected: true,
+    },
+];
+
 const ImagesModalBase: React.FC<IProps> = ({
     className = '',
     isOpen,
     onClose,
 }) => {
     const toaster = useContext(ToasterContext);
+    const errorMessages = useContext(ErrorMessagesContext);
     const imagesModel = useRef(new ImagesModel()).current;
     const inputRef = useRef<HTMLInputElement>(null);
+    const searchEngaged = useRef(false);
+    const fileTypesEngaged = useRef(false);
     const [files, setFiles] = useState<FileList>(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchTimeout, setSearchTimeout] = useState<number>(null);
+    const [fileTypeOptions, setFileTypeOptions] = useState(defaultFileTypeOptions);
 
     const copyUrl = (img: ImageModel) => () => {
         navigator.clipboard.writeText(img.url);
         toaster.push({ message: 'Image URL copied to clipboard' });
     };
 
+    const getQueryParameters = () => {
+        const params: IQueryParams = {
+            fileTypes: fileTypeOptions.filter(option => option.selected).map(option => option.context),
+        };
+
+        if (!!searchQuery) params.fileName = searchQuery;
+
+        return params;
+    };
+
     const loadMore = () => {
-        imagesModel.images.loadMore()
+        imagesModel.images.loadMore(getQueryParameters())
             .catch(err => {
-                console.log('>>>>> error loading images');
-                console.log(err);
+                errorMessages.push({ message: err.message });
             });
     };
 
     useEffect(() => {
         if (!imagesModel.images.firstPageLoaded) loadMore();
     }, []);
+
+    useEffect(() => {
+        if (searchEngaged.current || fileTypesEngaged.current) {
+            window.clearTimeout(searchTimeout);
+            setSearchTimeout(window.setTimeout(() => { 
+                imagesModel.images.refresh(getQueryParameters())        
+                    .catch(err => {
+                        errorMessages.push({ message: err.message });
+                    });
+            }, 300));
+        }
+    }, [searchQuery, fileTypeOptions]);
 
     const onCancelUpload = () => setFiles(null);
 
@@ -60,11 +130,30 @@ const ImagesModalBase: React.FC<IProps> = ({
                     setFiles(null);
                 })
                 .catch(err => {
-                    console.log('>>>>> error');
-                    console.log(err);
+                    errorMessages.push({ message: err.message });
                 });
         }
     };
+
+    const onFileTypeOptionChange = useCallback((option: IFileTypeOption) => () => {
+        fileTypesEngaged.current = true;
+
+        const updatedOptions = fileTypeOptions.map(opt => {
+            if (option.context !== opt.context) return opt;
+
+            return {
+                ...opt,
+                selected: !opt.selected,
+            };
+        });
+
+        setFileTypeOptions(updatedOptions);
+    }, [fileTypeOptions]);
+
+    const onSearchChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        searchEngaged.current = true;
+        setSearchQuery(e.target.value);
+    }, [searchQuery]);
 
     const onUploadClick = () => inputRef.current?.click();
 
@@ -82,6 +171,17 @@ const ImagesModalBase: React.FC<IProps> = ({
         }
         return content;
     };
+
+    const renderFileExtOptions = useCallback(() => fileTypeOptions.map(option => (
+        <Checkbox
+            key={ option.context }
+            className='file-type-option'
+            id={ option.context }
+            label={ <div>{ option.text }</div> }
+            onChange={ onFileTypeOptionChange(option) }
+            checked={ option.selected }
+        />
+    )), [fileTypeOptions]);
 
     const renderImages = () => {
         if (!imagesModel.images.firstPageLoaded) return null;
@@ -138,9 +238,23 @@ const ImagesModalBase: React.FC<IProps> = ({
                 ref={ inputRef }
                 type='file'
             />
-            <ImagesContainer>
-                { renderImages() }
-            </ImagesContainer>
+            <MainImagesContainer>
+                <FilterContainer>
+                    <TextInput
+                        inputId='images-search'
+                        placeholder='search images'
+                        onChange={ onSearchChange }
+                        value={ searchQuery }
+                    />
+                    <FileExtOptions>
+                        <h4>File Types</h4>
+                        { renderFileExtOptions() }
+                    </FileExtOptions>
+                </FilterContainer>
+                <ImagesContainer>
+                    { renderImages() }
+                </ImagesContainer>
+            </MainImagesContainer>
             <CTAs
                 ctas={ [
                     {
