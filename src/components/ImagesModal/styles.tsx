@@ -87,7 +87,7 @@ export const ImagesContainer = styled.div`
     flex-grow: 1;
     flex-wrap: wrap;
     min-height: 100px;
-    max-height: calc(75vw - 140px);
+    max-height: calc(75vh - 140px);
     overflow: auto;
 `;
 
