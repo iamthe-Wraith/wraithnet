@@ -33,11 +33,6 @@ export const FilterContainer = styled.div`
 `;
 
 export const ImagesModalContainer = styled(Modal)`
-    .modal-container {
-        min-height: 800px;
-        max-height: 800px;
-    }
-
     .body {
         justify-content: space-between;
     }
@@ -92,7 +87,7 @@ export const ImagesContainer = styled.div`
     flex-grow: 1;
     flex-wrap: wrap;
     min-height: 100px;
-    max-height: calc(75vw - 100px);
+    max-height: calc(75vw - 140px);
     overflow: auto;
 `;
 
@@ -113,7 +108,7 @@ export const MainImagesContainer = styled.div`
     ${ FlexHorizontalCenter };
     flex-grow: 1;
     align-items: flex-start;
-    min-width: 100%;
-    max-height: 100%;
+    min-width: calc(100% - 40px);
+    max-height: calc(100% - 40px);
     overflow: hidden;
 `;
