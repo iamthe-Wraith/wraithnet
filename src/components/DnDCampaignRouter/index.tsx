@@ -8,6 +8,7 @@ import { DnDMiscCampaignNotes } from '../DnDMiscCampaignNotes';
 import { DnDNPCs } from '../DnDNPCs';
 import { DnDQuests } from '../DnDQuests';
 import { DnDSessions } from '../DnDSessions';
+import { DnDShop } from '../DnDShop';
 import { Theme } from '../Theme';
 
 export const DnDCampaignRouter: React.FC = () => (
@@ -20,6 +21,7 @@ export const DnDCampaignRouter: React.FC = () => (
                 <Route path='/locations' element={ <DnDLocations /> } />
                 <Route path='/quests' element={ <DnDQuests /> } />
                 <Route path='/items' element={ <DnDItems /> } />
+                <Route path='/shop' element={ <DnDShop /> } />
                 <Route path='/misc' element={ <DnDMiscCampaignNotes /> } />
             </Routes>
         </Theme>

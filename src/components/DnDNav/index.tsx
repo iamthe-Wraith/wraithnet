@@ -13,6 +13,7 @@ import { MapIcon } from '../svgs/icons/MapIcon';
 import { MinusIcon } from '../svgs/icons/MinusIcon';
 import { PeopleIcon } from '../svgs/icons/PeopleIcon';
 import { QuestionMarkIcon } from '../svgs/icons/QuestionMarkIcon';
+import { ShopIcon } from '../svgs/icons/ShopIcon';
 
 export const DnDNav: React.FC = () => {
     const location = useLocation();
@@ -53,6 +54,11 @@ export const DnDNav: React.FC = () => {
             <Link to='/misc' className={ `icon-link ${location.pathname === '/misc' ? 'selected' : ''}` }>
                 <Hex size={ HexSize.Tiny } color={ 'none' }>
                     <MinusIcon className='icon with-stroke' />
+                </Hex>
+            </Link>
+            <Link to='/shop' className={ `icon-link ${location.pathname === '/shop' ? 'selected' : ''}` }>
+                <Hex size={ HexSize.Tiny } color={ 'none' }>
+                    <ShopIcon className='icon with-fill' />
                 </Hex>
             </Link>
             <Button
