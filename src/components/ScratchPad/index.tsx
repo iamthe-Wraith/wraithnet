@@ -20,6 +20,18 @@ const ScratchPadBase: React.FC<IProps> = ({
     const [value, setValue] = useState('');
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+    const onGlobalKeyDown = (e: KeyboardEvent) => {
+        if (e.ctrlKey && e.key === 's') setIsOpen(!isOpen);
+    };
+
+    useEffect(() => {
+        window.addEventListener('keydown', onGlobalKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', onGlobalKeyDown);
+        };
+    }, []);
+
     useEffect(() => {
         if (!!textareaRef.current && isOpen) {
             setTimeout(() => {
