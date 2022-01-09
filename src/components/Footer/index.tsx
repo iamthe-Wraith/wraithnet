@@ -1,11 +1,14 @@
 import React from 'react';
-import { UserLogsCount } from '../UserLogsCount';
-import { FooterContainer } from './styles'
+import { AppVersion } from '../AppVersion';
+import { FooterContainer } from './styles';
 
 export const Footer: React.FC = () => {
     return (
         <FooterContainer>
-            footer
+            <div />
+            <div className='right'>
+                <AppVersion />
+            </div>
         </FooterContainer>
     );
 };

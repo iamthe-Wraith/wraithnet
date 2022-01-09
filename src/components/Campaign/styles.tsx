@@ -43,7 +43,7 @@ export const Main = styled.div`
     display: flex;
     flex-grow: 1;
     width: 100%;
-    max-height: calc(100% - 180px);
+    max-height: calc(100% - 140px);
 
     .side-col {
         ${ FlexCol }
@@ -100,7 +100,13 @@ export const Footer = styled.div<IThemeProps>`
     ${ FlexCenter }
     justify-content: space-between;
     width: 100%;
-    min-height: 100px;
-    max-height: 100px;
+    min-height: 60px;
+    max-height: 60px;
     padding: 5px 10px;
+
+    .right {
+        ${ FlexHorizontalCenter }
+        justify-content: space-between;
+        width: 30%;
+    }
 `;

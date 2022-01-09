@@ -4,14 +4,15 @@
     "description": "wraithnet",
     "main": "./dist/electron.js",
     "scripts": {
-        "start": "webpack --config ./webpack.dev.js --watch",
-        "package": "npm run build:prod && npm run forge:package",
+        "start": "npm run version:output && webpack --config ./webpack.dev.js --watch",
+        "package": "npm run version:output && npm run build:prod && npm run forge:package",
         "deploy": "npm run build:prod && npm run forge:publish",
         "build:prod": "webpack --config ./webpack.prod.js",
         "start:electron": "electron ./dist/electron.js",
         "forge:package": "electron-forge package",
         "forge:publish": "electron-forge publish",
-        "forge:make": "electron-forge make"
+        "forge:make": "electron-forge make",
+        "version:output": "echo 'export const APP = { version: \"'$npm_package_version'\" };' > src/version.ts"
     },
     "repository": {
         "type": "git",

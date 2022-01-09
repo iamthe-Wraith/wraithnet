@@ -5,6 +5,7 @@ import { DnDContext } from '../../contexts/DnD';
 import { ImagesContext } from '../../contexts/Images';
 import { DnDDate } from '../../lib/dndDate';
 import { DnDIpcRenderer } from '../../models/ipcRenderers/dnd';
+import { AppVersion } from '../AppVersion';
 import { Button, ButtonType } from '../Button';
 import { DnDCampaignRouter } from '../DnDCampaignRouter';
 import { DnDDailyChecklist } from '../DnDDailyChecklist';
@@ -83,7 +84,10 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
             </Main>
             <Footer>
                 <div />
-                <ScratchPad />
+                <div className='right'>
+                    <ScratchPad />
+                    <AppVersion />
+                </div>
             </Footer>
             {
                 imagesModel.modalIsOpen && (
