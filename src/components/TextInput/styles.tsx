@@ -18,6 +18,7 @@ export const Container = styled.div`
     }
 
     input {
+        max-width: 100%;
         background: none;
         border: none;
         flex-grow: 1;

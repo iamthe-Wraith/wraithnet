@@ -47,6 +47,7 @@ export interface IArmorClass {
     max_bonus: number;
 }
 
+export type Rarity = 'common' | 'uncommon' | 'rare' | 'very rare' | 'legendary';
 export interface IRarities {
     legendary: boolean;
     very_rare: boolean;
@@ -67,7 +68,13 @@ export interface ISpeed {
     unit: string;
 }
 
+export interface IStoreItemRef extends IItemInit {
+    id: string;
+    cost: ICost;
+}
+
 export interface IStoreItem extends IItemBase {
+    id: string;
     armor_category?: string;
     armor_class?: IArmorClass;
     capacity?: string;
@@ -93,8 +100,18 @@ export interface IStoreItem extends IItemBase {
     weight: number;
 }
 
+export interface IStoreMagicItemRef extends IItemInit {
+    id: string;
+    rarity: Rarity;
+}
+export interface IStoreMagicItem extends IStoreMagicItemRef {
+    equipment_category: IItemBase;
+    desc: string[];
+}
+
 interface IStoreInventory {
-    items: IStoreItem[];
+    items: IStoreItemRef[];
+    magicItems: IStoreMagicItemRef[];
 }
 
 export class ShopModel extends BaseModel {

@@ -43,7 +43,7 @@ export const TagsListContainer = styled.div`
     position: relative;    
     align-items: flex-start;    
     min-height: 100px;
-    max-height: 100%;
+    max-height: calc(100% - 40px);
     
     .loading-spinner {
         left: 60px;
