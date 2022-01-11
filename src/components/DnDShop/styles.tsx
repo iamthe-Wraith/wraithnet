@@ -1,6 +1,29 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { FlexHorizontalCenter, NoScrollBar, PrimaryFont } from '../../styles/styles';
 import { Button } from '../Button';
+
+const ItemStyles = css`
+    display: block;
+    min-width: 100%;
+    padding: 2px 10px;
+    text-align: left;
+
+    &.selected {
+        color: ${({theme}) => theme.highlight1};
+
+        &:hover {
+            color: ${({theme}) => theme.highlight1};
+        }
+
+        .item-name {
+            color: ${({theme}) => theme.highlight1};
+        }
+
+        .item-rarity {
+            color: ${({theme}) => theme.darkGray};
+        }
+    }
+`;
 
 export const AllItemsContainer = styled.div`
     min-width: 250px;
@@ -46,31 +69,7 @@ export const FilterContainer = styled.div`
 `;
 
 export const Item = styled(Button)`
-    display: block;
-    min-width: 100%;
-    padding: 2px 10px;
-    text-align: left;
-
-    &.selected {
-        color: ${({theme}) => theme.highlight1};
-
-        &:hover {
-            color: ${({theme}) => theme.highlight1};
-        }
-
-        .item-name {
-            color: ${({theme}) => theme.highlight1};
-        }
-
-        .item-rarity {
-            color: ${({theme}) => theme.darkGray};
-        }
-    }
-
-    .item-rarity {
-        font-size: 11px;
-        color: ${({theme}) => theme.primary};
-    }
+    ${ ItemStyles }
 `;
 
 export const ItemsContainer = styled.div`
@@ -113,6 +112,49 @@ export const ItemsContainer = styled.div`
     }
 `;
 
+export const MagicItem = styled.div`
+    ${ ItemStyles }
+    ${ FlexHorizontalCenter }
+
+    &:hover {
+        button:last-child {
+            display: block;
+        }
+    }
+
+    button:first-child {
+        display: block;
+        min-width: calc(100% - 30px);
+        max-width: calc(100% - 30px);
+        padding: 3px 10px 3px 0;
+        text-align: left;
+    }
+
+    button:last-child {
+        display: none;
+        min-width: 30px;
+        max-width: 30px;
+        padding: 0;
+
+        &:hover {
+            svg {
+                fill: ${({theme}) => theme.highlight1};
+            }
+        }
+
+        svg {
+            width: 20px;
+            height: auto;
+            fill: ${({theme}) => theme.light};
+        }
+    }
+
+    .item-rarity {
+        font-size: 11px;
+        color: ${({theme}) => theme.primary};
+    }
+`;
+
 export const RaritiesFilter = styled.div`
     & > div {
         padding-left: 10px;
@@ -134,8 +176,16 @@ export const SelectedItem = styled.div`
     }
 
     .name {
+        ${ FlexHorizontalCenter }
         min-width: calc(100% - 150px);
         max-width: calc(100% - 150px);
+
+        & > svg {
+            width: auto;
+            height: 16px;
+            margin-right: 15px;
+            fill: ${({theme}) => theme.light};
+        }
     }
 
     .cost {

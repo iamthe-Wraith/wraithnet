@@ -6,9 +6,12 @@ import { IStoreItemRef, IStoreMagicItemRef, Rarity, ShopModel } from '../../mode
 import { Button, ButtonType } from '../Button';
 import { Checkbox } from '../Checkbox';
 import { LoadingSpinner, SpinnerSize } from '../LoadingSpinner';
+import { StoreMagicItemModal } from '../StoreMagicItemModal';
+import { EyeIcon } from '../svgs/icons/EyeIcon';
+import { MagicIcon } from '../svgs/icons/MagicIcon';
 import { PlusIcon } from '../svgs/icons/PlusIcon';
 import { TextInput } from '../TextInput';
-import { AllItemsContainer, Container, DnDShopContainer, FilterContainer, Item, ItemsContainer, RaritiesFilter, SelectedItem, SelectedItems, SelectedItemsContainer, ValueControl, ValueControlsContainer } from './styles';
+import { AllItemsContainer, Container, DnDShopContainer, FilterContainer, Item, ItemsContainer, MagicItem, RaritiesFilter, SelectedItem, SelectedItems, SelectedItemsContainer, ValueControl, ValueControlsContainer } from './styles';
 
 const DEFAULT_MAX_QUANTITY = 5;
 const DEFAULT_TOTAL_ITEMS_COUNT = 20;
@@ -129,6 +132,7 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
     const [selectedMagicItems, setSelectedMagicItems] = useState<IStoreMagicItemRef[]>([]);
     const [totalItemsCount, setTotalItemsCount] = useState(DEFAULT_TOTAL_ITEMS_COUNT);
     const [raritiesFilter, setRaritiesFilter] = useState<IRarityFilter[]>(defaultRaritiesFilter);
+    const [magicItemToView, setMagicItemToView] = useState<IStoreMagicItemRef>(null);
 
     useEffect(() => {
         shop.loadInventory()
@@ -238,13 +242,17 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
         console.log('selected item clicked', selectedItem.item.name);
     };
 
-    const onSelectedMagicItemClick = (selectedMagicItem: IStoreMagicItemRef) => () => {
-        console.log('selected magic item clicked', selectedMagicItem.name);
+    const onStoreMagicItemModalClose = () => {
+        setMagicItemToView(null);
     };
 
     const onValueControlChange = (handler: React.Dispatch<React.SetStateAction<number>>) => (e: ChangeEvent<HTMLInputElement>) => {
         const value = parseInt(e.target.value.match(DigitsRegex).join(''));
         if (!isNaN(value)) handler(value);
+    };
+
+    const onViewMagicItemClick = (magicItem: IStoreMagicItemRef) => () => {
+        setMagicItemToView(magicItem);
     };
 
     const renderAllItems = () => {
@@ -290,15 +298,24 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
                     return true;
                 })
                 .map(item => (
-                    <Item
+                    <MagicItem
                         key={ item.id }
                         className={ !!selectedMagicItems.find(i => i.id === item.id) ? 'selected' : '' }
-                        buttonType={ ButtonType.Blank }
-                        onClick={ onMagicItemClick(item) }
                     >
-                        <div className='item-name'>{ item.name }</div>
-                        <div className='item-rarity'>{ item.rarity }</div>
-                    </Item>
+                        <Button
+                            buttonType={ ButtonType.Blank }
+                            onClick={ onMagicItemClick(item) }
+                        >
+                            <div className='item-name'>{ item.name }</div>
+                            <div className='item-rarity'>{ item.rarity }</div>
+                        </Button>
+                        <Button
+                            buttonType={ ButtonType.Blank }
+                            onClick={ onViewMagicItemClick(item) }
+                        >
+                            <EyeIcon />
+                        </Button>
+                    </MagicItem>
                 ));
         }
 
@@ -367,9 +384,12 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
         const _selectedMagicItems = selectedMagicItems.map(selectedMagicItem => (
             <SelectedItem
                 key={ selectedMagicItem.id }
-                onClick={ onSelectedMagicItemClick(selectedMagicItem) }
+                onClick={ onViewMagicItemClick(selectedMagicItem) }
             >
-                <div className='name'>{ selectedMagicItem.name }</div>
+                <div className='name'>
+                    <MagicIcon />
+                    { selectedMagicItem.name }
+                </div>
                 <div className='cost'>{ selectedMagicItem.rarity }</div>
                 <div className='quantity'>M</div>
             </SelectedItem>
@@ -443,6 +463,11 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
                     { renderSelectedItems() }
                 </SelectedItemsContainer>
             </Container>
+            <StoreMagicItemModal
+                isOpen={ !!magicItemToView }
+                magicItem={ magicItemToView }
+                onClose={ onStoreMagicItemModalClose }
+            />
         </DnDShopContainer>
     );
 };
