@@ -132,7 +132,7 @@ const NoteEditorBase: React.FC<IProps> = ({
     };
 
     const renderSelectedTags = (tags: TagModel[]) => {
-        if (tags.length === 0) return <div className='no-tags'>no selected tags</div>;
+        if (!tags || tags.length === 0) return <div className='no-tags'>no selected tags</div>;
 
         return tags.map(tag => (
             <Tag

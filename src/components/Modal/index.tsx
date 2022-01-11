@@ -9,7 +9,7 @@ import { XIcon } from '../svgs/icons/XIcon';
 
 import { ModalOverlay, ModalContainer } from './styles';
 
-interface IProps extends IThemeProps {
+export interface IModalProps extends IThemeProps {
     borderColor?: string;
     className?: string;
     closeOnOverlayClick?: boolean;
@@ -24,7 +24,7 @@ const overlayTo = { opacity: 1 };
 const modalFrom = { ...overlayFrom, transform: 'translate3d(-50%, -80%, 0)' };
 const modalTo = { ...overlayTo, transform: 'translate3d(-50%, -50%, 0)' };
 
-export const ModalBase: React.FC<IProps> = ({
+export const ModalBase: React.FC<IModalProps> = ({
     borderColor,
     children,
     closeOnOverlayClick,

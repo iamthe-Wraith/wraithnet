@@ -3,50 +3,50 @@ import React, { useState, FocusEvent, FC } from 'react';
 import { Container } from './styles';
 
 interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
-	allowAutoComplete?: boolean;
-	className?: string;
-	inputClassName?: string;
-	inputId: string;
-	inputRef?: (ref: HTMLInputElement) => void;
-	leftAccessory?: React.ReactNode;
-	rightAccessory?: React.ReactNode;
-	type?: string;
+    allowAutoComplete?: boolean;
+    className?: string;
+    inputClassName?: string;
+    inputId: string;
+    inputRef?: (ref: HTMLInputElement) => void;
+    leftAccessory?: React.ReactNode;
+    rightAccessory?: React.ReactNode;
+    type?: string;
 }
 
 export const TextInput: FC<IProps> = ({
-  allowAutoComplete,
-  className,
-  inputClassName,
-  inputId,
-  inputRef,
-  onBlur,
-  onFocus,
-  leftAccessory,
-  rightAccessory,
-  type = 'text',
-  ...restProps
+    allowAutoComplete,
+    className,
+    inputClassName,
+    inputId,
+    inputRef,
+    onBlur,
+    onFocus,
+    leftAccessory,
+    rightAccessory,
+    type = 'text',
+    ...restProps
 }) => {
     const [isFocused, setIsFocused] = useState(false);
-	let inRef: HTMLInputElement;
+    let inRef: HTMLInputElement;
 
     const onInputBlur = (e: FocusEvent<HTMLInputElement>) => {
         setIsFocused(false);
         onBlur?.(e);
-    }
+    };
 
     const onInputFocus = (e: FocusEvent<HTMLInputElement>) => {
         setIsFocused(true);
         onFocus?.(e);
-    }
+    };
 
     const onPaddingClicked = (e: React.MouseEvent<HTMLDivElement>) => {
-		if (!!inRef) {
-			inRef.focus();
-		}
+        if (!!inRef) {
+            inRef.focus();
+        }
 
-		e.preventDefault();
-		e.stopPropagation();
-	};
+        e.preventDefault();
+        e.stopPropagation();
+    };
 
     const onRef = (ref: HTMLInputElement | null) => {
         if (ref) {
@@ -56,10 +56,10 @@ export const TextInput: FC<IProps> = ({
                 inputRef(ref);
             }
         }
-	};
+    };
 
     return (
-        <Container className={ `${isFocused && 'focused'} ${className} ${type}`} onClick={ onPaddingClicked }>
+        <Container className={ `${isFocused && 'focused'} ${className} ${type}` } onClick={ onPaddingClicked }>
             { leftAccessory }
             <input
                 { ...restProps }

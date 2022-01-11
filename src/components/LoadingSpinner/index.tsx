@@ -29,9 +29,9 @@ export enum SpinnerType {
 }
 
 interface IProps {
-  className?: string;
-  size?: SpinnerSize;
-  type?: SpinnerType;
+    className?: string;
+    size?: SpinnerSize;
+    type?: SpinnerType;
 }
 
 export const LoadingSpinner: React.FC<React.PropsWithChildren<IProps>> = ({ children, className, size = SpinnerSize.Medium, type = SpinnerType.Four }) => {
@@ -39,14 +39,14 @@ export const LoadingSpinner: React.FC<React.PropsWithChildren<IProps>> = ({ chil
 
     const renderSpinner = (spinner: number) => {
         switch (spinner) {
-            case SpinnerType.One: return <Spinner1 />
-            case SpinnerType.Two: return <Spinner2 />
-            case SpinnerType.Three: return <Spinner3 />
-            case SpinnerType.Four: return <Spinner4 />
-            case SpinnerType.Five: return <Spinner5 />
-            case SpinnerType.Six: return <Spinner6 />
-            case SpinnerType.Seven: return <Spinner7 />
-            case SpinnerType.Eight: return <Spinner8 />
+            case SpinnerType.One: return <Spinner1 />;
+            case SpinnerType.Two: return <Spinner2 />;
+            case SpinnerType.Three: return <Spinner3 />;
+            case SpinnerType.Four: return <Spinner4 />;
+            case SpinnerType.Five: return <Spinner5 />;
+            case SpinnerType.Six: return <Spinner6 />;
+            case SpinnerType.Seven: return <Spinner7 />;
+            case SpinnerType.Eight: return <Spinner8 />;
         }
     };
 
