@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { noop } from '../../lib/utils';
 import { XIcon } from '../svgs/icons/XIcon';
 import { Box, CheckboxContainer } from './styles';
 
@@ -8,7 +7,7 @@ interface IProps {
     className?: string;
     disabled?: boolean;
     id: string;
-    label?: JSX.Element;
+    label?: string | JSX.Element;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     position?: CheckboxLabelPosition;
     type?: CheckboxType;
@@ -37,7 +36,7 @@ export const Checkbox: FC<IProps> = ({
 }) => {
     const onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         onChange(e);
-    }
+    };
 
     return (
         <CheckboxContainer
@@ -58,5 +57,5 @@ export const Checkbox: FC<IProps> = ({
             </Box>
             { label && position === CheckboxLabelPosition.Right && label }
         </CheckboxContainer>
-    )
-}
+    );
+};

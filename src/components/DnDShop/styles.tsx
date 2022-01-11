@@ -32,6 +32,19 @@ export const DnDShopContainer = styled.div`
     }
 `;
 
+export const FilterContainer = styled.div`
+    margin-bottom: 10px;
+    padding: 10px 10px 15px;
+    border-bottom: ${({theme}) => `1px solid ${ theme.darkestGray }`};
+
+    .filter-label {
+        ${ PrimaryFont }
+        padding-bottom: 3px;
+        font-size: 12px;
+        color: ${({theme}) => theme.primary};
+    }
+`;
+
 export const Item = styled(Button)`
     display: block;
     min-width: 100%;
@@ -71,16 +84,43 @@ export const ItemsContainer = styled.div`
 
     .items-header {
         ${ PrimaryFont }
+        ${ FlexHorizontalCenter }
+        justify-content: space-between;
         padding: 10px 0 5px;
         font-size: 14px;
         color: ${({theme}) => theme.primary};
         text-align: left;
+
+        button {
+            &:hover {
+                svg {
+                    fill: ${({theme}) => theme.primaryDark};
+                }
+            }
+
+            svg {
+                width: auto;
+                height: 16px;
+                fill: ${({theme}) => theme.primary};
+            }
+        }
     }
 
     .items-list {
         ${ NoScrollBar }
         height: calc(100% - 35px);
         overflow: auto;
+    }
+`;
+
+export const RaritiesFilter = styled.div`
+    & > div {
+        padding-left: 10px;
+        ${ FlexHorizontalCenter }
+
+        & > * {
+            margin-right: 20px;
+        }
     }
 `;
 

@@ -2,11 +2,13 @@ import { observer } from 'mobx-react';
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react';
 import { ErrorMessagesContext } from '../../contexts/ErrorMessages';
 import { ToasterContext } from '../../contexts/Toaster';
-import { IStoreItemRef, IStoreMagicItemRef, ShopModel } from '../../models/dnd/shop';
+import { IStoreItemRef, IStoreMagicItemRef, Rarity, ShopModel } from '../../models/dnd/shop';
 import { Button, ButtonType } from '../Button';
+import { Checkbox } from '../Checkbox';
 import { LoadingSpinner, SpinnerSize } from '../LoadingSpinner';
+import { PlusIcon } from '../svgs/icons/PlusIcon';
 import { TextInput } from '../TextInput';
-import { AllItemsContainer, Container, DnDShopContainer, Item, ItemsContainer, SelectedItem, SelectedItems, SelectedItemsContainer, ValueControl, ValueControlsContainer } from './styles';
+import { AllItemsContainer, Container, DnDShopContainer, FilterContainer, Item, ItemsContainer, RaritiesFilter, SelectedItem, SelectedItems, SelectedItemsContainer, ValueControl, ValueControlsContainer } from './styles';
 
 const DEFAULT_MAX_QUANTITY = 5;
 const DEFAULT_TOTAL_ITEMS_COUNT = 20;
@@ -88,6 +90,34 @@ const magicItemPricesByRarity = {
     },
 };
 
+interface IRarityFilter {
+    rarity: Rarity;
+    selected: boolean;
+}
+
+const defaultRaritiesFilter: IRarityFilter[] = [
+    {
+        rarity: 'common',
+        selected: true,
+    },
+    {
+        rarity: 'uncommon',
+        selected: true,
+    },
+    {
+        rarity: 'rare',
+        selected: true,
+    },
+    {
+        rarity: 'very rare',
+        selected: true,
+    },
+    {
+        rarity: 'legendary',
+        selected: true,
+    },
+];
+
 const DigitsRegex = /\d+/gm;
 
 const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
@@ -98,6 +128,7 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
     const [selectedItems, setSelectedItems] = useState<ISelectedItem[]>([]);
     const [selectedMagicItems, setSelectedMagicItems] = useState<IStoreMagicItemRef[]>([]);
     const [totalItemsCount, setTotalItemsCount] = useState(DEFAULT_TOTAL_ITEMS_COUNT);
+    const [raritiesFilter, setRaritiesFilter] = useState<IRarityFilter[]>(defaultRaritiesFilter);
 
     useEffect(() => {
         shop.loadInventory()
@@ -129,6 +160,10 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
 
     const getQuantity = () => {
         return Math.floor(Math.random() * maxQuantity) + 1;
+    };
+
+    const onAddMagicItemClick = () => {
+        console.log('adding new magic item');
     };
 
     const onClearListClick = () => {
@@ -190,6 +225,15 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
         }
     };
 
+    const onRarityFilterChange = (rarity: IRarityFilter) => () => {
+        const updatedRarityFilters = [...raritiesFilter].map(filter => {
+            if (filter.rarity === rarity.rarity) filter.selected = !filter.selected;
+            return filter;
+        });
+
+        setRaritiesFilter(updatedRarityFilters);
+    };
+
     const onSelectedItemClick = (selectedItem: ISelectedItem) => () => {
         console.log('selected item clicked', selectedItem.item.name);
     };
@@ -239,17 +283,23 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
         let items: JSX.Element[] = [];
 
         if (!shop.busy && !!shop.inventory?.magicItems?.length) {
-            items = shop.inventory.magicItems.map(item => (
-                <Item
-                    key={ item.id }
-                    className={ !!selectedMagicItems.find(i => i.id === item.id) ? 'selected' : '' }
-                    buttonType={ ButtonType.Blank }
-                    onClick={ onMagicItemClick(item) }
-                >
-                    <div className='item-name'>{ item.name }</div>
-                    <div className='item-rarity'>{ item.rarity }</div>
-                </Item>
-            ));
+            items = shop.inventory.magicItems
+                .filter(item => {
+                    const rarity = raritiesFilter.find(r => r.rarity === item.rarity);
+                    if (!rarity || !rarity.selected) return false;
+                    return true;
+                })
+                .map(item => (
+                    <Item
+                        key={ item.id }
+                        className={ !!selectedMagicItems.find(i => i.id === item.id) ? 'selected' : '' }
+                        buttonType={ ButtonType.Blank }
+                        onClick={ onMagicItemClick(item) }
+                    >
+                        <div className='item-name'>{ item.name }</div>
+                        <div className='item-rarity'>{ item.rarity }</div>
+                    </Item>
+                ));
         }
 
         if (shop.busy) {
@@ -260,11 +310,45 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
 
         return (
             <ItemsContainer>
-                <div className='items-header'>Magic Items</div>
+                <div className='items-header'>
+                    Magic Items
+                    <div>
+                        <Button
+                            buttonType={ ButtonType.Blank }
+                            onClick={ onAddMagicItemClick }
+                        >
+                            <PlusIcon />
+                        </Button>
+                    </div>
+                </div>
                 <div className='items-list'>
                     { items }
                 </div>
             </ItemsContainer>
+        );
+    };
+
+    const renderRarityFilter = () => {
+        const checkboxes = raritiesFilter.map(rarity => {
+            const id = `rarity-checkbox-${rarity.rarity}`;
+            return (
+                <Checkbox
+                    key={ id }
+                    id={ id }
+                    label={ rarity.rarity }
+                    checked={ rarity.selected }
+                    onChange={ onRarityFilterChange(rarity) }
+                />
+            );
+        });
+
+        return (
+            <RaritiesFilter>
+                <div className='filter-label'>Rarities</div>
+                <div>
+                    { checkboxes }
+                </div>     
+            </RaritiesFilter>
         );
     };
 
@@ -280,15 +364,7 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
             </SelectedItem>
         ));
 
-        return (
-            <SelectedItems>
-                { _selectedItems }
-            </SelectedItems>
-        );
-    };
-
-    const renderSelectedMagicItems = () => {
-        const _selectedItems = selectedMagicItems.map(selectedMagicItem => (
+        const _selectedMagicItems = selectedMagicItems.map(selectedMagicItem => (
             <SelectedItem
                 key={ selectedMagicItem.id }
                 onClick={ onSelectedMagicItemClick(selectedMagicItem) }
@@ -302,6 +378,7 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
         return (
             <SelectedItems>
                 { _selectedItems }
+                { _selectedMagicItems }
             </SelectedItems>
         );
     };
@@ -360,8 +437,10 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
                             </Button>
                         </div>
                     </ValueControlsContainer>
+                    <FilterContainer>
+                        { renderRarityFilter() }
+                    </FilterContainer>
                     { renderSelectedItems() }
-                    { renderSelectedMagicItems() }
                 </SelectedItemsContainer>
             </Container>
         </DnDShopContainer>
