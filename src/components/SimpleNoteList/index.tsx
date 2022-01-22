@@ -7,36 +7,36 @@ import { SimpleNoteItem } from './SimpleNoteItem';
 import { SimpleNoteListContainer } from './styles';
 
 interface IProps {
-  className?: string;
-  notes: NoteModel[];
-  popoverPlacement?: Exclude<PopoverPosition, 'custom'>[],
+    className?: string;
+    notes: NoteModel[];
+    popoverPlacement?: Exclude<PopoverPosition, 'custom'>[],
 }
 
 const SimpleNoteListBase: FC<IProps> = ({
-  className = '',
-  notes = [],
-  popoverPlacement = ['right', 'bottom', 'top'],
+    className = '',
+    notes = [],
+    popoverPlacement = ['right', 'bottom', 'top'],
 }) => {
-  const renderList = () => {
-    const _notes = notes.map(note => (
-      <SimpleNoteItem
-        key={ note.id }
-        note={ note }
-        popoverPlacement={ popoverPlacement }
-      />
-    ));
-    return (
-      <div className='list-container'>
-        { _notes }
-      </div>
-    );
-  };
+    const renderList = () => {
+        const _notes = notes.map(note => (
+            <SimpleNoteItem
+                key={ note.id }
+                note={ note }
+                popoverPlacement={ popoverPlacement }
+            />
+        ));
+        return (
+            <div className='list-container'>
+                { _notes }
+            </div>
+        );
+    };
 
-  return (
-    <SimpleNoteListContainer className={ className }>
-      { renderList() }
-    </SimpleNoteListContainer>
-  );
+    return (
+        <SimpleNoteListContainer className={ className }>
+            { renderList() }
+        </SimpleNoteListContainer>
+    );
 };
 
 export const SimpleNoteList = observer(SimpleNoteListBase);

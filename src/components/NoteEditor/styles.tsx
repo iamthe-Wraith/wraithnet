@@ -24,7 +24,9 @@ export const Header = styled.div<IThemeProps>`
     padding: 10px 0;
 
     .name {
-        min-width: 50%;
+        flex-grow: 1;
+        padding-left: 30px;
+        text-align: center;
 
         span {
             ${ PrimaryFont }
@@ -68,7 +70,8 @@ export const Body = styled.div<IThemeProps>`
     overflow: hidden;
 
     .main-col {
-        max-width: calc(100% - 200px);
+        max-width: 1000px;
+        margin: auto;
     }
 
     .note-right-col {

@@ -34,6 +34,8 @@ export const FilterContainer = styled.div<IThemeProps>`
 
 export const ListContainer = styled.div`
     flex-grow: 1;
+    max-width: 1000px;
+    margin: 0 auto;
     padding-bottom: 10px;
 
     .header {
@@ -78,14 +80,13 @@ export const NoteEditorContainer = styled.div`
     ${ FlexCol }
     position: relative;
     flex-grow: 1;
-    max-width: 100%;
 
     .back-button {
         padding: 0;
     }
 
     .editor {
-        min-width: 100%;
+        width: 100%;
         min-height: calc(100% - 20px);
     }
 `;
