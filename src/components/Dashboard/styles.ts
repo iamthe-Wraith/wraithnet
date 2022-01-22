@@ -48,6 +48,7 @@ export const RightCol = styled(Col)`
 
 export const MainCol = styled.div`
     height: 100%;
+    padding-top: 20px;
     flex-grow: 1;
 `;
 

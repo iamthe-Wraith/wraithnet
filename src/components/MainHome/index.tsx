@@ -1,10 +1,15 @@
-import React from 'react';
-import { AngleCorner } from '../containers/AngleCorner';
-import { AnglePos, AngleSize } from '../containers/AngleCorner/styles';
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Dots } from '../Dots';
 import { MainEmptyContainer } from './styles';
 
 export const MainHome: React.FC = () => {
+    const location = useLocation();
+
+    useEffect(() => {
+        console.log('path: ', location.pathname);
+    }, [location.pathname]);
+    
     return (
         <MainEmptyContainer>
             <div />

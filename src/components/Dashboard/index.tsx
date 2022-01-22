@@ -7,7 +7,7 @@ import { DashboardIpcRenderer } from '../../models/ipcRenderers/dashboard';
 import { DashboardNav } from '../DashboardNav';
 import { Footer } from '../Footer';
 import { Header } from '../Header';
-import { Main } from '../Main';
+import { MainRouter } from '../MainRouter';
 import { Time } from '../Time';
 import { UserLogsCount } from '../UserLogsCount';
 import { Container, DateContainer, LeftCol, MainCol, MainContainer, RightCol, UserId } from './styles';
@@ -57,7 +57,7 @@ export const DashboardBase: React.FC = () => {
                     <UserLogsCount />
                 </LeftCol>
                 <MainCol>
-                    <Main />
+                    <MainRouter />
                 </MainCol>
                 <RightCol>
                     <Time className='time' />
