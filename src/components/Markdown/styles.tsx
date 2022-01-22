@@ -63,16 +63,21 @@ export const MarkdownContainer = styled.div<IThemeProps>`
         }
     }
 
-    ul {
-        padding: 5px 0 5px 18px;
+    ul,
+    ol {
+        padding: 8px 0 8px 25px; 
 
+        li {
+            &:not(:last-child) {
+                padding-bottom: 4px;
+            }
+        }
+    }
+
+    ul {
         li {
             position: relative;
             list-style: none;  
-
-            &:not(:last-child) {
-                padding-bottom: 5px;
-            }
 
             &:before {
                 content: ' ';
