@@ -42,6 +42,25 @@ export const MarkdownContainer = styled.div<IThemeProps>`
         margin: 20px 0;
     }
 
+    blockquote {
+        display: block;
+        margin: 10px 0;
+        padding: 10px 20px;
+        border-left: ${({theme}) => `3px solid ${theme.primary}`};
+    }
+
+    pre code {
+        display: block;
+        margin: 10px 0;
+        padding: 15px 20px;
+        font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+        font-size: 12px;
+        font-weight: lighter;
+        background: ${({theme}) => theme.darkestGray};
+        line-height: 1.6em;
+        white-space: normal;
+    }
+
     a {
         color: ${({theme}) => theme.primary};
         text-decoration: none;

@@ -71,7 +71,7 @@ export const Body = styled.div<IThemeProps>`
 
     .main-col {
         max-width: 1000px;
-        margin: auto;
+        margin: 0 auto;
     }
 
     .note-right-col {
