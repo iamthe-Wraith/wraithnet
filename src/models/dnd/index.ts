@@ -221,17 +221,6 @@ export class DnDModel extends BaseModel {
         this._campaign = new CampaignModel(this.campaigns[0]);
     }
 
-    public triggerMagicItemMapping = async () => {
-        const result = await this.webServiceHelper.sendRequest<void>({
-            path: this.composeUrl('/admin/dnd/map-magic-items'),
-            method: 'POST',
-        });
-
-        if (!result.success) {            
-            throw new Error(result.error);
-        }
-    }
-
     private _init = () => {
         this._misc = new CollectionModel<INoteRef, NoteModel>(
             this.composeUrl('/dnd/notes/misc'),

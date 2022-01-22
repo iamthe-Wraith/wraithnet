@@ -2,9 +2,7 @@ import { observer } from 'mobx-react';
 import React, { useContext, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { DnDContext } from '../../contexts/DnD';
-import { ErrorMessagesContext } from '../../contexts/ErrorMessages';
 import { ImagesContext } from '../../contexts/Images';
-import { ToasterContext } from '../../contexts/Toaster';
 import { DnDDate } from '../../lib/dndDate';
 import { DnDIpcRenderer } from '../../models/ipcRenderers/dnd';
 import { AppVersion } from '../AppVersion';
@@ -27,8 +25,6 @@ interface IProps {
 }
 
 const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
-    const toaster = useContext(ToasterContext);
-    const errorMessages = useContext(ErrorMessagesContext);
     const dnd = useContext(DnDContext);
     const imagesModel = useContext(ImagesContext);
     const [redirectTo, setRedirectTo] = useState<string>(null);
@@ -59,15 +55,6 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
         );
     };
 
-    const triggerMagicItemMapping = async () => {
-        try {
-            await dnd.triggerMagicItemMapping();
-            toaster.push({ message: 'mapping complete' });
-        } catch (err: any) {
-            errorMessages.push(err.message);
-        }
-    };
-
     if (!!redirectTo) <Navigate to={ redirectTo } />;
 
     return (
@@ -96,14 +83,7 @@ const CampaignBase: React.FC<IProps> = ({ className = '' }) => {
                 </div>
             </Main>
             <Footer>
-                <div>
-                    <Button
-                        buttonType={ ButtonType.SecondaryReverse }
-                        onClick={ triggerMagicItemMapping }
-                    >
-                        Magic Item Mapping
-                    </Button>
-                </div>
+                <div />
                 <div className='right'>
                     <ScratchPad />
                     <AppVersion />
