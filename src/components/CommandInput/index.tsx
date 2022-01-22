@@ -2,7 +2,6 @@ import { observer } from 'mobx-react';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { UserContext } from '../../contexts/User';
 import { TextArea } from '../TextArea';
-import { TextInput } from '../TextInput';
 import { Container } from './styles';
 
 interface IProps {
@@ -22,20 +21,22 @@ export const CommandInputBase: React.FC<IProps> = ({ onCommandInputRef, id, onSu
     }, []);
 
     const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setCommand(e.target.value)
+        setCommand(e.target.value);
         setCommandInputHeight(textareaRef.current.scrollHeight);
     };
 
     const onContainerRef = (r: HTMLDivElement) => {
         onCommandInputRef(r);
-    }
+    };
 
     const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Enter') {
             onSubmit(command);
             setCommand('');
+        } else if (e.key === 'u' && e.ctrlKey) {
+            setCommand('');
         }
-    }
+    };
 
     return (
         <Container ref={ onContainerRef }>

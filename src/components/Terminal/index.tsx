@@ -2,7 +2,6 @@ import { observer } from 'mobx-react';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { TerminalContext } from '../../contexts/Terminal';
 import { UserContext } from '../../contexts/User';
-import { CommandType } from '../../models/command';
 import { TerminalIpcRenderer as IpcRenderer } from '../../models/ipcRenderers/terminal';
 import { CommandInput } from '../CommandInput';
 import { FeedItem } from './FeedItem';
@@ -28,11 +27,11 @@ export const TerminalBase: React.FC = () => {
                 setInputDisabled(false);
                 inputRef.current.scrollIntoView();
             });
-    }
+    };
 
     const onInputRef = (r: HTMLDivElement) => {
         inputRef.current = r;
-    }
+    };
 
     const renderFeed = () => {
         return terminalModel.feed.map((f, i) => (
@@ -43,8 +42,8 @@ export const TerminalBase: React.FC = () => {
                 body={ f.command }
                 type={ f.type }
             />
-        ))
-    }
+        ));
+    };
 
     if (!user.username) {
         return (
@@ -58,15 +57,15 @@ export const TerminalBase: React.FC = () => {
         <Container htmlFor='command-input'>
             { renderFeed() }
             { !inputDisabled && (
-                    <CommandInput
-                        id='command-input'
-                        onSubmit={ onCommandSubmit }
-                        onCommandInputRef={ onInputRef }
-                    />
-                )
+                <CommandInput
+                    id='command-input'
+                    onSubmit={ onCommandSubmit }
+                    onCommandInputRef={ onInputRef }
+                />
+            )
             }
         </Container>
-    )
+    );
 };
 
 export const Terminal = observer(TerminalBase);
