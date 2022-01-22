@@ -203,7 +203,9 @@ export const SelectedItem = styled.div`
 
 export const SelectedItems = styled.div`
     ${ NoScrollBar }
+    max-width: 1000px;
     max-height: calc(100% - 60px);
+    margin: 0 auto;
     overflow: auto;
 `;
 
