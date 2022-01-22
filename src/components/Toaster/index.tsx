@@ -5,16 +5,21 @@ import { ToasterContext } from '../../contexts/Toaster';
 import { ToasterContainer } from './styles';
 import { observer } from 'mobx-react';
 import { ToastType } from '../../models/toaster';
+import { AngleCorner } from '../containers/AngleCorner';
+import { withTheme } from 'styled-components';
+import { IThemeProps } from '../../styles/themes';
+import { AnglePos, AngleSize } from '../containers/AngleCorner/styles';
 
-interface IProps {
+interface IProps extends IThemeProps {
     className?: string;
 }
 
-const toasterFrom = { opacity: 0, transform: 'translate3d(30px, 0, 0)' };
+const toasterFrom = { opacity: 0, transform: 'translate3d(0, -30px, 0)' };
 const toasterTo = { opacity: 1, transform: 'translate3d(0, 0, 0)' };
 
 const ToasterBase: React.FC<IProps> = ({
     className = '',
+    theme,
 }) => {
     const toasterModel = useContext(ToasterContext);
     const toasterSpring = useSpring({
@@ -23,19 +28,32 @@ const ToasterBase: React.FC<IProps> = ({
         to: !!toasterModel.currentToast ? toasterTo : toasterFrom, 
     });
 
+    const getBorderColor = () => {
+        switch (toasterModel.currentToast?.type) {
+            case ToastType.Error: return theme.error;
+            case ToastType.Warning: return theme.highlight1;
+            default: return theme.primary;
+        }
+    };
+
     if (!toasterModel.currentToast) return null;
 
     return (
         <ToasterContainer
-            className={ `${className} ${toasterModel.currentToast?.type || ToastType.Success}` }
+            className={ className }
             style={ toasterSpring }
         >
-            <div className='text-container'>
+            <AngleCorner
+                childrenContainerClassName='text-container'
+                config={ [{ position: AnglePos.BottomLeft, size: AngleSize.Tiny }] }
+                backgroundColor={ theme.dark }
+                borderColor={ getBorderColor() }
+            >
                 { toasterModel.currentToast?.message }
-            </div>
-            <div className='ang' />
+            </AngleCorner>
         </ToasterContainer>
     );
 };
 
-export const Toaster = observer(ToasterBase);
+const ToasterAsObserver = observer(ToasterBase);
+export const Toaster = withTheme(ToasterAsObserver);

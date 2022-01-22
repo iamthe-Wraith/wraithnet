@@ -1,15 +1,8 @@
-import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React from 'react';
 import { Dots } from '../Dots';
 import { MainEmptyContainer } from './styles';
 
-export const MainHome: React.FC = () => {
-    const location = useLocation();
-
-    useEffect(() => {
-        console.log('path: ', location.pathname);
-    }, [location.pathname]);
-    
+export const MainHome: React.FC = () => {    
     return (
         <MainEmptyContainer>
             <div />

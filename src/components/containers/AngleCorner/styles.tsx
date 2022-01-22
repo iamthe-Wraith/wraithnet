@@ -1,5 +1,4 @@
-import styled, { css } from 'styled-components';
-import { FlexCol } from '../../../styles/styles';
+import styled from 'styled-components';
 import { IThemeProps } from '../../../styles/themes';
 
 export enum AngleSize {
@@ -24,8 +23,8 @@ export interface IAngleConfig {
 
 export const defaultAngleConfig: IAngleConfig[] = [{
     position: AnglePos.TopRight,
-    size: AngleSize.Medium
-}]
+    size: AngleSize.Medium,
+}];
 
 export interface IAngleProps extends IThemeProps {
     backgroundColor?: string;
@@ -46,7 +45,7 @@ const getConfigs = (config: IAngleConfig[]) => {
     const bottomLeft = config.find(c => c.position === AnglePos.BottomLeft);
 
     return [topLeft, topRight, bottomRight, bottomLeft];
-}
+};
 
 export const Background = styled.div<IAngleProps>`
     background: ${({backgroundColor}) => backgroundColor};

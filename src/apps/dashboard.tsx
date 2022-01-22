@@ -7,6 +7,10 @@ import { DashboardIpcRenderer as IpcRenderer } from '../models/ipcRenderers/dash
 import { Dashboard } from '../components/Dashboard';
 import { UserStore } from '../contexts/User';
 import { HashRouter } from 'react-router-dom';
+import { Toaster } from '../components/Toaster';
+import { ErrorMessageModal } from '../components/ErrorMessageModal';
+import { ErrorMessagesStore } from '../contexts/ErrorMessages';
+import { ToasterStore } from '../contexts/Toaster';
 
 const App = () => {
     useEffect(() => {
@@ -19,17 +23,23 @@ const App = () => {
     }, []);
 
     return (
-        <UserStore>
-            <ThemeStore>
-                <Theme>
-                    <HashRouter>
-                        <AppContainer>
-                            <Dashboard />
-                        </AppContainer>
-                    </HashRouter>
-                </Theme>
-            </ThemeStore>
-        </UserStore>
+        <ErrorMessagesStore>
+            <ToasterStore>
+                <UserStore>
+                    <ThemeStore>
+                        <Theme>
+                            <HashRouter>
+                                <AppContainer>
+                                    <Dashboard />
+                                    <Toaster />
+                                    <ErrorMessageModal />
+                                </AppContainer>
+                            </HashRouter>
+                        </Theme>
+                    </ThemeStore>
+                </UserStore>
+            </ToasterStore>
+        </ErrorMessagesStore>
     );
 };
 
