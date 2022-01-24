@@ -1,6 +1,6 @@
 {
     "name": "wraithnet",
-    "version": "0.0.12",
+    "version": "0.0.13",
     "description": "wraithnet",
     "main": "./dist/electron.js",
     "scripts": {
