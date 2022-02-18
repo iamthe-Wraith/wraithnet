@@ -6,6 +6,7 @@ import { Hex } from '../containers/Hex';
 import { HexSize } from '../containers/Hex/styles';
 import { Nav } from '../Nav';
 import { CrossedSwordsIcon } from '../svgs/icons/CrossedSwordsIcon';
+import { GearIcon } from '../svgs/icons/GearIcon';
 import { LogIcon } from '../svgs/icons/LogIcon';
 import { LogoutIcon } from '../svgs/icons/LogoutIcon';
 
@@ -34,6 +35,11 @@ export const DashboardNav: React.FC = () => {
                     <CrossedSwordsIcon className='icon' />
                 </Hex>
             </Button>
+            <Link to='/settings' className={ `icon-link ${location.pathname === '/settings' ? 'selected' : ''}` }>
+                <Hex size={ HexSize.Tiny } color={ 'none' }>
+                    <GearIcon className='icon with-stroke' />
+                </Hex>
+            </Link>
             <Button
                 buttonType={ ButtonType.Blank }
                 className='icon-link'

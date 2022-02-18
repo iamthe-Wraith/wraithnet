@@ -10,7 +10,7 @@ export const HexBase: FC<IHexProps> = ({ children, color, theme, ...restProps })
         }
 
         return color === 'none' ? '' : color;
-    }
+    };
 
     return (
         <HexContainer { ...restProps }>
@@ -21,7 +21,7 @@ export const HexBase: FC<IHexProps> = ({ children, color, theme, ...restProps })
                 { children }
             </HexChildren>
         </HexContainer>
-    )
+    );
 };
 
 export const Hex = withTheme(HexBase);
