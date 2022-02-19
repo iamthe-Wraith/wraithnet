@@ -1,12 +1,15 @@
-import React, { createContext } from "react";
+import React, { createContext, useContext } from "react";
 import { UserModel } from "../../models/user";
+import { ConfigContext } from "../Config";
 
 export const UserContext = createContext<UserModel>(null);
 
 export const UserStore: React.FC = ({ children }) => {
-  return (
-    <UserContext.Provider value={ new UserModel() }>
-      {children}
-    </UserContext.Provider>
-  );
+    const { config } = useContext(ConfigContext);
+
+    return (
+        <UserContext.Provider value={ new UserModel({ theme: config.theme }) }>
+            {children}
+        </UserContext.Provider>
+    );
 };

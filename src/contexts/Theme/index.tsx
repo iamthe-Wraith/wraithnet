@@ -1,14 +1,23 @@
-import React, { createContext, FC, useCallback, useContext, useState } from 'react';
+import { observer } from 'mobx-react';
+import React, { createContext, FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Themes } from '../../constants';
-import { ConfigContext } from '../Config';
+import { UserContext } from '../User';
 
 export const ThemeContext = createContext(null);
 
-export const ThemeStore: FC = ({ children }) => {
-    const { config } = useContext(ConfigContext);
-    const [theme, setTheme] = useState(config.theme);
+export const ThemeStoreBase: FC = ({ children }) => {
+    const user = useContext(UserContext);
+    const [theme, setTheme] = useState(user.settings.theme);
 
-    const switchTheme = useCallback((newTheme: Themes) => setTheme(newTheme), [theme]);
+    useEffect(() => {
+        setTheme(user.settings.theme);
+    }, [user.settings.theme]);
+
+    const switchTheme = useCallback((newTheme: Themes) => {
+        setTheme(newTheme);
+        // TODO: save theme to users settings in db
+        // TODO: save theme to local config
+    }, [theme]);
 
     return (
         <ThemeContext.Provider value={ {switchTheme, theme} }>
@@ -16,3 +25,5 @@ export const ThemeStore: FC = ({ children }) => {
         </ThemeContext.Provider>
     );
 };
+
+export const ThemeStore = observer(ThemeStoreBase);
