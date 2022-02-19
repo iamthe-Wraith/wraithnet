@@ -44,10 +44,12 @@ export class DnD extends Base {
     }
 
     private _setListeners = () => {
+        this.__setListeners();
         ipcMain.on('close-dnd', this.close);
     }
 
     private _shutdownListeners = () => {
+        this.__shutdownListeners();
         ipcMain.off('close-dnd', this.close);
     }
 }

@@ -277,11 +277,13 @@ export class Terminal extends Base {
     }
 
     private _setListeners = () => {
+        this.__setListeners();
         ipcMain.on('terminal-command', this._onTerminalCommand);
         ipcMain.on('terminal-init', this._onTerminalInit);
     }
 
     private _shutdownListeners = () => {
+        this.__shutdownListeners();
         ipcMain.off('terminal-command', this._onTerminalCommand);
         ipcMain.off('terminal-init', this._onTerminalInit);
     }

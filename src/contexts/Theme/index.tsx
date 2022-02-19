@@ -1,20 +1,18 @@
-import React, { createContext, FC, useCallback, useState } from "react";
-
-export enum Themes {
-  Breeze = 'Breeze',
-  PinkBerry = 'PinkBerry',
-}
+import React, { createContext, FC, useCallback, useContext, useState } from 'react';
+import { Themes } from '../../constants';
+import { ConfigContext } from '../Config';
 
 export const ThemeContext = createContext(null);
 
 export const ThemeStore: FC = ({ children }) => {
-  const [theme, setTheme] = useState(Themes.Breeze);
+    const { config } = useContext(ConfigContext);
+    const [theme, setTheme] = useState(config.theme);
 
-  const switchTheme = useCallback((newTheme: Themes) => setTheme(newTheme), [theme]);
+    const switchTheme = useCallback((newTheme: Themes) => setTheme(newTheme), [theme]);
 
-  return (
-    <ThemeContext.Provider value={ {switchTheme, theme} }>
-      {children}
-    </ThemeContext.Provider>
-  );
+    return (
+        <ThemeContext.Provider value={ {switchTheme, theme} }>
+            {children}
+        </ThemeContext.Provider>
+    );
 };
