@@ -1,4 +1,8 @@
-import React, { useRef } from 'react';
+import { observer } from 'mobx-react';
+import React, { useCallback, useContext, useRef } from 'react';
+import { Themes } from '../../constants';
+import { ThemeContext } from '../../contexts/Theme';
+import { UserContext } from '../../contexts/User';
 import { AuroraBorealis, Breeze, DangerousIce, PinkBerry, PlumpCandy, PoisonIvy, Villain } from '../../styles/themes';
 import { Header, SettingsContainer, ThemeOptionsContainer } from './styles';
 import { IThemeOption, ThemeOption } from './ThemeOption';
@@ -10,40 +14,46 @@ interface IProps {
 const getThemes = (): IThemeOption[] => {
     return [
         {
-            name: 'Breeze',
+            name: Themes.Breeze,
             theme: Breeze,
         },
         {
-            name: 'Pink Berry',
+            name: Themes.PinkBerry,
             theme: PinkBerry,
         },
         {
-            name: 'Poison Ivy',
+            name: Themes.PoisonIvy,
             theme: PoisonIvy,
         },
         {
-            name: 'Dangerous Ice',
+            name: Themes.DangerousIce,
             theme: DangerousIce,
         },
         {
-            name: 'Plump Candy',
+            name: Themes.PlumpCandy,
             theme: PlumpCandy,
         },
         {
-            name: 'Villain',
+            name: Themes.Villain,
             theme: Villain,
         },
         {
-            name: 'Aurora Borealis',
+            name: Themes.AuroraBorealis,
             theme: AuroraBorealis,
         },
     ];
 };
 
-export const Settings: React.FC<IProps> = ({
+const SettingsBase: React.FC<IProps> = ({
     className = '',
 }) => {
+    const user = useContext(UserContext);
+    const { switchTheme } = useContext(ThemeContext);
     const themes = useRef(getThemes()).current;
+
+    const onOptionChange = useCallback((option: IThemeOption) => {
+        switchTheme(option.name);
+    }, []);
 
     const renderThemeOptions = () => {
         const options = themes.map(t => (
@@ -51,6 +61,8 @@ export const Settings: React.FC<IProps> = ({
                 key={ t.name }
                 className='theme-option'
                 option={ t }
+                selected={ t.name === user.settings.theme }
+                onSelect={ onOptionChange }
             />
         ));
         return (
@@ -69,3 +81,5 @@ export const Settings: React.FC<IProps> = ({
         </SettingsContainer>
     );
 };
+
+export const Settings = observer(SettingsBase);

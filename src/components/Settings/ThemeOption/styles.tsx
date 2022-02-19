@@ -23,9 +23,14 @@ export const ThemeOptionContainer = styled.div`
     ${ FlexHorizontalCenter }
 
     & > *:first-child {
-        min-width: 125px;
-        max-width: 125px;
+        ${ FlexHorizontalCenter }
+        min-width: 145px;
+        max-width: 145px;
         font-size: 12px;
+
+        span {
+            padding-left: 10px;
+        }
     }
 
     & > *:not(:last-child) {

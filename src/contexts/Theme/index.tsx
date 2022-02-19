@@ -1,22 +1,31 @@
 import { observer } from 'mobx-react';
 import React, { createContext, FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Themes } from '../../constants';
+import { ErrorMessagesContext } from '../ErrorMessages';
+import { ToasterContext } from '../Toaster';
 import { UserContext } from '../User';
 
 export const ThemeContext = createContext(null);
 
 export const ThemeStoreBase: FC = ({ children }) => {
     const user = useContext(UserContext);
+    const toaster = useContext(ToasterContext);
+    const errorMessages = useContext(ErrorMessagesContext);
     const [theme, setTheme] = useState(user.settings.theme);
 
     useEffect(() => {
         setTheme(user.settings.theme);
     }, [user.settings.theme]);
 
-    const switchTheme = useCallback((newTheme: Themes) => {
-        setTheme(newTheme);
-        // TODO: save theme to users settings in db
-        // TODO: save theme to local config
+    const switchTheme = useCallback(async (newTheme: Themes) => {
+        try {
+            setTheme(newTheme);
+            await user.updateSettings({ theme: newTheme });
+            // TODO: save theme to local config
+            toaster.push({ message: 'Theme updated' });
+        } catch (err: any) {
+            errorMessages.push({ message: err.message });
+        }
     }, [theme]);
 
     return (
