@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import { basePreloader, ipcRendererAction } from './base';
+import { basePreloader } from './base';
 
 contextBridge.exposeInMainWorld('App', {
     ...basePreloader,

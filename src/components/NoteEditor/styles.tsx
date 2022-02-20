@@ -25,7 +25,7 @@ export const Header = styled.div<IThemeProps>`
 
     .name {
         flex-grow: 1;
-        padding-left: 30px;
+        padding-right: 30px;
         text-align: center;
 
         span {

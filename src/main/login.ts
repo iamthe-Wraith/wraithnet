@@ -92,12 +92,14 @@ export class Login extends Base {
     }
 
     private _setListeners = () => {
+        this.__setListeners();
         ipcMain.on('close-login-window', this._window?.close);
         ipcMain.on('authenticate', this._authenticate);
         ipcMain.on('login-loaded', this._onLoad);
     }
 
     private _shutdownListeners = () => {
+        this.__shutdownListeners();
         ipcMain.off('close-login-window', this._window?.close);
         ipcMain.off('authenticate', this._authenticate);
         ipcMain.off('login-loaded', this._onLoad);

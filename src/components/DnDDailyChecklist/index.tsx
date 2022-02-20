@@ -33,33 +33,33 @@ export const DnDDailyChecklistBase: React.FC<IProps> = ({ className }) => {
 
     const onAddItemClick = () => {
         setShowAddItemModal(true);
-    }
+    };
 
     const onItemCheckedChange = (item: IDailyChecklistItem) => () => {
         console.log('checking item: ', item);
-    }
+    };
 
     const onItemDelete = (item: IDailyChecklistItem) => () => {
         dnd.campaign.dailyChecklist.delete(item)
             .catch((err: any) => {
                 console.error('error deleting item', err);
-            })
-    }
+            });
+    };
 
-    const onItemEdit = (item: IDailyChecklistItem) => (updatedItem: IDailyChecklistItem) => {
+    const onItemEdit = (_: IDailyChecklistItem) => (updatedItem: IDailyChecklistItem) => {
         dnd.campaign.dailyChecklist.update(updatedItem)
             .catch((err: any) => {
                 console.error('error updating item', err);
             });
-    }
+    };
 
     const onNewItemTextChange = (e: ChangeEvent<HTMLInputElement>) => {
         setNewItemText(e.target.value);
-    }
+    };
 
     const onNewItemDetailsChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
         setNewItemDetails(e.target.value);
-    }
+    };
 
     const onSaveNewItem = () => {
         const item = {
@@ -77,17 +77,17 @@ export const DnDDailyChecklistBase: React.FC<IProps> = ({ className }) => {
             .catch(err => {
                 console.error(err);
             });
-    }
+    };
 
     const onCancelNewItem = () => {
         setNewItemText('');
         setNewItemDetails('');
         setShowAddItemModal(false);
-    }
+    };
 
     const renderChecklist = () => {
         if (dnd.campaign.dailyChecklist.items.length === 0) {
-          return <div className='no-items'>no items found</div>
+            return <div className='no-items'>no items found</div>;
         }
 
         return dnd.campaign.dailyChecklist.items.map(item => (
@@ -101,7 +101,7 @@ export const DnDDailyChecklistBase: React.FC<IProps> = ({ className }) => {
                 processing={ dnd.campaign.dailyChecklist.updatingItemId === item.id || dnd.campaign.dailyChecklist.deletingItemId === item.id }
             />
         ));
-    }
+    };
 
     return (
         <DnDDailyChecklistContainer className={ className }>
@@ -163,6 +163,6 @@ export const DnDDailyChecklistBase: React.FC<IProps> = ({ className }) => {
             </Modal>
         </DnDDailyChecklistContainer>
     );
-}
+};
 
 export const DnDDailyChecklist = observer(DnDDailyChecklistBase);

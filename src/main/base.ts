@@ -1,12 +1,18 @@
+import { ipcMain } from "electron";
+import { IpcMainEvent } from "electron/main";
+import { getWraithnetConfig, IWraithnetConfig } from "../lib/config";
 import { WraithnetApiWebServiceHelperNode } from "../lib/webServiceHelpers/wraithnetApiWebServiceHelperNode";
 import Window from '../lib/window';
 
 export interface IBaseProps {
+    broadcast: (channel: string, msg?: string) => void,
     isDev?: boolean;
     onClose?: () => void;
 }
 
 export abstract class Base {
+    protected _broadcast: (channel: string, msg?: string) => void;
+    protected _config: IWraithnetConfig;
     protected _isDev: boolean;
     protected _isOpen: boolean;
     protected _onCloseCallback: () => void;
@@ -14,10 +20,13 @@ export abstract class Base {
     protected _window: Window;
     protected _windowName: string;
 
-    constructor({ isDev, onClose }: IBaseProps) {
+    constructor({ isDev, onClose, broadcast }: IBaseProps) {
+        this._broadcast = broadcast;
         this._isDev = isDev;
         this._isOpen = false;
         this._onCloseCallback = onClose;
+
+        this._config = getWraithnetConfig();
     }
 
     get isOpen () {
@@ -37,6 +46,18 @@ export abstract class Base {
     public abstract init: () => void;
     protected abstract _createWindow: () => void;
     
+    protected onLoadConfig = (event: IpcMainEvent) => {
+        event.returnValue = this._config;
+    }
+
+    protected __setListeners = () => {
+        ipcMain.on('load-config', this.onLoadConfig);
+    }
+
+    protected __shutdownListeners = () => {
+        ipcMain.off('load-config', this.onLoadConfig);
+    }
+
     public send = (channel: string, data: any) => {
         this._window?.send(channel, data);
     }
