@@ -23,19 +23,19 @@ const UserLogEntryBase: React.FC<IProps> = ({ className = '', entry, theme }) =>
                     className='userlog-entry-tag'
                     text={ tag.text }
                 />
-            )
+            );
         });
-    }
+    };
 
     return (
         <EntryContainer className={ className }>
             <AngleCorner
                 backgroundColor={ theme.darkestGray }
                 className='angle-corner'
-                config={[{ position: AnglePos.BottomRight, size: AngleSize.Tiny }]}
+                config={ [{ position: AnglePos.BottomRight, size: AngleSize.Tiny }] }
             >
                 <EntryHeader>
-                    <span>{ dayjs(entry.createdAt).format('h:mm A') }</span>
+                    <span>{ dayjs(entry.createdAt).format('MMM DD, YYYY h:mm A') }</span>
                     <span>{ entry.id }</span>
                 </EntryHeader>
                 <EntryContent>
@@ -50,7 +50,7 @@ const UserLogEntryBase: React.FC<IProps> = ({ className = '', entry, theme }) =>
                 }
             </AngleCorner>
         </EntryContainer>
-    )
+    );
 };
 
 export const UserLogEntry = withTheme(UserLogEntryBase);

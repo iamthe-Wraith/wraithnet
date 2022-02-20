@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { NoScrollBar } from '../../styles/styles';
-import { ITheme, IThemeProps } from '../../styles/themes';
+import { IThemeProps } from '../../styles/themes';
 
 export const DateContainer = styled.div`
     align-items: center;
@@ -8,7 +8,7 @@ export const DateContainer = styled.div`
     font-size: 14px;
     justify-content: space-between;
     padding: 0 1px;
-    width: 200px;
+    width: 250px;
 
     .date-arrow-button {
         &:hover {
