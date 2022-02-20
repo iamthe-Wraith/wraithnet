@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react';
 import React, { createContext, FC, useCallback, useContext, useEffect, useState } from 'react';
 import { Themes } from '../../constants';
+import { DashboardIpcRenderer as IpcRenderer } from '../../models/ipcRenderers/dashboard';
 import { ErrorMessagesContext } from '../ErrorMessages';
 import { ToasterContext } from '../Toaster';
 import { UserContext } from '../User';
@@ -14,6 +15,10 @@ export const ThemeStoreBase: FC = ({ children }) => {
     const [theme, setTheme] = useState(user.settings.theme);
 
     useEffect(() => {
+        window.addEventListener('theme-updated', user.loadSettings);
+    }, []);
+
+    useEffect(() => {
         setTheme(user.settings.theme);
     }, [user.settings.theme]);
 
@@ -22,6 +27,7 @@ export const ThemeStoreBase: FC = ({ children }) => {
             setTheme(newTheme);
             await user.updateSettings({ theme: newTheme });
             // TODO: save theme to local config
+            IpcRenderer.updateTheme(newTheme);
             toaster.push({ message: 'Theme updated' });
         } catch (err: any) {
             errorMessages.push({ message: err.message });

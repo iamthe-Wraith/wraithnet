@@ -127,9 +127,16 @@ const setToken = (e: IpcMainEvent, token: string) => {
 
 app.on('ready', () => {
     windows = {
-        dashboard: new Dashboard({ isDev: dev }),
-        dnd: new DnD({ isDev: dev }),
+        dashboard: new Dashboard({
+            broadcast,
+            isDev: dev,
+        }),
+        dnd: new DnD({
+            broadcast,
+            isDev: dev,
+        }),
         login: new Login({
+            broadcast,
             isDev: dev,
             onLoad: onLoginLoad,
             onSuccess: onAuthenticationSuccess,

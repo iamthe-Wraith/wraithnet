@@ -44,14 +44,12 @@ interface ICommandValues<TArguments, TFlags, TParameters> {
 }
 
 interface IProps extends IBaseProps {
-    broadcast: (channel: string, msg?: string) => void,
     logout: () => void;
     open: (win: string) => boolean;
     quitApp: () => void
 }
 
 export class Terminal extends Base {
-    private _broadcast: (channel: string, msg?: string) => void;
     private _command: IParsedCommand = null;
     private _logout: () => void;
     private _open: (win: string) => boolean;
@@ -59,7 +57,6 @@ export class Terminal extends Base {
 
     constructor(props: IProps) {
         super(props);
-        this._broadcast = props.broadcast;
         this._logout = props.logout;
         this._open = props.open;
         this._quitApp = props.quitApp;

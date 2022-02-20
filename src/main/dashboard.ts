@@ -1,5 +1,7 @@
 import { ipcMain } from 'electron';
 import path from 'path';
+import { Themes } from '../constants';
+import { updateWraithnetConfig } from '../lib/config';
 
 import Window from '../lib/window';
 import { Base, IBaseProps } from './base';
@@ -45,11 +47,17 @@ export class Dashboard extends Base {
         }
     };
 
+    private _onUpdateTheme = (_: Electron.IpcMainEvent, newTheme: Themes) => {
+        updateWraithnetConfig({ theme: newTheme });
+        this._broadcast('theme-updated');
+    }
+
     private _setListeners = () => {
         this.__setListeners();
         ipcMain.on('close-dashboard', this.close);
         ipcMain.on('focus-dashboard', this._focus);
         ipcMain.on('dashboard-init', this._onDashboardInit);
+        ipcMain.on('update-theme', this._onUpdateTheme);
     }
 
     private _shutdownListeners = () => {
@@ -57,5 +65,6 @@ export class Dashboard extends Base {
         ipcMain.off('close-dashboard', this.close);
         ipcMain.off('focus-dashboard', this._focus);
         ipcMain.off('dashboard-init', this._onDashboardInit);
+        ipcMain.off('update-theme', this._onUpdateTheme);
     }
 }

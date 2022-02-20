@@ -21,3 +21,14 @@ export const initWraithnetConfig = () => {
 export const getWraithnetConfig = () => fs.existsSync(configPath)
     ? JSON.parse(fs.readFileSync(configPath, 'utf8'))
     : initWraithnetConfig();
+
+export const updateWraithnetConfig = ({ theme }: Partial<IWraithnetConfig> = {}) => {
+    if (!fs.existsSync(configPath)) initWraithnetConfig();
+
+    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    const _updates = { ...config };
+
+    if (!!theme) _updates.theme = theme;
+
+    fs.writeFileSync(configPath, JSON.stringify(_updates, null, 4));
+};

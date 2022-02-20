@@ -5,11 +5,13 @@ import { WraithnetApiWebServiceHelperNode } from "../lib/webServiceHelpers/wrait
 import Window from '../lib/window';
 
 export interface IBaseProps {
+    broadcast: (channel: string, msg?: string) => void,
     isDev?: boolean;
     onClose?: () => void;
 }
 
 export abstract class Base {
+    protected _broadcast: (channel: string, msg?: string) => void;
     protected _config: IWraithnetConfig;
     protected _isDev: boolean;
     protected _isOpen: boolean;
@@ -18,7 +20,8 @@ export abstract class Base {
     protected _window: Window;
     protected _windowName: string;
 
-    constructor({ isDev, onClose }: IBaseProps) {
+    constructor({ isDev, onClose, broadcast }: IBaseProps) {
+        this._broadcast = broadcast;
         this._isDev = isDev;
         this._isOpen = false;
         this._onCloseCallback = onClose;

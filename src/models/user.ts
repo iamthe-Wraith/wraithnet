@@ -91,6 +91,29 @@ export class UserModel {
         return this._webServiceHelper;
     }
 
+    public loadSettings = async () => {
+        if (this._loadingSettings) return;
+        this._loadingSettings = true;
+
+        const result = await this.webServiceHelper.sendRequest<IUserSettings>({
+            path: '/api/v1/user-settings',
+            method: 'GET',
+        });
+
+        if (result.success) {
+            runInAction(() => {
+                this._settings = result.value;
+                this._loadingSettings = false;
+            });
+        } else {
+            runInAction(() => {
+                this._loadingSettings = false;
+            });
+
+            throw new Error(result.error);
+        }
+    }
+
     public toJs = () => this._user;
 
     public updateSettings = async (newSettings: Partial<IUserSettings>) => {
@@ -137,29 +160,6 @@ export class UserModel {
                 this._loaded = true;
             });
         } else {
-            throw new Error(result.error);
-        }
-    }
-
-    private loadSettings = async () => {
-        if (this._loadingSettings) return;
-        this._loadingSettings = true;
-
-        const result = await this.webServiceHelper.sendRequest<IUserSettings>({
-            path: '/api/v1/user-settings',
-            method: 'GET',
-        });
-
-        if (result.success) {
-            runInAction(() => {
-                this._settings = result.value;
-                this._loadingSettings = false;
-            });
-        } else {
-            runInAction(() => {
-                this._loadingSettings = false;
-            });
-
             throw new Error(result.error);
         }
     }

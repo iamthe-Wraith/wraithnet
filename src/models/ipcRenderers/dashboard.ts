@@ -1,3 +1,4 @@
+import { Themes } from '../../constants';
 import { IpcRenderer } from './base';
 
 const win = (window as any);
@@ -7,4 +8,5 @@ export class DashboardIpcRenderer extends IpcRenderer {
     static focus = () => win.App.focus()
     static initDashboard = () => win.App.initDashboard()
     static open = (w: string) => win.App.open(w)
+    static updateTheme = (newTheme: Themes) => win.App.updateTheme(newTheme)
 }
