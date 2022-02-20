@@ -5,7 +5,6 @@ import equals from 'fast-deep-equal';
 import timezone from 'dayjs/plugin/timezone';
 import { BaseModel } from "./base";
 import { ITag, TagModel } from "./tags";
-import { UserLogEntry } from "../components/UserLogEntry";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -35,11 +34,11 @@ export interface IUserLogResponse {
 }
 
 type PrivateFields = '_busy' |
-    '_count' |
-    '_criteria' |
-    '_entries' |
-    '_loaded' |
-    '_page';
+'_count' |
+'_criteria' |
+'_entries' |
+'_loaded' |
+'_page';
 
 type EntryPrivateFields = '_entry' | '_tags';
 
@@ -210,7 +209,7 @@ export class UserLogsModel extends BaseModel {
             if (value) {
                 if (key === 'tags') {
                     if ((value || []).length) {
-                        query.push(`${key}=${value.map((t: ITag) => t.id)}`)
+                        query.push(`${key}=${value.map((t: ITag) => t.id)}`);
                     }
                 } else {
                     query.push(`${key}=${value}`);

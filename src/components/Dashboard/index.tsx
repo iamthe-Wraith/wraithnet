@@ -1,7 +1,7 @@
-import dayjs from 'dayjs';
 import { observer } from 'mobx-react';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { TimeContext } from '../../contexts/Time';
 import { UserContext } from '../../contexts/User';
 import { DashboardIpcRenderer } from '../../models/ipcRenderers/dashboard';
 import { DashboardNav } from '../DashboardNav';
@@ -15,7 +15,7 @@ import { Container, DateContainer, LeftCol, MainCol, MainContainer, RightCol, Us
 export const DashboardBase: React.FC = () => {
     const navigate = useNavigate();
     const user = useContext(UserContext);
-    const [currentDate, setCurrentDate] = useState(dayjs().local().format('MMM DD, YYYY'));
+    const time = useContext(TimeContext);
 
     // TODO - setTimeout to change date
 
@@ -39,7 +39,7 @@ export const DashboardBase: React.FC = () => {
         return (
             <div className='header-left-content'>
                 <UserId>{ user?.id }</UserId>
-                <DateContainer>{ currentDate }</DateContainer>
+                <DateContainer>{ time.now.format('MMM DD, YYYY') }</DateContainer>
             </div>
         );
     };

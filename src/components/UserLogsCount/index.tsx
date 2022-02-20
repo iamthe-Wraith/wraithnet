@@ -16,14 +16,18 @@ interface IProps extends IThemeProps {
 export const UserLogsCountBase: React.FC<IProps> = ({ className = '', theme }) => {
     const userLogsModel = useRef(new UserLogsModel()).current;
 
-    const onUserLogUpdate = () => userLogsModel.getEntries(true);
+    const getEntries = () => userLogsModel.getEntries(true);
 
     useEffect(() => {
-        window.addEventListener('userlog-update', onUserLogUpdate);
+        window.addEventListener('userlog-update', getEntries);
+        window.addEventListener('new-day', getEntries);
 
         userLogsModel.setCriteria({ created: dayjs().local().format() });
 
-        return () => window.removeEventListener('userlog-update', onUserLogUpdate);
+        return () => {
+            window.removeEventListener('userlog-update', getEntries);
+            window.removeEventListener('new-day', getEntries);
+        };
     }, []);
 
     return (
@@ -32,7 +36,7 @@ export const UserLogsCountBase: React.FC<IProps> = ({ className = '', theme }) =
                 backgroundColor='transparent'
                 borderColor={ theme.primaryDark }
                 className='angle-corner'
-                config={[{ size: AngleSize.Tiny, position: AnglePos.TopRight }]}
+                config={ [{ size: AngleSize.Tiny, position: AnglePos.TopRight }] }
             >
                 <Label>user log entries:</Label>
                 <Count>
@@ -40,8 +44,8 @@ export const UserLogsCountBase: React.FC<IProps> = ({ className = '', theme }) =
                 </Count>
             </AngleCorner>
         </UserLogsCountContainer>
-    )
-}
+    );
+};
 
 const UserLogsCountAsObserver = observer(UserLogsCountBase);
 export const UserLogsCount = withTheme(UserLogsCountAsObserver);
