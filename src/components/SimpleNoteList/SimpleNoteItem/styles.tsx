@@ -34,6 +34,7 @@ export const ContentContainer = styled.div<IThemeProps>`
     min-height: 600px;
     max-height: 600px;
     padding: 10px;
+    background: ${({theme}) => theme.dark};
     overflow: auto;
 `;
 
