@@ -16,7 +16,7 @@ interface IProps extends IThemeProps {
 
 const UserLogEntryBase: React.FC<IProps> = ({ className = '', entry, theme }) => {
     const renderTags = () => {
-        return entry.tags.map((tag, i) => {
+        return entry.tags.map((tag) => {
             return (
                 <Tag
                     key={ tag.id }

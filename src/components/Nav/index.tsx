@@ -3,13 +3,13 @@ import React from 'react';
 import { NavContainer } from './styles';
 
 interface IProps {
-  className?: string;
+    className?: string;
 }
 
 export const Nav: React.FC<IProps> = ({ children, className = '' }) => {
-  return (
-    <NavContainer className={ className }>
-      { children }
-    </NavContainer>
-  );
+    return (
+        <NavContainer className={ className }>
+            { children }
+        </NavContainer>
+    );
 };

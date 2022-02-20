@@ -47,6 +47,7 @@ export const NavContainer = styled.div<IThemeProps>`
         span {
             color: ${({theme}) => theme.darkGray};
             display: block;
+            padding-left: 1px;
         }
 
         svg {
