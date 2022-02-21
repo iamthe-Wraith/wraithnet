@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react';
-import React, { FC, useContext, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Waypoint } from 'react-waypoint';
 import { ErrorMessagesContext } from '../../contexts/ErrorMessages';
 import { ToasterContext } from '../../contexts/Toaster';
@@ -12,7 +12,7 @@ import { LoadingSpinner, SpinnerSize, SpinnerType } from '../LoadingSpinner';
 import { Modal } from '../Modal';
 import { Tag, TagType } from '../Tag';
 import { TextInput } from '../TextInput';
-import { LoadingSpinnerContainer, NewTagModal, NoTagsContainer, TagContainer, TagsListContainer, TagsListItems } from './styles';
+import { LoadingSpinnerContainer, NewTagModal, NoTagsContainer, TagContainer, TagSearchContaier, TagsListContainer, TagsListItems } from './styles';
 
 interface IProps {
     className?: string;
@@ -25,6 +25,9 @@ const TagsListBase: FC<IProps> = ({ className, defaultSelectedTags = [], forceCl
     const toaster = useContext(ToasterContext);
     const errorMessages = useContext(ErrorMessagesContext);
     const tagsModel = useRef(new TagsModel()).current;
+    const tagSearchEngaged = useRef(false);
+    const [tagSearch, setTagSearch] = useState('');
+    const [tagSeachTimeout, setTagSearchTimeout] = useState<number>(null);
     const [selectedTags, setSelectedTags] = useState<TagModel[]>(defaultSelectedTags);
     const [showTagModal, setShowTagModal] = useState(false);
     const [newTagName, setNewTagName] = useState('');
@@ -32,8 +35,7 @@ const TagsListBase: FC<IProps> = ({ className, defaultSelectedTags = [], forceCl
     const newTagInputRef = useRef<HTMLInputElement>(null);
 
     const loadMore = () => {
-    // tagsModel.getTags(true);
-        tagsModel.loadMoreTags()
+        tagsModel.loadMoreTags({ text: tagSearch })
             .catch(err => {
                 console.log('error loading tags');
                 console.error(err);
@@ -62,6 +64,16 @@ const TagsListBase: FC<IProps> = ({ className, defaultSelectedTags = [], forceCl
             setTimeout(() => newTagInputRef.current.focus(), 10);
         }
     }, [showTagModal]);
+
+    useEffect(() => {
+        if (tagSearchEngaged.current) {
+            clearTimeout(tagSeachTimeout);
+            setTagSearchTimeout(window.setTimeout(() => {
+                tagsModel.tags.reset();
+                loadMore();
+            }, 300));
+        }
+    }, [tagSearch]);
 
     const onCreateClick = (name: string) => () => {
         tagsModel.createTag(name)
@@ -94,6 +106,11 @@ const TagsListBase: FC<IProps> = ({ className, defaultSelectedTags = [], forceCl
             setSelectedTags([...selectedTags, tag]);
         }
     };
+
+    const onTagSearchChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        tagSearchEngaged.current = true;
+        setTagSearch(e.target.value);
+    }, [tagSearch]);
 
     const renderTags = () => {
         if (tagsModel.tags.allResultsFetched && tagsModel.tags.results.length === 0) {
@@ -163,6 +180,14 @@ const TagsListBase: FC<IProps> = ({ className, defaultSelectedTags = [], forceCl
 
     return (
         <TagsListContainer className={ className }>
+            <TagSearchContaier>
+                <TextInput
+                    inputId='tag-search'
+                    placeholder='Search Tags'
+                    value={ tagSearch }
+                    onChange={ onTagSearchChange }
+                />
+            </TagSearchContaier>
             <TagsListItems>
                 { renderTags() }
             </TagsListItems>

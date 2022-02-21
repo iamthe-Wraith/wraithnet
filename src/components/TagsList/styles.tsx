@@ -53,3 +53,9 @@ export const TagsListContainer = styled.div`
         min-width: 100%;
     }
 `;
+
+export const TagSearchContaier = styled.div`
+    width: 100%;
+    padding: 10px 0;
+    border-top: ${({theme}) => `1px solid ${theme.darkGray}`};
+`;

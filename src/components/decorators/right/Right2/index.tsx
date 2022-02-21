@@ -15,4 +15,4 @@ export const Right2: React.FC<IProps> = ({ className = '' }) => {
             <div className='trapezoid lower' />
         </Right2Container>
     );
-}
+};
