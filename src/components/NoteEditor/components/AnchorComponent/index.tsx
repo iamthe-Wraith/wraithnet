@@ -28,6 +28,12 @@ export const AnchorComponent: React.FC<IProps> = ({
         if (href.includes('http://') || href.includes('https://')) {
             e.preventDefault();
             IpcRenderer.navigate(href);
+        } else if (href[0] === '#') {
+            // necessary override as # breaks
+            // with hash router.
+            e.preventDefault();
+            const el = document.getElementById(href.replace('#', ''));
+            if (el) el.scrollIntoView();
         }
     };
 
