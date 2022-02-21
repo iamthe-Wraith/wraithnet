@@ -1,5 +1,6 @@
-import dayjs from 'dayjs';
-import React, { FC, useEffect, useState } from 'react';
+import { observer } from 'mobx-react';
+import React, { FC, useContext } from 'react';
+import { TimeContext } from '../../contexts/Time';
 import { TimeContainer } from './styles';
 
 interface IProps {
@@ -13,7 +14,7 @@ interface IProps {
     colonClassName?: string;
 }
 
-export const Time: FC<IProps> = ({
+const TimeBase: FC<IProps> = ({
     className = '',
     hideSeconds,
     hideAmPm,
@@ -23,44 +24,38 @@ export const Time: FC<IProps> = ({
     amPmClassName = '',
     colonClassName = '',
 }) => {
-    const [time, setTime] = useState(dayjs().local());
-    const [timeout, setTimeout] = useState<number>(null);
-    
-    useEffect(() => {
-        clearTimeout(timeout);
-        setTimeout(window.setTimeout(() => {
-            setTime(dayjs().local());
-        }, 1000));
-    }, [time]);
+    const time = useContext(TimeContext);
 
     const renderTime = () => {
         let pieces = [
-            <span key='hours' className={ `hours ${hoursClassName}`}>{ time.format('h') }</span>,
-            <span key='colon-1' className={ `colon ${colonClassName}`}>:</span>,
-            <span key='minutes' className={ `minutes ${minutesClassName}`}>{ time.format('mm') }</span>
+            <span key='hours' className={ `hours ${hoursClassName}` }>{ time.now.format('h') }</span>,
+            <span key='colon-1' className={ `colon ${colonClassName}` }>:</span>,
+            <span key='minutes' className={ `minutes ${minutesClassName}` }>{ time.now.format('mm') }</span>,
         ];
 
         if (!hideSeconds) {
             pieces = [
                 ...pieces,
-                <span key='colon-2' className={ `colon ${colonClassName}`}>:</span>,
-                <span key='seconds' className={ `seconds ${secondsClassName}`}>{ time.format('ss') }</span>
+                <span key='colon-2' className={ `colon ${colonClassName}` }>:</span>,
+                <span key='seconds' className={ `seconds ${secondsClassName}` }>{ time.now.format('ss') }</span>,
             ];
         }
 
         if (!hideAmPm) {
             pieces = [
                 ...pieces,
-                <span key='ampm' className={ `ampm ${amPmClassName}`}>{ time.format('a') }</span>,
+                <span key='ampm' className={ `ampm ${amPmClassName}` }>{ time.now.format('a') }</span>,
             ];
         }
         
         return pieces;
-    }
+    };
 
     return (
         <TimeContainer className={ className }>
             { renderTime() }
         </TimeContainer>
-    )
+    );
 };
+
+export const Time = observer(TimeBase);

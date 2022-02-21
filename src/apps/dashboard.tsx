@@ -12,6 +12,7 @@ import { ErrorMessageModal } from '../components/ErrorMessageModal';
 import { ErrorMessagesStore } from '../contexts/ErrorMessages';
 import { ToasterStore } from '../contexts/Toaster';
 import { ConfigStore } from '../contexts/Config';
+import { TimeStore } from '../contexts/Time';
 
 const App = () => {
     useEffect(() => {
@@ -25,23 +26,25 @@ const App = () => {
 
     return (
         <ErrorMessagesStore>
-            <ConfigStore>
-                <ToasterStore>
-                    <UserStore>
-                        <ThemeStore>
-                            <Theme>
-                                <HashRouter>
-                                    <AppContainer>
-                                        <Dashboard />
-                                        <Toaster />
-                                        <ErrorMessageModal />
-                                    </AppContainer>
-                                </HashRouter>
-                            </Theme>
-                        </ThemeStore>
-                    </UserStore>
-                </ToasterStore>
-            </ConfigStore>
+            <TimeStore>
+                <ConfigStore>
+                    <ToasterStore>
+                        <UserStore>
+                            <ThemeStore>
+                                <Theme>
+                                    <HashRouter>
+                                        <AppContainer>
+                                            <Dashboard />
+                                            <Toaster />
+                                            <ErrorMessageModal />
+                                        </AppContainer>
+                                    </HashRouter>
+                                </Theme>
+                            </ThemeStore>
+                        </UserStore>
+                    </ToasterStore>
+                </ConfigStore>
+            </TimeStore>
         </ErrorMessagesStore>
     );
 };

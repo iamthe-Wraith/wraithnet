@@ -22,7 +22,7 @@ export const DnDPCModalContainer = styled(Modal)<IThemeProps>`
         ${ FlexHorizontalCenter }
         flex-grow: 1;
         align-items: stretch;
-        max-height: calc(100% - 30px);
+        height: calc(100% - 68px);
         overflow: auto;
     }
 `;

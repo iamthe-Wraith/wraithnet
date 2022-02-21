@@ -36,7 +36,7 @@ interface IProps extends IThemeProps {
 const UserLogBase: FC<IProps> = ({ className = '' }) => {
     const userLogsModel = useRef(new UserLogsModel()).current;
     const [dateRange, setDateRange] = useState<RangeModifier>({ from: dayjs().local().toDate(), to: null });
-    const [selectedTags, setSelectedTags] = useState<TagModel[]>([])
+    const [selectedTags, setSelectedTags] = useState<TagModel[]>([]);
     const [withAnyTag, setWithAnyTag] = useState(false);
     const [withNoTag, setWithNoTag] = useState(false);
     const [disableNextButton, setDisableNextButton] = useState(true);
@@ -44,13 +44,21 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
     const timeout = useRef<number>(null);
     const today = useRef(new Date()).current;
 
-    const onUserLogUpdate = useCallback(() => {
+    const reload = () => {
         const now = dayjs().local();
         const from = dayjs(dateRange.from);
         const to = dayjs(dateRange.to);
-        
+
         if (from.isSame(now, 'date') || to.isSame(now, 'date')) userLogsModel.getEntries(true);
-    }, [dateRange, userLogsModel]);
+    };
+
+    const onUserLogUpdate = useCallback(reload, [dateRange, userLogsModel]);
+
+    useEffect(() => {
+        window.addEventListener('new-day', reload);
+
+        return () => window.removeEventListener('new-day', reload);
+    }, []);
 
     useEffect(() => {
         window.removeEventListener('userlog-update', onUserLogUpdate);
@@ -62,7 +70,7 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
         let opts: IEntryQueryOptions = {
             anyTags: withAnyTag,
             noTags: withNoTag,
-            tags: selectedTags
+            tags: selectedTags,
         };
 
         if (!!dateRange.from && !!dateRange.to) {
@@ -71,14 +79,14 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
                 created: null,
                 createdAfter: dayjs(dateRange.from).format(),
                 createdBefore: dayjs(dateRange.to).format(),
-            }
+            };
         } else {
             opts = {
                 ...opts,
                 created: dayjs(dateRange.from).format(),
                 createdAfter: null,
                 createdBefore: null,
-            }
+            };
         }
         
         userLogsModel.setCriteria(opts);
@@ -105,7 +113,7 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
         if (dateRange.to) return dayjs(dateRange.to).format(format);
 
         return '--';
-    }
+    };
 
     const loadMore = useCallback(() => {
         userLogsModel.getEntries();
@@ -115,7 +123,7 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
         () => {
             userLogsModel.setCriteria({ text: null });
             setSearch('');
-        }
+        };
     }, [userLogsModel.criteria]);
 
     const onFilterTagChange = useCallback((newTags: TagModel[]) => {
@@ -198,7 +206,7 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
                     <LoadingSpinnerContainer key='loading-spinner-container'>
                         { spinner }
                     </LoadingSpinnerContainer>
-                ))
+                ));
             } else {
                 entries.push(spinner);
             }
@@ -209,7 +217,7 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
         }
 
         return entries;
-    }
+    };
 
     return (
         <UserLogContainer className={ className }>
@@ -301,7 +309,7 @@ const UserLogBase: FC<IProps> = ({ className = '' }) => {
                 </div>
             </UserLogMain>
         </UserLogContainer>
-    )
+    );
 };
 
 export const UserLog = observer(UserLogBase);
