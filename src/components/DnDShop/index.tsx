@@ -2,7 +2,7 @@ import { observer } from 'mobx-react';
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from 'react';
 import { ErrorMessagesContext } from '../../contexts/ErrorMessages';
 import { ToasterContext } from '../../contexts/Toaster';
-import { IStoreItemRef, IStoreMagicItemRef, Rarity, ShopModel } from '../../models/dnd/shop';
+import { IStoreItemRef, IStoreMagicItemRef, Rarity, ShopModel, StoreMagicItemModel } from '../../models/dnd/shop';
 import { Button, ButtonType } from '../Button';
 import { Checkbox } from '../Checkbox';
 import { LoadingSpinner, SpinnerSize } from '../LoadingSpinner';
@@ -129,10 +129,10 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
     const shop = useRef(new ShopModel()).current;
     const [maxQuantity, setMaxQuantity] = useState(DEFAULT_MAX_QUANTITY);
     const [selectedItems, setSelectedItems] = useState<ISelectedItem[]>([]);
-    const [selectedMagicItems, setSelectedMagicItems] = useState<IStoreMagicItemRef[]>([]);
+    const [selectedMagicItems, setSelectedMagicItems] = useState<StoreMagicItemModel[]>([]);
     const [totalItemsCount, setTotalItemsCount] = useState(DEFAULT_TOTAL_ITEMS_COUNT);
     const [raritiesFilter, setRaritiesFilter] = useState<IRarityFilter[]>(defaultRaritiesFilter);
-    const [magicItemToView, setMagicItemToView] = useState<IStoreMagicItemRef>(null);
+    const [magicItemToView, setMagicItemToView] = useState<StoreMagicItemModel>(null);
 
     useEffect(() => {
         shop.loadInventory()
@@ -196,7 +196,7 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
         const _selectedItems = [...selectedItems];
 
         while ((_selectedItems.length + selectedMagicItems.length) < totalItemsCount) {
-            const availablabileItems = shop.inventory.items.filter(i => {
+            const availablabileItems = shop.items.filter(i => {
                 return !_selectedItems.find(selectedItem => i.id === selectedItem.item.id);
             });
 
@@ -219,7 +219,7 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
         }
     };
 
-    const onMagicItemClick = (item: IStoreMagicItemRef) => () => {
+    const onMagicItemClick = (item: StoreMagicItemModel) => () => {
         const alreadySelected = !!selectedMagicItems.find(i => i.id === item.id);
 
         if (alreadySelected) {
@@ -251,15 +251,15 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
         if (!isNaN(value)) handler(value);
     };
 
-    const onViewMagicItemClick = (magicItem: IStoreMagicItemRef) => () => {
+    const onViewMagicItemClick = (magicItem: StoreMagicItemModel) => () => {
         setMagicItemToView(magicItem);
     };
 
     const renderAllItems = () => {
         let items: JSX.Element[] = [];
 
-        if (!shop.busy && !!shop.inventory?.items?.length) {
-            items = shop.inventory.items.map(item => (
+        if (!shop.busy && !!shop?.items?.length) {
+            items = shop.items.map(item => (
                 <Item
                     key={ item.id }
                     className={ !!selectedItems.find(i => i.item.id === item.id) ? 'selected' : '' }
@@ -290,8 +290,8 @@ const DnDShopBase: React.FC<IProps> = ({ className = '' }) => {
     const renderAllMagicItems = () => {
         let items: JSX.Element[] = [];
 
-        if (!shop.busy && !!shop.inventory?.magicItems?.length) {
-            items = shop.inventory.magicItems
+        if (!shop.busy && !!shop?.magicItems?.length) {
+            items = shop.magicItems
                 .filter(item => {
                     const rarity = raritiesFilter.find(r => r.rarity === item.rarity);
                     if (!rarity || !rarity.selected) return false;

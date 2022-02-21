@@ -2,7 +2,11 @@ import { action, computed, makeObservable, observable, runInAction } from 'mobx'
 import { BaseModel } from '../base';
 
 type PrivateFields = '_busy' |
-'_inventory';
+'_items' |
+'_magicItems';
+
+type StoreMagicItemPrivateFields = '_busy' |
+'_item';
 
 export interface IItemInit {
     index: string;
@@ -105,8 +109,9 @@ export interface IStoreMagicItemRef extends IItemInit {
     rarity: Rarity;
 }
 export interface IStoreMagicItem extends IStoreMagicItemRef {
-    equipment_category: IItemBase;
+    equipment_category: IItemInit;
     desc: string[];
+    
 }
 
 interface IStoreInventory {
@@ -114,23 +119,83 @@ interface IStoreInventory {
     magicItems: IStoreMagicItemRef[];
 }
 
+export class StoreMagicItemModel extends BaseModel {
+    private _busy = false;
+    private _item:IStoreMagicItem = null;
+
+    constructor (item: IStoreMagicItemRef) {
+        super();
+        makeObservable<StoreMagicItemModel, StoreMagicItemPrivateFields>(this, {
+            _busy: observable,
+            _item: observable,
+            busy: computed,
+            id: computed,
+            index: computed,
+            name: computed,
+            rarity: computed,
+            load: action.bound,
+        });
+
+        this._item = item as IStoreMagicItem;
+    }
+
+    get busy() { return this._busy; }
+    get desc() { return this._item.desc || []; }
+    get equipment_category() { return this._item.equipment_category || { name: 'unknown' }; }
+    get id() { return this._item.id; }
+    get index() { return this._item.index; }
+    get name() { return this._item.name; }
+    get rarity() { return this._item.rarity; }
+
+    load = async () => {
+        // do not load if is already busy or has already been loaded
+        if (this._busy || !!this._item.desc) return;
+        this._busy = true;
+
+        const result = await this.webServiceHelper.sendRequest<IStoreMagicItem>({
+            path: this.composeUrl(`/dnd/store-inventory/magic-item/${this.id}`),
+            method: 'GET',
+        });
+
+        if (result.success) {
+            runInAction(() => {
+                this._item = result.value;
+                this._busy = false;
+            });
+
+            return this._item;
+        } else {
+            runInAction(() => {
+                this._busy = false;
+            });
+            
+            throw new Error(result.error);
+        }
+    }
+}
+
 export class ShopModel extends BaseModel {
     private _busy = false;
     private _inventory: IStoreInventory = null;
+    private _items: IStoreItemRef[] = [];
+    private _magicItems: StoreMagicItemModel[] = [];
 
     constructor () {
         super();
         makeObservable<ShopModel, PrivateFields>(this, {
             _busy: observable,
-            _inventory: observable,
+            _items: observable,
+            _magicItems: observable,
             busy: computed,
-            inventory: computed,
+            items: computed,
+            magicItems: computed,
             loadInventory: action.bound,
         });
     }
 
     get busy() { return this._busy; }
-    get inventory() { return this._inventory; }
+    get items() { return this._items; }
+    get magicItems() { return this._magicItems; }
 
     loadInventory = async () => {
         if (!this._busy) {
@@ -144,6 +209,8 @@ export class ShopModel extends BaseModel {
             if (result.success) {
                 runInAction(() => {
                     this._inventory = result.value;
+                    this._items = result.value.items;
+                    this._magicItems = result.value.magicItems.map(i => new StoreMagicItemModel(i));
                     this._busy = false;
                 });
 
