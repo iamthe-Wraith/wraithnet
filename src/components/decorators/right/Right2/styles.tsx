@@ -3,10 +3,10 @@ import { IThemeProps } from '../../../../styles/themes';
 
 export const Right2Container = styled.div<IThemeProps>`
     position: absolute;
-    top: 5%;
+    top: 3%;
     left: calc(100% + 3px);
     width: 1px;
-    height: 90%;
+    height: 94%;
     background: ${({theme}) => theme.primary};
 
     .trapezoid {
@@ -110,4 +110,4 @@ export const Right2Container = styled.div<IThemeProps>`
             }
         }
     }
-`
+`;
