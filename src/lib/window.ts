@@ -53,7 +53,6 @@ export default class Window implements IWindow {
                 width: this._windowSize.width,
                 height: this._windowSize.height,
                 webPreferences: {
-                    devTools: true,
                     contextIsolation: true,
                     nodeIntegration: false,
                     // worldSafeExecuteJavaScript: true,
@@ -63,9 +62,10 @@ export default class Window implements IWindow {
 
             this._window.loadFile(this.filename);
 
-            if (showDevTools) {
-                this._window.webContents.openDevTools();
-            }
+            this._window.webContents.openDevTools();
+            // if (showDevTools) {
+            //     this._window.webContents.openDevTools();
+            // }
 
             this._window.setResizable(resizable);
             this._window.on('close', this._onClose);
