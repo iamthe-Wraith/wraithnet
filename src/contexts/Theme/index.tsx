@@ -12,14 +12,14 @@ export const ThemeStoreBase: FC = ({ children }) => {
     const user = useContext(UserContext);
     const toaster = useContext(ToasterContext);
     const errorMessages = useContext(ErrorMessagesContext);
-    const [theme, setTheme] = useState(user.settings.theme);
+    const [theme, setTheme] = useState(user?.settings.theme);
 
     useEffect(() => {
-        window.addEventListener('theme-updated', user.loadSettings);
+        window.addEventListener('theme-updated', user?.loadSettings);
     }, []);
 
     useEffect(() => {
-        setTheme(user.settings.theme);
+        setTheme(user?.settings.theme);
     }, [user?.settings?.theme]);
 
     const switchTheme = useCallback(async (newTheme: Themes) => {

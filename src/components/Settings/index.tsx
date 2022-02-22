@@ -61,7 +61,7 @@ const SettingsBase: React.FC<IProps> = ({
                 key={ t.name }
                 className='theme-option'
                 option={ t }
-                selected={ t.name === user.settings.theme }
+                selected={ t.name === user?.settings.theme }
                 onSelect={ onOptionChange }
             />
         ));
