@@ -62,10 +62,9 @@ export default class Window implements IWindow {
 
             this._window.loadFile(this.filename);
 
-            this._window.webContents.openDevTools();
-            // if (showDevTools) {
-            //     this._window.webContents.openDevTools();
-            // }
+            if (showDevTools) {
+                this._window.webContents.openDevTools();
+            }
 
             this._window.setResizable(resizable);
             this._window.on('close', this._onClose);
