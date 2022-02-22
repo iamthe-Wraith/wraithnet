@@ -20,7 +20,7 @@ export const ThemeStoreBase: FC = ({ children }) => {
 
     useEffect(() => {
         setTheme(user.settings.theme);
-    }, [user.settings.theme]);
+    }, [user?.settings?.theme]);
 
     const switchTheme = useCallback(async (newTheme: Themes) => {
         try {
