@@ -12,6 +12,8 @@ export const ReactTinyPopover = styled(Popover)<IThemeProps>`
 `;
 
 export const ReactTinyPopoverContent = styled.div<IThemeProps>`
+    margin-top: 3px;
+
     &.tiny-popover-error {
         border: 1px solid ${({theme}) => theme.error};
     }

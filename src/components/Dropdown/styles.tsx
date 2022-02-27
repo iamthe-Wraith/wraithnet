@@ -41,6 +41,7 @@ export const OptionsContainer = styled.div<IThemeProps>`
     ${ NoScrollBar }
     min-width: 70px;
     max-height: 200px;
+    background: ${({theme}) => theme.dark};
     overflow: auto;
 `;
 
